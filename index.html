@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#101827">
+<title>默默 AI 推算 · 参数识别</title>
+<style>
+:root{color-scheme:dark;--bg:#0b1020;--panel:#121a2b;--panel2:#182338;--line:#2b3850;--text:#edf3ff;--muted:#91a1bb;--accent:#79a7ff;--green:#6ee7b7;--amber:#f6c66b}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 20% -10%,#1c3154 0,transparent 42%),var(--bg);color:var(--text);font:15px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans SC",sans-serif}
+.wrap{max-width:1120px;margin:auto;padding:24px 18px 40px}.top{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:24px}
+.brand{display:flex;align-items:center;gap:12px}.logo{width:44px;height:44px;border-radius:14px;background:linear-gradient(145deg,#8ab5ff,#586fe9);display:grid;place-items:center;color:#08142b;font-weight:900;font-size:20px;box-shadow:0 8px 30px #5d85ff35}
+h1{font-size:20px;line-height:1.2;margin:0 0 4px}.sub{color:var(--muted);font-size:12px}.pill{border:1px solid #35517a;color:#b8d1ff;border-radius:999px;padding:6px 11px;font-size:12px;white-space:nowrap}
+.nav{display:flex;gap:8px;margin:0 0 18px}.nav button{border:1px solid #5274ac;background:#233858;color:#eaf2ff;border-radius:10px;padding:9px 16px;font-weight:700;cursor:default}.nav small{color:#afc5e8;align-self:center}
+.hero{display:grid;grid-template-columns:1.1fr .9fr;gap:16px}.card{background:linear-gradient(180deg,#141e31,#101827);border:1px solid var(--line);border-radius:18px;padding:20px;min-width:0;box-shadow:0 16px 45px #00000018}
+.card h2{font-size:16px;margin:0 0 5px}.muted{color:var(--muted)}.desc{font-size:13px;color:#a8b6cd;margin:0 0 17px}
+.drop{border:1px dashed #4b6590;border-radius:14px;padding:22px 16px;text-align:center;background:#101a2b;transition:.15s}.drop.drag{border-color:var(--accent);background:#182945}.fileicon{font-size:26px;margin-bottom:7px}.drop strong{display:block;font-size:14px}.drop p{margin:5px 0 14px;color:var(--muted);font-size:12px}
+input[type=file]{display:none}.primary,.secondary{border:0;border-radius:10px;padding:10px 15px;font-weight:700;cursor:pointer}.primary{background:#82adff;color:#07152b}.secondary{background:#202d43;color:#e4edff;border:1px solid #34445f}.primary:disabled{opacity:.4;cursor:not-allowed}
+.row{display:flex;flex-wrap:wrap;gap:9px;align-items:center}.status{margin-top:13px;padding:10px 12px;background:#0c1422;border:1px solid #27354a;border-radius:10px;color:var(--muted);font-size:12px;overflow-wrap:anywhere}.status.good{color:var(--green);border-color:#245b50}.status.bad{color:#ffaaa8;border-color:#713b46}
+.facts{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:14px}.fact{padding:11px;border-radius:12px;background:#19253a;border:1px solid #263650}.fact b{display:block;font-size:18px}.fact span{font-size:11px;color:var(--muted)}
+.model-note{font-size:12px;color:#b9c7dc;margin:0 0 10px}.chartbox{height:255px;position:relative;border-radius:12px;background:#0d1524;border:1px solid #233149;overflow:hidden}.chartbox canvas{width:100%;height:100%;display:block}
+.legend{display:flex;gap:15px;flex-wrap:wrap;font-size:12px;color:#b8c5d9;margin-top:10px}.dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;background:#78a8ff}.dot.orange{background:#f6b66a}.dot.green{background:#6ee7b7}
+.lower{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px}.tablewrap{overflow:auto;max-height:240px}table{width:100%;border-collapse:collapse;font-size:12px}th,td{padding:9px 8px;text-align:left;border-bottom:1px solid #26334a;white-space:nowrap}th{color:#a8b9d4;font-weight:600;position:sticky;top:0;background:#121b2b}td{color:#e0e9f8}
+.exportrow{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:15px}.filename{font-size:12px;color:#b6c6df;background:#0c1422;border:1px solid #2b3950;padding:8px 10px;border-radius:9px;overflow-wrap:anywhere}
+.foot{font-size:11px;color:#72829b;margin-top:20px;text-align:center}.empty{padding:28px 12px;text-align:center;color:#8394ae;font-size:12px}
+@media(max-width:760px){.wrap{padding:18px 12px 28px}.hero,.lower{grid-template-columns:1fr}.top{align-items:flex-start}.pill{font-size:10px}.card{padding:16px}.chartbox{height:235px}.facts{grid-template-columns:repeat(3,1fr)}.fact{padding:9px}.fact b{font-size:16px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="brand"><div class="logo">M</div><div><h1>默默 AI 推算</h1><div class="sub">参数文件识别 · 弹道线性模型预览</div></div></div>
+    <div class="pill">当前支持：config.json 格式</div>
+  </header>
+
+  <nav class="nav" aria-label="主菜单"><button type="button">M · 参数识别 / 模型预览</button><small>首页直接展示，无需先进入菜单</small></nav>
+
+  <section class="hero">
+    <div class="card">
+      <h2>选择参数文件</h2>
+      <p class="desc">当前版本先识别这一种 JSON 参数结构；后续可以再扩展其他格式。文件只在本浏览器本地读取，不会上传。</p>
+      <div class="drop" id="drop">
+        <div class="fileicon">↥</div>
+        <strong>拖放 config.json 到这里</strong>
+        <p>或点击下方按钮，从设备中选择 JSON 文件</p>
+        <div class="row" style="justify-content:center"><button class="primary" id="choose" type="button">选择文件</button><input id="file" type="file" accept=".json,application/json"></div>
+      </div>
+      <div id="status" class="status">等待选择文件。右侧先显示线性模型示意图；识别成功后会切换为文件中的数据。</div>
+      <div class="facts">
+        <div class="fact"><b id="keyCount">—</b><span>顶层参数数</span></div>
+        <div class="fact"><b id="revCount">—</b><span>左轮分段数</span></div>
+        <div class="fact"><b id="shotCount">—</b><span>霰弹分段数</span></div>
+      </div>
+      <div class="exportrow">
+        <button class="primary" id="export" type="button" disabled>导出识别结果</button>
+        <span class="filename">默认文件名：默默---ai推算.json</span>
+      </div>
+      <p class="sub" style="margin-top:10px">支持的导出方式：浏览器允许时可选择保存位置；否则使用浏览器下载目录。</p>
+    </div>
+
+    <div class="card">
+      <h2>弹道线性模型图</h2>
+      <p class="desc">横轴为距离（maxDist），纵轴为 flySpeed。当前文件识别后会展示对应分段与线性拟合参考线。</p>
+      <p class="model-note" id="chartNote">示意模式：这是用于展示模型形式的示例直线，不代表游戏实测数据。</p>
+      <div class="chartbox"><canvas id="chart" aria-label="距离与弹速线性模型图"></canvas></div>
+      <div class="legend"><span><i class="dot"></i>左轮 flySpeed[0]</span><span><i class="dot orange"></i>霰弹 flySpeed[0]</span><span><i class="dot green"></i>线性拟合</span></div>
+    </div>
+  </section>
+
+  <section class="lower">
+    <div class="card">
+      <h2>识别结果</h2><p class="desc">仅列出当前支持格式中用于绘图的字段，不修改原文件参数。</p>
+      <div class="tablewrap" id="summary"><div class="empty">选择文件后显示识别摘要。</div></div>
+    </div>
+    <div class="card">
+      <h2>当前识别规则</h2>
+      <p class="desc">用结构特征判断文件类型，不把未识别的文件误判为支持格式。</p>
+      <div class="status">必须为合法 JSON 对象，并至少包含 <b>segments_revolver</b> 或 <b>segments_shotgun</b> 数组。每个分段需有 maxDist，以及 flySpeed 数组或数值。</div>
+      <div class="status" style="margin-top:9px">当前阶段是“识别 + 可视化 + 导出原始 JSON”。不会自动更改弹速、衰减或其他参数；模型线只用于观察数据趋势。</div>
+    </div>
+  </section>
+  <div class="foot">默默 AI 推算 · 本地单页版 · 无需安装依赖 / 无需联网</div>
+</div>
+<script>
+(() => {
+ const $ = id => document.getElementById(id);
+ const fileInput=$('file'), drop=$('drop'), status=$('status'), canvas=$('chart');
+ let loadedData=null, loadedName='';
+ const demo=[{x:0,y:380},{x:50,y:360},{x:100,y:340},{x:150,y:320},{x:200,y:300},{x:250,y:280}];
+ let series={revolver:[],shotgun:[]}, isDemo=true;
+ $('choose').addEventListener('click',()=>fileInput.click());
+ fileInput.addEventListener('change',e=>{if(e.target.files&&e.target.files[0]) readFile(e.target.files[0]);});
+ ['dragenter','dragover'].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.add('drag');}));
+ ['dragleave','drop'].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.remove('drag');}));
+ drop.addEventListener('drop',e=>{const f=e.dataTransfer.files&&e.dataTransfer.files[0];if(f)readFile(f);});
+ function getSpeed(v){if(Array.isArray(v))return Number(v[0]);return Number(v);}
+ function extract(arr){if(!Array.isArray(arr))return [];return arr.map((o,i)=>({x:Number(o?.maxDist),y:getSpeed(o?.flySpeed),land:getSpeed(o?.landSpeed),idx:i+1})).filter(p=>Number.isFinite(p.x)&&Number.isFinite(p.y));}
+ function supported(obj){
+   if(!obj||Array.isArray(obj)||typeof obj!=='object')return false;
+   const r=extract(obj.segments_revolver),s=extract(obj.segments_shotgun);
+   return (Array.isArray(obj.segments_revolver)&&r.length>0)||(Array.isArray(obj.segments_shotgun)&&s.length>0);
+ }
+ async function readFile(file){
+   try{
+    const raw=await file.text(); const obj=JSON.parse(raw);
+    if(!supported(obj)){loadedData=null;$('export').disabled=true;status.className='status bad';status.textContent='无法识别：文件不是当前支持的 config.json 参数结构，或没有可识别的分段数据。原文件未更改。';return;}
+    loadedData=obj;loadedName=file.name;series={revolver:extract(obj.segments_revolver),shotgun:extract(obj.segments_shotgun)};isDemo=false;
+    $('keyCount').textContent=Object.keys(obj).length;
+    $('revCount').textContent=series.revolver.length;
+    $('shotCount').textContent=series.shotgun.length;
+    status.className='status good';status.textContent=`识别成功：${file.name} · ${raw.length.toLocaleString()} 个字符 · 仅本地处理，未修改原始参数。`;
+    $('chartNote').textContent='数据模式：点为文件中的分段数据；绿色线为最小二乘线性拟合参考线，不代表真实弹道物理模型。';
+    $('export').disabled=false;renderSummary();draw();
+   }catch(err){loadedData=null;$('export').disabled=true;status.className='status bad';status.textContent='读取失败：请确认文件是 UTF-8 编码的合法 JSON。';}
+ }
+ function renderSummary(){
+  const all=[...series.revolver.map(p=>({...p,type:'左轮'})),...series.shotgun.map(p=>({...p,type:'霰弹'}))].sort((a,b)=>a.x-b.x);
+  if(!all.length){$('summary').innerHTML='<div class="empty">未找到可绘制分段。</div>';return;}
+  $('summary').innerHTML='<table><thead><tr><th>类型</th><th>分段</th><th>距离</th><th>flySpeed[0]</th><th>landSpeed[0]</th></tr></thead><tbody>'+all.map(p=>`<tr><td>${p.type}</td><td>${p.idx}</td><td>${fmt(p.x)}</td><td>${fmt(p.y)}</td><td>${Number.isFinite(p.land)?fmt(p.land):'—'}</td></tr>`).join('')+'</tbody></table>';
+ }
+ function fmt(n){return Number(n).toLocaleString('zh-CN',{maximumFractionDigits:3});}
+ function fit(points){
+  if(points.length<2)return null;const n=points.length,mx=points.reduce((a,p)=>a+p.x,0)/n,my=points.reduce((a,p)=>a+p.y,0)/n;
+  let num=0,den=0;points.forEach(p=>{num+=(p.x-mx)*(p.y-my);den+=(p.x-mx)**2;});if(!den)return null;
+  const slope=num/den;return {slope,intercept:my-slope*mx};
+ }
+ function draw(){
+  const rect=canvas.getBoundingClientRect(),dpr=window.devicePixelRatio||1;canvas.width=Math.max(1,Math.round(rect.width*dpr));canvas.height=Math.max(1,Math.round(rect.height*dpr));
+  const ctx=canvas.getContext('2d');ctx.scale(dpr,dpr);const w=rect.width,h=rect.height;
+  ctx.clearRect(0,0,w,h);
+  const left=43,right=15,top=17,bottom=34,pw=w-left-right,ph=h-top-bottom;
+  let rev=isDemo?demo:series.revolver,shot=isDemo?[]:series.shotgun;
+  let pts=[...rev,...shot];if(!pts.length)pts=demo;
+  let xmin=Math.min(0,...pts.map(p=>p.x)),xmax=Math.max(100,...pts.map(p=>p.x));if(xmax===xmin)xmax=xmin+1;
+  let ymin=Math.floor((Math.min(...pts.map(p=>p.y))-10)/20)*20,ymax=Math.ceil((Math.max(...pts.map(p=>p.y))+10)/20)*20;if(ymax===ymin)ymax=ymin+20;
+  const X=x=>left+(x-xmin)/(xmax-xmin)*pw,Y=y=>top+ph-(y-ymin)/(ymax-ymin)*ph;
+  ctx.font='10px system-ui';ctx.lineWidth=1;ctx.strokeStyle='#25344b';ctx.fillStyle='#8ea1bd';
+  for(let i=0;i<=4;i++){let y=ymin+(ymax-ymin)*i/4,yy=Y(y);ctx.beginPath();ctx.moveTo(left,yy);ctx.lineTo(w-right,yy);ctx.stroke();ctx.fillText(fmt(y),5,yy+3);}
+  for(let i=0;i<=5;i++){let x=xmin+(xmax-xmin)*i/5,xx=X(x);ctx.beginPath();ctx.moveTo(xx,top);ctx.lineTo(xx,h-bottom);ctx.stroke();ctx.fillText(fmt(x),xx-8,h-13);}
+  ctx.fillStyle='#8ea1bd';ctx.fillText('弹速',5,11);ctx.fillText('距离',w-37,h-7);
+  function line(points,color){if(!points.length)return;ctx.strokeStyle=color;ctx.lineWidth=1.7;ctx.beginPath();points.forEach((p,i)=>i?ctx.lineTo(X(p.x),Y(p.y)):ctx.moveTo(X(p.x),Y(p.y)));ctx.stroke();points.forEach(p=>{ctx.fillStyle=color;ctx.beginPath();ctx.arc(X(p.x),Y(p.y),2.8,0,Math.PI*2);ctx.fill();});}
+  function regression(points){const f=fit(points);if(!f||points.length<2)return;const a=Math.min(...points.map(p=>p.x)),b=Math.max(...points.map(p=>p.x));ctx.strokeStyle='#6ee7b7';ctx.setLineDash([5,4]);ctx.lineWidth=1.8;ctx.beginPath();ctx.moveTo(X(a),Y(f.slope*a+f.intercept));ctx.lineTo(X(b),Y(f.slope*b+f.intercept));ctx.stroke();ctx.setLineDash([]);}
+  line(rev,'#78a8ff');line(shot,'#f6b66a');regression(rev);if(shot.length)regression(shot);
+ }
+ async function exportFile(){
+  if(!loadedData)return;
+  const text=JSON.stringify(loadedData,null,2)+'\n';const blob=new Blob([text],{type:'application/json;charset=utf-8'});
+  try{
+   if(window.showSaveFilePicker){
+    const handle=await window.showSaveFilePicker({suggestedName:'默默---ai推算.json',types:[{description:'JSON 参数文件',accept:{'application/json':['.json']}}]});
+    const writable=await handle.createWritable();await writable.write(blob);await writable.close();
+    status.className='status good';status.textContent='导出成功：默默---ai推算.json（已按你选择的位置保存）。';
+   }else{
+    const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='默默---ai推算.json';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1500);
+    status.className='status good';status.textContent='已开始下载“默默---ai推算.json”。此浏览器不支持网页直接选择保存路径，请到下载目录查看。';
+   }
+  }catch(e){if(e.name!=='AbortError'){status.className='status bad';status.textContent='导出失败：'+(e.message||'浏览器未允许保存文件。');}}
+ }
+ $('export').addEventListener('click',exportFile);
+ window.addEventListener('resize',draw);
+ draw();
+})();
+</script>
+</body>
+</html>
