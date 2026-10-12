@@ -15,9 +15,10 @@ header{display:flex;justify-content:space-between;align-items:center;gap:12px;ma
 .btn{border:1px solid #2c3d59;border-radius:12px;padding:11px 15px;min-height:44px;background:#18243a;color:#eaf1ff;font-weight:750;cursor:pointer}.btn:active{transform:translateY(1px)}.btn.primary{border-color:#4b82ef;background:linear-gradient(135deg,#3677ee,#3159cb);color:white;box-shadow:0 7px 22px #2e64df30}.btn.secondary{background:#111a29}.btn:disabled{opacity:.4;cursor:not-allowed}.file-input{display:none}
 .grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px}.card{min-width:0;border:1px solid var(--line);border-radius:var(--r);background:linear-gradient(180deg,#101725,#0d121d);padding:18px;box-shadow:0 10px 28px #0002}.card-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:12px}.card h3{font-size:15px;margin:0;font-weight:800}.kicker{font-size:11px;color:var(--muted);margin-top:4px}.num{color:#8eb7ff;font-size:12px;font-weight:800;white-space:nowrap}.drop{border:1px dashed #3a537a;border-radius:16px;background:#0b1321;text-align:center;padding:22px 14px;transition:.15s}.drop.drag{border-color:#7daaff;background:#14223a}.upload-icon{margin:0 auto 9px;width:43px;height:43px;border-radius:14px;background:#172944;display:grid;place-items:center;color:#8ab5ff;font-size:24px}.drop strong{display:block;font-size:14px}.drop p{font-size:12px;color:var(--muted);margin:5px 0 14px}.file-meta{display:none;margin-top:11px;border:1px solid #263650;background:#0a111d;border-radius:12px;padding:10px 12px;font-size:12px;color:#c6d6ef;overflow-wrap:anywhere}.status{margin-top:12px;border:1px solid #26344a;border-radius:12px;background:#0a111c;padding:11px 12px;color:#a9b7cc;font-size:12px;overflow-wrap:anywhere}.status.good{color:var(--green);border-color:#245b4c}.status.bad{color:#ffabb2;border-color:#6b3440}
 .metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}.metric{border:1px solid #202d42;border-radius:14px;background:#090e17;padding:12px;min-width:0;min-height:94px}.metric .label{font-size:11px;color:#98a8c1}.metric strong{display:block;font-size:clamp(18px,3vw,24px);line-height:1.25;margin-top:9px;overflow-wrap:anywhere}.metric small{font-size:10px;color:#71829d;display:block;margin-top:5px}.blue{color:var(--blue)}.amber{color:var(--orange)}.green{color:var(--green)}.muted{color:var(--muted)}
-.chartbox{height:255px;border:1px solid #1f2b3e;background:#090f19;border-radius:14px;overflow:hidden}.chartbox canvas{width:100%;height:100%;display:block}.legend{display:flex;gap:12px;flex-wrap:wrap;font-size:11px;color:#a9b7cd;margin-top:11px}.dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:5px;background:var(--blue)}.dot.orange{background:var(--orange)}.dot.green{background:var(--green)}
+.chartbox{height:255px;border:1px solid #1f2b3e;background:#090f19;border-radius:14px;overflow:hidden}.chartbox canvas{width:100%;height:100%;display:block;touch-action:pan-y}.chart-controls{display:grid;grid-template-columns:minmax(0,1fr);gap:9px;margin:10px 0}.chart-controls label{font-size:12px;color:#a9b7cd}.chart-controls select{display:block;width:100%;margin-top:5px;background:#0b1321;color:#eaf1ff;border:1px solid #2a3d59;border-radius:10px;padding:10px}.legend{display:flex;gap:8px;flex-wrap:wrap;font-size:11px;color:#a9b7cd;margin-top:11px}.legend-item{display:flex;align-items:center;gap:5px;border:1px solid #26344a;border-radius:999px;padding:6px 9px;background:#0a111c;cursor:pointer}.legend-item.off{opacity:.42;text-decoration:line-through}.legend-item input{accent-color:#76a8ff;margin:0}.chart-tip{display:none;margin-top:9px;border:1px solid #35517a;border-radius:12px;padding:10px 12px;background:#0c1728;color:#dce8ff;font-size:12px;white-space:pre-line}.chart-tip.show{display:block}.dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:5px;background:var(--blue)}.dot.orange{background:var(--orange)}.dot.green{background:var(--green)}
 .report{margin-top:14px}.report-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}.report-item{padding:12px;border:1px solid #202c40;border-radius:13px;background:#0a101a;min-width:0}.report-item .label{font-size:11px;color:#93a3bd}.report-item strong{display:block;font-size:17px;margin-top:6px;overflow-wrap:anywhere}.report-item p{font-size:11px;color:#7f90aa;margin:5px 0 0}.report-item .ok{color:var(--green)}.report-item .warn{color:var(--orange)}
 .table-wrap{max-height:320px;overflow:auto;border:1px solid #202c40;border-radius:12px}table{width:100%;border-collapse:collapse;font-size:12px;min-width:470px}th,td{padding:10px 9px;text-align:left;border-bottom:1px solid #1d293b;white-space:nowrap}th{position:sticky;top:0;background:#151f30;color:#aebed8;font-weight:700}td{color:#dce6f7}tbody tr:last-child td{border-bottom:0}.empty{padding:25px 12px;text-align:center;color:#7f90aa;font-size:12px}.two{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}.note-list{display:grid;gap:9px}.note{display:flex;gap:10px;align-items:flex-start;border:1px solid #202c40;border-radius:12px;padding:11px;background:#0a101a;font-size:12px;color:#aebbd0}.note .bullet{width:22px;height:22px;display:grid;place-items:center;border-radius:8px;background:#172843;color:#8db6ff;flex:none;font-weight:900}.note b{color:#e4edff}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.foot{text-align:center;font-size:11px;color:#6f8099;margin:20px 0 4px}.privacy{color:#8be8c9}
+#optStrength{min-height:28px}select.btn{appearance:auto}#optSummary{margin-top:12px}.diff-up{color:#62e4b2}.diff-down{color:#ffbd70}
 @media(max-width:680px){.app{padding:14px 11px calc(24px + env(safe-area-inset-bottom))}header{align-items:flex-start;margin-bottom:12px}.logo{width:39px;height:39px;border-radius:13px}.brand h1{font-size:18px}.tagline{font-size:11px;max-width:215px}.chips{max-width:112px}.chip{font-size:10px;padding:4px 7px}.hero{padding:18px 16px;border-radius:20px;margin-bottom:11px}.hero h2{font-size:25px}.hero p{font-size:12px}.hero-actions{display:grid;grid-template-columns:1fr 1fr}.hero-actions .btn{padding:10px 8px;font-size:12px}.grid,.two{grid-template-columns:1fr;gap:11px}.card{padding:14px;border-radius:17px}.card-head{margin-bottom:10px}.drop{padding:20px 11px}.metrics{gap:7px}.metric{padding:10px;min-height:86px}.metric .label{font-size:10px}.metric strong{font-size:19px}.report-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.report-item{padding:10px}.report-item strong{font-size:16px}.chartbox{height:230px}.btn{min-height:43px}.actions .btn{flex:1}.table-wrap{max-height:300px}}
 @media(max-width:360px){.tagline{max-width:165px}.chips{max-width:90px}.metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.hero-actions{grid-template-columns:1fr}.hero h2{font-size:23px}}
 </style>
@@ -44,7 +45,7 @@ header{display:flex;justify-content:space-between;align-items:center;gap:12px;ma
 
 <div class="grid">
   <section class="card">
-    <div class="card-head"><div><h3>① 文件识别</h3><div class="kicker">支持当前识别规则：segments_revolver / segments_shotgun</div></div><span class="num">LOCAL</span></div>
+    <div class="card-head"><div><h3>① 文件识别</h3><div class="kicker">支持当前识别规则：segments_revolver（左轮） / segments_shotgun（喷子）</div></div><span class="num">LOCAL</span></div>
     <div class="drop" id="drop">
       <div class="upload-icon">↥</div><strong>点击选择，或拖入 config.json</strong>
       <p>手机可点上方按钮，从文件管理器选择 JSON 文件</p>
@@ -61,9 +62,11 @@ header{display:flex;justify-content:space-between;align-items:center;gap:12px;ma
 
   <section class="card">
     <div class="card-head"><div><h3>② 趋势可视化</h3><div class="kicker">横轴：距离 maxDist；纵轴：相对预判强度（速度数值越小，显示越高）</div></div><span class="num" id="chartMode">示意模式</span></div>
-    <div class="chartbox"><canvas id="chart" aria-label="距离与速度趋势图"></canvas></div>
-    <div class="legend"><span><i class="dot"></i>左轮 flySpeed</span><span><i class="dot orange"></i>左轮 landSpeed</span><span><i class="dot green"></i>霰弹 flySpeed</span><span><i class="dot" style="background:#d18cff"></i>霰弹 landSpeed</span></div>
-    <div class="status">纵轴采用反向归一化：当前文件中速度值越小，相对预判强度显示越高；flySpeed 与 landSpeed 分开绘制。该值只是按参数数值反向映射的相对指标，不代表游戏实测命中率或已验证的物理强度。没有加载文件时不显示示例数据。</div>
+    <div class="chart-controls"><label for="curveView">曲线视图（单独查看完整距离段）<select id="curveView"><option value="all">叠加查看：所有可见曲线</option><option value="revFly">仅左轮·飞天</option><option value="revLand">仅左轮·地面</option><option value="shotFly">仅喷子·飞天</option><option value="shotLand">仅喷子·地面</option></select></label></div>
+    <div class="chartbox"><canvas id="chart" aria-label="距离与速度趋势图，可长按查看距离段"></canvas></div>
+    <div class="legend" id="curveLegend"><label class="legend-item" data-key="revFly"><input type="checkbox" checked> <i class="dot"></i>左轮·飞天</label><label class="legend-item" data-key="revLand"><input type="checkbox" checked> <i class="dot orange"></i>左轮·地面</label><label class="legend-item" data-key="shotFly"><input type="checkbox" checked> <i class="dot green"></i>喷子·飞天</label><label class="legend-item" data-key="shotLand"><input type="checkbox" checked> <i class="dot" style="background:#d18cff"></i>喷子·地面</label></div>
+    <div class="chart-tip" id="chartTip" role="status" aria-live="polite"></div>
+    <div class="status">可以切换单条曲线查看全部距离段；点击图例复选框可隐藏/恢复任意曲线。长按曲线附近的点，可查看该距离段的 minDist、maxDist、飞天（flySpeed）、地面（landSpeed） 和相对预判强度。相对强度仅由参数数值反向映射，不代表游戏实测命中率。</div>
   </section>
 </div>
 
@@ -71,7 +74,7 @@ header{display:flex;justify-content:space-between;align-items:center;gap:12px;ma
   <div class="card-head"><div><h3>③ 功能报告</h3><div class="kicker">所有指标根据当前选择的文件即时计算；无数据时显示“—”</div></div><span class="num" id="reportState">等待数据</span></div>
   <div class="report-grid">
     <div class="report-item"><div class="label">距离范围</div><strong id="rangeMetric">—</strong><p>所有已识别分段的 min/max</p></div>
-    <div class="report-item"><div class="label">平均速度</div><strong id="avgMetric">—</strong><p>flySpeed 首值的平均数</p></div>
+    <div class="report-item"><div class="label">平均速度</div><strong id="avgMetric">—</strong><p>飞天参数首值的平均数</p></div>
     <div class="report-item"><div class="label">线性趋势 R²</div><strong id="r2Metric">—</strong><p>越接近 1，线性拟合越贴近数据</p></div>
     <div class="report-item"><div class="label">字段完整性</div><strong id="completeMetric">—</strong><p>检查分段中的距离与速度字段</p></div>
     <div class="report-item"><div class="label">异常/缺失项</div><strong id="issueMetric">—</strong><p>仅报告结构问题，不自动修复</p></div>
@@ -79,13 +82,33 @@ header{display:flex;justify-content:space-between;align-items:center;gap:12px;ma
   </div>
 </section>
 
+<section class="card report" id="optimizer">
+  <div class="card-head"><div><h3>④ 趋势检测与自动优化</h3><div class="kicker">先检测四组趋势，再按目标生成建议；仅预览，不自动改写原文件</div></div><span class="num" id="optState">等待数据</span></div>
+  <div class="grid">
+    <div>
+      <label class="kicker" for="targetTrend">目标预判强度趋势（随距离变化）</label>
+      <select id="targetTrend" class="btn" style="width:100%;margin-top:7px">
+        <option value="stable">保持平稳</option><option value="up">逐渐增强（曲线向上）</option><option value="down">逐渐减弱（曲线向下）</option>
+      </select>
+    </div>
+    <div>
+      <label class="kicker" for="optStrength">调整幅度：<b id="strengthLabel">50%</b></label>
+      <input id="optStrength" type="range" min="10" max="100" step="10" value="50" style="width:100%;margin-top:15px;accent-color:#76a8ff">
+    </div>
+  </div>
+  <div class="status">算法说明：按每个字段自己的有效数值范围，把较小参数值映射为较高的相对强度；将当前趋势与所选目标趋势按调整幅度混合。该结果是数学建议，不代表实测命中率或真实游戏效果。</div>
+  <div class="actions"><button class="btn primary" id="runOpt" type="button" disabled>检测趋势并生成建议</button><button class="btn secondary" id="clearOpt" type="button" disabled>清除预览</button><button class="btn secondary" id="exportOpt" type="button" disabled>另存优化 JSON</button></div>
+  <div id="optSummary" class="status">加载 JSON 文件后即可生成建议。</div>
+  <div class="table-wrap" id="optTable" style="margin-top:10px"><div class="empty">优化前后差异将在这里显示。</div></div>
+</section>
+
 <div class="two">
   <section class="card">
-    <div class="card-head"><div><h3>④ 分段明细</h3><div class="kicker">只展示识别到的字段，不更改原始参数</div></div><span class="num" id="rowCount">0 行</span></div>
+    <div class="card-head"><div><h3>⑤ 分段明细</h3><div class="kicker">只展示识别到的字段，不更改原始参数</div></div><span class="num" id="rowCount">0 行</span></div>
     <div class="table-wrap" id="summary"><div class="empty">选择文件后显示分段明细。</div></div>
   </section>
   <section class="card">
-    <div class="card-head"><div><h3>⑤ 诊断与保护说明</h3><div class="kicker">识别边界清晰，结果可复核</div></div></div>
+    <div class="card-head"><div><h3>⑥ 诊断与保护说明</h3><div class="kicker">识别边界清晰，结果可复核</div></div></div>
     <div class="note-list" id="diagnostics">
       <div class="note"><span class="bullet">i</span><div><b>等待文件</b><br>加载后检查 JSON 格式、可识别分段、缺失字段和数值异常。</div></div>
       <div class="note"><span class="bullet">✓</span><div><b>本地处理</b><br>浏览器直接读取文件，不通过本页面上传到服务器。</div></div>
@@ -101,7 +124,7 @@ header{display:flex;justify-content:space-between;align-items:center;gap:12px;ma
 (()=>{'use strict';
 const $=id=>document.getElementById(id);
 const fileInput=$('file'),drop=$('drop'),canvas=$('chart');
-let loadedData=null,loadedName='',series={revolver:[],shotgun:[]},issues=[],fileBytes=0;
+let loadedData=null,loadedName='',series={revolver:[],shotgun:[]},issues=[],fileBytes=0,optimizedData=null,optChanges=[];
 $('choose').addEventListener('click',()=>fileInput.click());
 $('choose2').addEventListener('click',()=>fileInput.click());
 fileInput.addEventListener('change',e=>{if(e.target.files&&e.target.files[0])readFile(e.target.files[0]);});
@@ -119,9 +142,9 @@ async function readFile(file){
   try{
     if(file.size>20*1024*1024)throw new Error('文件超过 20 MB，为避免手机内存压力已停止读取。');
     const raw=await file.text(),obj=JSON.parse(raw);
-    if(!supported(obj))throw new Error('未识别到 segments_revolver 或 segments_shotgun 数组。文件必须是合法 JSON 对象。');
+    if(!supported(obj))throw new Error('未识别到 segments_revolver（左轮）或 segments_shotgun（喷子）数组。文件必须是合法 JSON 对象。');
     loadedData=obj;loadedName=file.name;fileBytes=file.size;
-    series={revolver:extract(obj.segments_revolver,'左轮'),shotgun:extract(obj.segments_shotgun,'霰弹')};
+    series={revolver:extract(obj.segments_revolver,'左轮'),shotgun:extract(obj.segments_shotgun,'喷子')};
     const valid=finitePoints([...series.revolver,...series.shotgun]);
     if(!valid.length)throw new Error('找到了分段数组，但没有同时包含有效 maxDist 和 flySpeed 的数据点。');
     issues=analyzeIssues(obj);
@@ -130,12 +153,12 @@ async function readFile(file){
     $('shotCount').textContent=finitePoints(series.shotgun).length;
     $('fileMeta').style.display='block';
     $('fileMeta').textContent=`${file.name} · ${formatBytes(file.size)} · UTF-8/JSON 已解析`;
-    $('export').disabled=false;$('reportCsv').disabled=false;
+    $('export').disabled=false;$('reportCsv').disabled=false;$('runOpt').disabled=false;
     $('chartMode').textContent='文件数据';
     setStatus(`识别成功：${file.name}。数据只在当前浏览器处理，原文件未修改。`,'good');
     renderSummary();renderReport();renderDiagnostics();draw();
   }catch(e){
-    loadedData=null;series={revolver:[],shotgun:[]};issues=[];$('export').disabled=true;$('reportCsv').disabled=true;
+    loadedData=null;series={revolver:[],shotgun:[]};issues=[];$('export').disabled=true;$('reportCsv').disabled=true;$('runOpt').disabled=true;clearOptimization();
     $('fileMeta').style.display='none';$('chartMode').textContent='无数据';
     setStatus('读取失败：'+(e&&e.message?e.message:'请检查 JSON 文件格式。'),'bad');
     clearStats();draw();renderDiagnostics([{title:'识别失败',body:e.message||'文件读取失败，请检查 JSON 格式。',kind:'!'}]);
@@ -143,7 +166,7 @@ async function readFile(file){
 }
 function analyzeIssues(obj){
   const out=[];
-  for(const [key,type] of [['segments_revolver','左轮'],['segments_shotgun','霰弹']]){
+  for(const [key,type] of [['segments_revolver','左轮'],['segments_shotgun','喷子']]){
     if(!Array.isArray(obj[key]))continue;
     obj[key].forEach((p,i)=>{
       if(!p||typeof p!=='object'){out.push(`${type}第 ${i+1} 段不是对象`);return;}
@@ -171,7 +194,7 @@ function renderSummary(){
  const all=finitePoints([...series.revolver,...series.shotgun]).sort((a,b)=>a.x-b.x);
  $('rowCount').textContent=`${all.length} 行`;
  if(!all.length){$('summary').innerHTML='<div class="empty">未找到可绘制分段。</div>';return;}
- $('summary').innerHTML='<table><thead><tr><th>类型</th><th>分段</th><th>minDist</th><th>maxDist</th><th>flySpeed 首值</th><th>landSpeed 首值</th></tr></thead><tbody>'+all.map(p=>`<tr><td>${p.type}</td><td>${p.idx}</td><td>${Number.isFinite(p.min)?fmt(p.min):'—'}</td><td>${fmt(p.x)}</td><td>${fmt(p.y)}</td><td>${fmt(p.land)}</td></tr>`).join('')+'</tbody></table>';
+ $('summary').innerHTML='<table><thead><tr><th>类型</th><th>分段</th><th>minDist</th><th>maxDist</th><th>飞天参数首值</th><th>地面参数首值</th></tr></thead><tbody>'+all.map(p=>`<tr><td>${p.type}</td><td>${p.idx}</td><td>${Number.isFinite(p.min)?fmt(p.min):'—'}</td><td>${fmt(p.x)}</td><td>${fmt(p.y)}</td><td>${fmt(p.land)}</td></tr>`).join('')+'</tbody></table>';
 }
 function renderReport(){
  const all=finitePoints([...series.revolver,...series.shotgun]),xs=all.map(p=>p.x),ys=all.map(p=>p.y),f=fit(all);
@@ -197,35 +220,128 @@ function renderDiagnostics(custom){
  $('diagnostics').innerHTML=list.map(n=>`<div class="note"><span class="bullet">${n.kind||'i'}</span><div><b>${n.title}</b><br>${n.body}</div></div>`).join('');
 }
 function clearStats(){['keyCount','revCount','shotCount','rangeMetric','avgMetric','r2Metric','completeMetric','issueMetric'].forEach(id=>$(id).textContent='—');$('rowCount').textContent='0 行';$('reportState').textContent='等待数据';$('summary').innerHTML='<div class="empty">选择文件后显示分段明细。</div>';renderDiagnostics();}
-function resetPage(){loadedData=null;loadedName='';fileBytes=0;series={revolver:[],shotgun:[]};issues=[];fileInput.value='';$('export').disabled=true;$('reportCsv').disabled=true;$('fileMeta').style.display='none';$('chartMode').textContent='无数据';clearStats();setStatus('已重置。选择 JSON 文件开始分析。','');draw();}
+function resetPage(){hiddenCurves.clear();$('curveLegend').querySelectorAll('input').forEach(i=>{i.checked=true;i.closest('label').classList.remove('off');});$('curveView').value='all';$('chartTip').classList.remove('show');clearOptimization();loadedData=null;loadedName='';fileBytes=0;series={revolver:[],shotgun:[]};issues=[];fileInput.value='';$('export').disabled=true;$('reportCsv').disabled=true;$('fileMeta').style.display='none';$('chartMode').textContent='无数据';clearStats();setStatus('已重置。选择 JSON 文件开始分析。','');draw();}
+const curveDefs=[
+ {key:'revFly',arrName:'revolver',field:'y',rawField:'flySpeed',color:'#76a8ff',name:'左轮·飞天'},
+ {key:'revLand',arrName:'revolver',field:'land',rawField:'landSpeed',color:'#ffbd70',name:'左轮·地面'},
+ {key:'shotFly',arrName:'shotgun',field:'y',rawField:'flySpeed',color:'#62e4b2',name:'喷子·飞天'},
+ {key:'shotLand',arrName:'shotgun',field:'land',rawField:'landSpeed',color:'#d18cff',name:'喷子·地面'}
+];
+const hiddenCurves=new Set();let chartGeometry=null,longPressTimer=null,longPressStart=null,longPressFired=false;
+$('curveView').addEventListener('change',()=>{draw();$('chartTip').classList.remove('show');});
+$('curveLegend').querySelectorAll('label').forEach(label=>label.addEventListener('click',e=>{
+ if(e.target.tagName==='INPUT')return;
+ const key=label.dataset.key;if(hiddenCurves.has(key))hiddenCurves.delete(key);else hiddenCurves.add(key);
+ label.querySelector('input').checked=!hiddenCurves.has(key);label.classList.toggle('off',hiddenCurves.has(key));draw();
+}));
+$('curveLegend').querySelectorAll('input').forEach(input=>input.addEventListener('change',()=>{
+ const key=input.closest('label').dataset.key;if(input.checked)hiddenCurves.delete(key);else hiddenCurves.add(key);
+ input.closest('label').classList.toggle('off',!input.checked);draw();
+}));
+function chartGroups(){const mode=$('curveView').value;return curveDefs.filter(g=>(mode==='all'||g.key===mode)&&!hiddenCurves.has(g.key)).map(g=>({...g,arr:series[g.arrName],pts:validFieldPoints(series[g.arrName],g.field).sort((a,b)=>a.x-b.x)}));}
 function draw(){
  const rect=canvas.getBoundingClientRect(),dpr=Math.max(1,window.devicePixelRatio||1);canvas.width=Math.max(1,Math.round(rect.width*dpr));canvas.height=Math.max(1,Math.round(rect.height*dpr));
  const ctx=canvas.getContext('2d');ctx.setTransform(dpr,0,0,dpr,0,0);const w=rect.width,h=rect.height;ctx.clearRect(0,0,w,h);
- const left=46,right=12,top=18,bottom=34,pw=Math.max(1,w-left-right),ph=Math.max(1,h-top-bottom);
- const groups=[
-  {arr:series.revolver,field:'y',color:'#76a8ff',name:'左轮 flySpeed'},
-  {arr:series.revolver,field:'land',color:'#ffbd70',name:'左轮 landSpeed'},
-  {arr:series.shotgun,field:'y',color:'#62e4b2',name:'霰弹 flySpeed'},
-  {arr:series.shotgun,field:'land',color:'#d18cff',name:'霰弹 landSpeed'}
- ].map(g=>({...g,pts:validFieldPoints(g.arr,g.field).sort((a,b)=>a.x-b.x)}));
+ const left=46,right=12,top=18,bottom=34,pw=Math.max(1,w-left-right),ph=Math.max(1,h-top-bottom),groups=chartGroups();
+ const allGroups=curveDefs.map(g=>({...g,arr:series[g.arrName],pts:validFieldPoints(series[g.arrName],g.field)}));
  const pts=groups.flatMap(g=>g.pts.map(p=>({x:p.x,v:p[g.field]})));
- if(!pts.length){ctx.fillStyle='#74839c';ctx.font='12px system-ui';ctx.textAlign='center';ctx.fillText('选择文件后显示趋势图',w/2,h/2);return;}
+ if(!pts.length){ctx.fillStyle='#74839c';ctx.font='12px system-ui';ctx.textAlign='center';ctx.fillText(loadedData?'没有可显示的曲线（请恢复至少一条）':'选择文件后显示趋势图',w/2,h/2);chartGeometry=null;return;}
  let xmin=Math.min(...pts.map(p=>p.x)),xmax=Math.max(...pts.map(p=>p.x));if(xmax===xmin)xmax=xmin+1;
- const vmin=Math.min(...pts.map(p=>p.v)),vmax=Math.max(...pts.map(p=>p.v));
- // Relative strength is intentionally inverted: smaller speed values plot higher.
- const strength=v=>vmax===vmin?50:(vmax-v)/(vmax-vmin)*100;
+ const scalePts=$('curveView').value==='all'?allGroups.flatMap(g=>g.pts.map(p=>p[g.field])):groups.flatMap(g=>g.pts.map(p=>p[g.field]));
+ const vmin=Math.min(...scalePts),vmax=Math.max(...scalePts),strength=v=>vmax===vmin?50:(vmax-v)/(vmax-vmin)*100;
  const X=x=>left+(x-xmin)/(xmax-xmin)*pw,Y=y=>top+ph-y/100*ph;
+ chartGeometry={left,right,top,bottom,pw,ph,w,h,xmin,xmax,X,Y,strength,groups};
  ctx.font='10px system-ui';ctx.lineWidth=1;ctx.strokeStyle='#202d41';ctx.fillStyle='#8798b4';ctx.textAlign='left';
  for(let i=0;i<=4;i++){const val=i*25,yy=Y(val);ctx.beginPath();ctx.moveTo(left,yy);ctx.lineTo(w-right,yy);ctx.stroke();ctx.fillText(String(val),15,yy+3);}
  for(let i=0;i<=4;i++){const x=xmin+(xmax-xmin)*i/4,xx=X(x);ctx.beginPath();ctx.moveTo(xx,top);ctx.lineTo(xx,h-bottom);ctx.stroke();ctx.fillText(fmt(x,1),Math.max(left,Math.min(w-right-25,xx-10)),h-13);}
  ctx.fillStyle='#94a5c0';ctx.fillText('相对强度',3,11);ctx.fillText('距离',w-37,h-7);
- for(const g of groups){
-  if(!g.pts.length)continue;
-  ctx.strokeStyle=g.color;ctx.lineWidth=1.8;ctx.beginPath();
-  g.pts.forEach((p,i)=>i?ctx.lineTo(X(p.x),Y(strength(p[g.field]))):ctx.moveTo(X(p.x),Y(strength(p[g.field]))));ctx.stroke();
-  g.pts.forEach(p=>{ctx.fillStyle=g.color;ctx.beginPath();ctx.arc(X(p.x),Y(strength(p[g.field])),2.7,0,Math.PI*2);ctx.fill();});
- }
+ for(const g of groups){if(!g.pts.length)continue;ctx.strokeStyle=g.color;ctx.lineWidth=2;ctx.beginPath();g.pts.forEach((p,i)=>i?ctx.lineTo(X(p.x),Y(strength(p[g.field]))):ctx.moveTo(X(p.x),Y(strength(p[g.field]))));ctx.stroke();g.pts.forEach(p=>{ctx.fillStyle=g.color;ctx.beginPath();ctx.arc(X(p.x),Y(strength(p[g.field])),3.2,0,Math.PI*2);ctx.fill();});}
 }
+function inspectPoint(clientX,clientY){
+ if(!chartGeometry)return;const r=canvas.getBoundingClientRect(),mx=clientX-r.left,my=clientY-r.top,g=chartGeometry;
+ if(mx<g.left-8||mx>g.w-g.right+8||my<g.top-12||my>g.h-g.bottom+12)return;
+ let best=null,bestD=Infinity;
+ for(const group of g.groups){for(const p of group.pts){const px=g.X(p.x),py=g.Y(g.strength(p[group.field])),d=Math.hypot(px-mx,py-my);if(d<bestD){bestD=d;best={group,p,px,py};}}}
+ if(!best||bestD>34)return;
+ const p=best.p,group=best.group,rawFly=Number.isFinite(p.y)?fmt(p.y,4):'无',rawLand=Number.isFinite(p.land)?fmt(p.land,4):'无';
+ const allRaw=curveDefs.flatMap(def=>validFieldPoints(series[def.arrName],def.field).map(q=>q[def.field])),lo=Math.min(...allRaw),hi=Math.max(...allRaw);
+ const rel=v=>Number.isFinite(v)?fmt(hi===lo?50:(hi-v)/(hi-lo)*100,1)+'%':'无';
+ $('chartTip').textContent=`${group.name} · 第 ${p.idx} 段\n距离范围：${Number.isFinite(p.min)?fmt(p.min):'—'} ～ ${fmt(p.x)}\n飞天（flySpeed）：${rawFly}（相对强度 ${rel(p.y)}）\n地面（landSpeed）：${rawLand}（相对强度 ${rel(p.land)}）\n当前曲线值：${fmt(p[group.field],4)}；该点图上相对强度 ${fmt(g.strength(p[group.field]),1)}%`;
+ $('chartTip').classList.add('show');
+ const ctx=canvas.getContext('2d'),dpr=Math.max(1,window.devicePixelRatio||1);ctx.setTransform(dpr,0,0,dpr,0,0);ctx.strokeStyle='#ffffff';ctx.lineWidth=1.5;ctx.beginPath();ctx.arc(best.px,best.py,7,0,Math.PI*2);ctx.stroke();
+}
+function cancelLongPress(){if(longPressTimer){clearTimeout(longPressTimer);longPressTimer=null;}}
+canvas.addEventListener('pointerdown',e=>{cancelLongPress();longPressFired=false;longPressStart={x:e.clientX,y:e.clientY};longPressTimer=setTimeout(()=>{longPressFired=true;inspectPoint(e.clientX,e.clientY);},480);});
+canvas.addEventListener('pointermove',e=>{if(longPressStart&&Math.hypot(e.clientX-longPressStart.x,e.clientY-longPressStart.y)>12)cancelLongPress();});
+['pointerup','pointercancel','pointerleave'].forEach(ev=>canvas.addEventListener(ev,()=>{cancelLongPress();longPressStart=null;}));
+canvas.addEventListener('contextmenu',e=>e.preventDefault());
+function trendFit(points,field){
+ const a=validFieldPoints(points,field);if(a.length<2)return null;
+ const xs=a.map(p=>p.x),ys=a.map(p=>p[field]),mx=xs.reduce((x,y)=>x+y,0)/xs.length,my=ys.reduce((x,y)=>x+y,0)/ys.length;
+ let den=0,num=0;for(let i=0;i<a.length;i++){den+=(xs[i]-mx)**2;num+=(xs[i]-mx)*(ys[i]-my);}
+ if(!den)return {slope:0,intercept:my,r2:0,n:a.length};
+ const slope=num/den,intercept=my-slope*mx,tot=ys.reduce((z,y)=>z+(y-my)**2,0),res=a.reduce((z,p)=>z+(p[field]-(slope*p.x+intercept))**2,0);
+ return {slope,intercept,r2:tot?Math.max(0,1-res/tot):1,n:a.length};
+}
+function allGroups(){return [
+ {key:'segments_revolver',type:'左轮',field:'flySpeed',series:series.revolver},
+ {key:'segments_revolver',type:'左轮',field:'landSpeed',series:series.revolver},
+ {key:'segments_shotgun',type:'喷子',field:'flySpeed',series:series.shotgun},
+ {key:'segments_shotgun',type:'喷子',field:'landSpeed',series:series.shotgun}
+];}
+function runOptimization(){
+ if(!loadedData)return;
+ const target=$('targetTrend').value,blend=Number($('optStrength').value)/100;
+ optimizedData=JSON.parse(JSON.stringify(loadedData));optChanges=[];
+ const report=[];
+ for(const g of allGroups()){
+  const pts=validFieldPoints(g.series,g.field).sort((a,b)=>a.x-b.x);
+  if(pts.length<2){report.push(`${g.type} ${g.field}：有效点不足，跳过`);continue;}
+  const raw=pts.map(p=>p[g.field]),lo=Math.min(...raw),hi=Math.max(...raw);
+  const fitNow=trendFit(pts,g.field);
+  const span=hi-lo;
+  if(!Number.isFinite(span)||span===0){report.push(`${g.type} ${g.field}：数值无变化，无法按范围优化`);continue;}
+  const xmin=pts[0].x,xmax=pts[pts.length-1].x;
+  // Relative strength is inverse to the raw parameter: lower raw values mean stronger prediction.
+  const strengths=pts.map(p=>(hi-p[g.field])/span);
+  const currentSlope=trendFit(pts.map((p,i)=>({...p,strength:strengths[i]})),'strength');
+  for(let i=0;i<pts.length;i++){
+   const p=pts[i],old=raw[i],t=xmax===xmin?0.5:(p.x-xmin)/(xmax-xmin);
+   let targetStrength=target==='up'?t:target==='down'?1-t:0.5;
+   // Blend toward target strength, then convert back into this field's own numeric range.
+   const nextStrength=Math.max(0,Math.min(1,strengths[i]*(1-blend)+targetStrength*blend));
+   const next=hi-nextStrength*span;
+   const arr=optimizedData[g.key];const obj=arr&&arr[p.idx-1];if(!obj)continue;
+   const oldContainer=obj[g.field];
+   if(Array.isArray(oldContainer)){
+    if(!oldContainer.length)continue;
+    const copy=oldContainer.slice();copy[0]=Number(next.toFixed(4));obj[g.field]=copy;
+   }else obj[g.field]=Number(next.toFixed(4));
+   if(Math.abs(Number(next.toFixed(4))-old)>1e-8)optChanges.push({type:g.type,field:g.field,idx:p.idx,x:p.x,old,newValue:Number(next.toFixed(4)),strengthBefore:strengths[i]*100,strengthAfter:nextStrength*100});
+  }
+  report.push(`${g.type} ${g.field}：${fitNow?'斜率 '+fmt(fitNow.slope,4)+'，R² '+fmt(fitNow.r2*100,1)+'%':'趋势样本不足'}；${pts.length} 个点`);
+ }
+ $('optState').textContent='建议已生成';$('clearOpt').disabled=false;$('exportOpt').disabled=optChanges.length===0;
+ $('optSummary').textContent=`检测完成。目标：${target==='up'?'预判强度随距离增强':target==='down'?'预判强度随距离减弱':'预判强度尽量平稳'}；调整幅度 ${Math.round(blend*100)}%；生成 ${optChanges.length} 项数值差异。\\n`+report.join('；')+'。所有建议仅为趋势数学变换，请在使用前人工核对。';
+ renderOptTable();
+}
+function renderOptTable(){
+ if(!optChanges.length){$('optTable').innerHTML='<div class="empty">没有需要修改的数值差异，或有效样本不足。</div>';return;}
+ $('optTable').innerHTML='<table><thead><tr><th>类型</th><th>字段</th><th>分段</th><th>距离</th><th>原值</th><th>建议值</th><th>变化</th></tr></thead><tbody>'+optChanges.map(c=>`<tr><td>${c.type}</td><td>${c.field}</td><td>${c.idx}</td><td>${fmt(c.x)}</td><td>${fmt(c.old,4)}</td><td>${fmt(c.newValue,4)}</td><td class="${c.newValue<c.old?'diff-down':'diff-up'}">${c.newValue>c.old?'+':''}${fmt(c.newValue-c.old,4)}</td></tr>`).join('')+'</tbody></table>';
+}
+function clearOptimization(){
+ optimizedData=null;optChanges=[];$('optState').textContent='等待数据';$('exportOpt').disabled=true;$('clearOpt').disabled=true;
+ $('optSummary').textContent='优化预览已清除；原始文件未修改。';$('optTable').innerHTML='<div class="empty">优化前后差异将在这里显示。</div>';
+}
+$('optStrength').addEventListener('input',()=>{$('strengthLabel').textContent=$('optStrength').value+'%';});
+$('runOpt').addEventListener('click',runOptimization);
+$('clearOpt').addEventListener('click',clearOptimization);
+$('exportOpt').addEventListener('click',()=>{
+ if(!optimizedData||!optChanges.length)return;
+ const blob=new Blob([JSON.stringify(optimizedData,null,2)+'\\n'],{type:'application/json;charset=utf-8'});
+ download(blob,loadedName.replace(/\\.json$/i,'')+'-优化建议.json');
+ setStatus('已另存优化建议 JSON。原始文件没有被覆盖。','good');
+});
 function download(blob,name){const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1500);}
 $('export').addEventListener('click',async()=>{
  if(!loadedData)return;
