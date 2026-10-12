@@ -321,12 +321,12 @@ function runOptimization(){
   }
   report.push(`${g.type} ${g.field}：${fitNow?'斜率 '+fmt(fitNow.slope,4)+'，R² '+fmt(fitNow.r2*100,1)+'%':'趋势样本不足'}；${pts.length} 个点`);
  }
- $('optState').textContent='建议已生成';$('clearOpt').disabled=false;$('exportOpt').disabled=optChanges.length===0;
- $('optSummary').textContent=`检测完成。目标：${target==='up'?'预判强度随距离增强':target==='down'?'预判强度随距离减弱':'预判强度尽量平稳'}；调整幅度 ${Math.round(blend*100)}%；生成 ${optChanges.length} 项数值差异。\\n`+report.join('；')+'。所有建议仅为趋势数学变换，请在使用前人工核对。';
+ $('optState').textContent='建议已生成';$('clearOpt').disabled=false;$('exportOpt').disabled=!optimizedData;
+ $('optSummary').textContent=`检测完成。目标：${target==='up'?'预判强度随距离增强':target==='down'?'预判强度随距离减弱':'预判强度尽量平稳'}；调整幅度 ${Math.round(blend*100)}%；生成 ${optChanges.length} 项数值差异。\n`+report.join('；')+'。所有建议仅为趋势数学变换，请在使用前人工核对。';
  renderOptTable();
 }
 function renderOptTable(){
- if(!optChanges.length){$('optTable').innerHTML='<div class="empty">没有需要修改的数值差异，或有效样本不足。</div>';return;}
+ if(!optChanges.length){$('optTable').innerHTML='<div class="empty">没有数值差异：当前参数可能已符合目标，或有效样本不足。仍可另存一份 JSON；若样本不足，请检查 flySpeed / landSpeed 数据。</div>';return;}
  $('optTable').innerHTML='<table><thead><tr><th>类型</th><th>字段</th><th>分段</th><th>距离</th><th>原值</th><th>建议值</th><th>变化</th></tr></thead><tbody>'+optChanges.map(c=>`<tr><td>${c.type}</td><td>${c.field}</td><td>${c.idx}</td><td>${fmt(c.x)}</td><td>${fmt(c.old,4)}</td><td>${fmt(c.newValue,4)}</td><td class="${c.newValue<c.old?'diff-down':'diff-up'}">${c.newValue>c.old?'+':''}${fmt(c.newValue-c.old,4)}</td></tr>`).join('')+'</tbody></table>';
 }
 function clearOptimization(){
@@ -337,9 +337,9 @@ $('optStrength').addEventListener('input',()=>{$('strengthLabel').textContent=$(
 $('runOpt').addEventListener('click',runOptimization);
 $('clearOpt').addEventListener('click',clearOptimization);
 $('exportOpt').addEventListener('click',()=>{
- if(!optimizedData||!optChanges.length)return;
- const blob=new Blob([JSON.stringify(optimizedData,null,2)+'\\n'],{type:'application/json;charset=utf-8'});
- download(blob,loadedName.replace(/\\.json$/i,'')+'-优化建议.json');
+ if(!optimizedData)return;
+ const blob=new Blob([JSON.stringify(optimizedData,null,2)+'\n'],{type:'application/json;charset=utf-8'});
+ download(blob,loadedName.replace(/\.json$/i,'')+'-优化建议.json');
  setStatus('已另存优化建议 JSON。原始文件没有被覆盖。','good');
 });
 function download(blob,name){const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1500);}
