@@ -21,9 +21,15 @@ header{display:flex;justify-content:space-between;align-items:center;gap:12px;ma
 #optStrength{min-height:28px}select.btn{appearance:auto}#optSummary{margin-top:12px}.diff-up{color:#62e4b2}.diff-down{color:#ffbd70}
 @media(max-width:680px){.app{padding:14px 11px calc(24px + env(safe-area-inset-bottom))}header{align-items:flex-start;margin-bottom:12px}.logo{width:39px;height:39px;border-radius:13px}.brand h1{font-size:18px}.tagline{font-size:11px;max-width:215px}.chips{max-width:112px}.chip{font-size:10px;padding:4px 7px}.hero{padding:18px 16px;border-radius:20px;margin-bottom:11px}.hero h2{font-size:25px}.hero p{font-size:12px}.hero-actions{display:grid;grid-template-columns:1fr 1fr}.hero-actions .btn{padding:10px 8px;font-size:12px}.grid,.two{grid-template-columns:1fr;gap:11px}.card{padding:14px;border-radius:17px}.card-head{margin-bottom:10px}.drop{padding:20px 11px}.metrics{gap:7px}.metric{padding:10px;min-height:86px}.metric .label{font-size:10px}.metric strong{font-size:19px}.report-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.report-item{padding:10px}.report-item strong{font-size:16px}.chartbox{height:230px}.btn{min-height:43px}.actions .btn{flex:1}.table-wrap{max-height:300px}}
 @media(max-width:360px){.tagline{max-width:165px}.chips{max-width:90px}.metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.hero-actions{grid-template-columns:1fr}.hero h2{font-size:23px}}
+
+.license-card{margin-top:14px;border-color:#314463}.license-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}.license-card input,.license-card select{width:100%;min-width:0;background:#080f1b;color:var(--text);border:1px solid #2b3c58;border-radius:10px;padding:11px}.license-status{margin-top:10px;padding:10px 12px;border:1px solid #26344a;border-radius:11px;color:var(--muted);font-size:12px;white-space:pre-wrap}.license-status.good{color:var(--green);border-color:#245b4c}.license-status.bad{color:var(--red);border-color:#6b3440}.license-list{display:grid;gap:7px;margin-top:10px}.license-row{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px;border:1px solid #202c40;border-radius:10px;background:#0a101a;font-size:12px}.license-row span{overflow-wrap:anywhere}.gate{position:fixed;inset:0;z-index:9999;background:#080b12f5;display:flex;align-items:center;justify-content:center;padding:20px}.gate-box{width:min(100%,420px);padding:22px;border:1px solid #314463;border-radius:20px;background:#101725;box-shadow:0 20px 70px #0008}.gate-box h2{margin:0 0 7px}.gate-box p{color:#9cacc4;font-size:13px}.gate-box input{width:100%;background:#080f1b;color:white;border:1px solid #2b3c58;border-radius:11px;padding:13px;margin:7px 0 10px}.gate-actions{display:grid;gap:8px}.gate small{display:block;color:#7788a3;margin-top:12px;font-size:11px}@media(max-width:420px){.license-grid{grid-template-columns:1fr}.license-row{align-items:flex-start;flex-direction:column}}
+
 </style>
 </head>
 <body>
+<div class="gate" id="licenseGate">
+ <div class="gate-box"><h2>默默 AI 推算 · 卡密验证</h2><p>请输入你手动添加的卡密以继续使用。无服务器验证，卡密只在本浏览器本地核验。</p><input id="licenseInput" placeholder="请输入卡密" autocomplete="off" autocapitalize="characters"><div class="gate-actions"><button class="btn primary" id="verifyLicense" type="button">验证并进入</button><button class="btn secondary" id="openLicenseManager" type="button">管理员：打开底部卡密管理</button></div><div class="license-status" id="gateStatus">等待输入卡密。</div><small>首次配置：点击管理员入口，滚动到底部设置 PIN 并添加卡密。此离线方案不是防篡改授权。</small></div>
+</div>
 <div class="app">
 <header>
   <div class="brand"><div class="logo">M</div><div><h1>默默 AI 推算</h1><div class="tagline">参数识别 · 趋势分析 · 结构诊断</div></div></div>
@@ -117,6 +123,23 @@ header{display:flex;justify-content:space-between;align-items:center;gap:12px;ma
   </section>
 </div>
 
+
+<section class="card license-card" id="licenseManager">
+ <div class="card-head"><div><h3>⑦ 卡密验证与管理（离线）</h3><div class="kicker">手动添加、编辑、启用/停用卡密；数据只保存在本浏览器</div></div><span class="num" id="licenseCount">0 个卡密</span></div>
+ <p class="kicker">管理区位于页面最后。首次使用请在此设置管理员 PIN，再手动添加卡密。换浏览器或清除网站数据后，本地卡密列表会丢失。</p>
+ <div class="license-grid">
+  <label class="kicker">管理员 PIN（首次可设）<input id="adminPin" type="password" autocomplete="off" placeholder="设置或输入管理员 PIN"></label>
+  <label class="kicker">卡密<input id="keyValue" autocomplete="off" placeholder="例如 MOMO-2026-XXXX"></label>
+  <label class="kicker">备注/用户<input id="keyNote" autocomplete="off" placeholder="例如 用户A / 月卡"></label>
+  <label class="kicker">有效期截止（可留空）<input id="keyExpiry" type="date"></label>
+ </div>
+ <div class="actions"><button class="btn primary" id="saveKey" type="button">添加卡密</button><button class="btn secondary" id="cancelKeyEdit" type="button" disabled>取消编辑</button><button class="btn secondary" id="exportKeys" type="button">导出卡密备份</button><button class="btn secondary" id="importKeys" type="button">导入卡密备份</button><input id="keyImportFile" class="file-input" type="file" accept="application/json,.json"></div>
+ <div class="license-status" id="managerStatus">尚未设置管理员 PIN。先输入 PIN 并点击“保存管理员 PIN”，然后即可管理卡密。</div>
+ <div class="actions"><button class="btn secondary" id="saveAdminPin" type="button">保存管理员 PIN</button></div>
+ <div class="license-list" id="licenseList"><div class="empty">暂无卡密</div></div>
+ <p class="kicker">安全说明：纯 HTML 离线卡密验证只能挡住普通误用，无法防止用户修改网页源码、清理本地数据或绕过前端验证；不要把它当作强授权/防破解系统。</p>
+</section>
+
 <div class="foot">默默 AI 推算 · 单页 HTML · 无第三方依赖 · <span class="privacy">参数文件仅在当前浏览器处理</span></div>
 </div>
 
@@ -141,8 +164,16 @@ async function readFile(file){
   setStatus('正在读取并检查文件…','');
   try{
     if(file.size>20*1024*1024)throw new Error('文件超过 20 MB，为避免手机内存压力已停止读取。');
-    const raw=await file.text(),obj=JSON.parse(raw);
-    if(!supported(obj))throw new Error('未识别到 segments_revolver（左轮）或 segments_shotgun（喷子）数组。文件必须是合法 JSON 对象。');
+    const raw=await file.text();
+    const trimmed=raw.replace(/^\uFEFF/,'').trimStart();
+    if(/^<!doctype\s+html|^<html[\s>]/i.test(trimmed)){
+      throw new Error('选中的文件是 HTML 网页，不是 JSON 参数文件。请在文件管理器中选择真正的 config.json；不要选择本网页的 .html 文件。如果是从网址获取，请确认该网址直接返回 JSON，而不是网页或登录页。');
+    }
+    let obj;
+    try{obj=JSON.parse(raw);}catch(parseErr){
+      throw new Error('文件内容不是合法 JSON（'+(parseErr.message||'解析失败')+'）。请确认文件来自参数配置导出，而不是网页源码、错误页面或备份说明。');
+    }
+    if(!supported(obj))throw new Error('JSON 格式正确，但未识别到 segments_revolver（左轮）或 segments_shotgun（喷子）数组。请确认选的是本工具支持的参数配置文件。');
     loadedData=obj;loadedName=file.name;fileBytes=file.size;
     series={revolver:extract(obj.segments_revolver,'左轮'),shotgun:extract(obj.segments_shotgun,'喷子')};
     const valid=finitePoints([...series.revolver,...series.shotgun]);
@@ -359,6 +390,31 @@ $('reportCsv').addEventListener('click',()=>{
  download(new Blob([csv],{type:'text/csv;charset=utf-8'}),'默默-诊断报告.csv');
  setStatus('诊断报告 CSV 已导出。报告只包含统计结果和结构提醒。','good');
 });
+
+// 离线卡密：本地管理，不连接任何服务器。修改网页源码仍可绕过，不能视为强安全授权。
+const KEY_STORE='momo_ai_offline_license_keys_v1', PIN_STORE='momo_ai_offline_admin_pin_v1', ACTIVE_STORE='momo_ai_offline_active_key_v1';
+let editingKeyId=null, managerUnlocked=false;
+const readKeys=()=>{try{const a=JSON.parse(localStorage.getItem(KEY_STORE)||'[]');return Array.isArray(a)?a:[]}catch{return []}};
+const saveKeys=a=>localStorage.setItem(KEY_STORE,JSON.stringify(a));
+const setLicenseMsg=(id,msg,kind='')=>{const e=$(id);e.textContent=msg;e.className='license-status'+(kind?' '+kind:'')};
+const todayISO=()=>new Date().toISOString().slice(0,10);
+function licenseIsValid(key){return !!key&&key.enabled!==false&&(!key.expiry||key.expiry>=todayISO());}
+function refreshLicenseList(){const keys=readKeys();$('licenseCount').textContent=keys.length+' 个卡密';$('licenseList').innerHTML=keys.length?keys.map(k=>`<div class="license-row"><span><b>${escapeHtml(k.value)}</b><br>${escapeHtml(k.note||'无备注')} · ${k.expiry?'截止 '+escapeHtml(k.expiry):'无到期日'} · ${k.enabled===false?'已停用':(licenseIsValid(k)?'启用中':'已过期')}</span><span><button class="btn secondary" type="button" data-edit-key="${escapeHtml(k.id)}">编辑</button> <button class="btn secondary" type="button" data-toggle-key="${escapeHtml(k.id)}">${k.enabled===false?'启用':'停用'}</button> <button class="btn secondary" type="button" data-delete-key="${escapeHtml(k.id)}">删除</button></span></div>`).join(''):'<div class="empty">暂无卡密，请添加。</div>';}
+function escapeHtml(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function managerAuth(){const saved=localStorage.getItem(PIN_STORE);const input=$('adminPin').value;if(!saved){setLicenseMsg('managerStatus','请先设置管理员 PIN，再进行管理。','bad');return false;}if(input!==saved){setLicenseMsg('managerStatus','管理员 PIN 不正确。','bad');return false;}managerUnlocked=true;setLicenseMsg('managerStatus','管理员验证通过，可添加、编辑、停用或删除卡密。','good');return true;}
+function resetKeyForm(){editingKeyId=null;$('keyValue').value='';$('keyNote').value='';$('keyExpiry').value='';$('saveKey').textContent='添加卡密';$('cancelKeyEdit').disabled=true;}
+$('saveAdminPin').addEventListener('click',()=>{const current=localStorage.getItem(PIN_STORE),v=$('adminPin').value.trim();if(!v){setLicenseMsg('managerStatus','PIN 不能为空。','bad');return;}if(current&&v!==current){setLicenseMsg('managerStatus','已有管理员 PIN；请输入当前 PIN 才能验证管理权限。若忘记，只能清除本页面本地存储后重新配置。','bad');return;}localStorage.setItem(PIN_STORE,v);managerUnlocked=true;setLicenseMsg('managerStatus','管理员 PIN 已保存到当前浏览器。请记住它；清除网站数据后设置会丢失。','good');});
+$('saveKey').addEventListener('click',()=>{if(!managerUnlocked&&!managerAuth())return;const value=$('keyValue').value.trim();if(!value){setLicenseMsg('managerStatus','请先输入卡密。','bad');return;}const keys=readKeys();if(keys.some(k=>k.value.toUpperCase()===value.toUpperCase()&&k.id!==editingKeyId)){setLicenseMsg('managerStatus','该卡密已存在，请换一个唯一值。','bad');return;}const old=keys.find(k=>k.id===editingKeyId);const item={id:editingKeyId||('k_'+Date.now().toString(36)+'_'+Math.random().toString(36).slice(2,7)),value,note:$('keyNote').value.trim(),expiry:$('keyExpiry').value,enabled:old?old.enabled!==false:true,createdAt:old?.createdAt||new Date().toISOString()};if(old)keys[keys.findIndex(k=>k.id===editingKeyId)]=item;else keys.push(item);saveKeys(keys);resetKeyForm();refreshLicenseList();setLicenseMsg('managerStatus',old?'卡密已更新。':'卡密已添加。','good');});
+$('cancelKeyEdit').addEventListener('click',resetKeyForm);
+$('licenseList').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;if(!managerUnlocked&&!managerAuth())return;const keys=readKeys(),id=b.dataset.editKey||b.dataset.toggleKey||b.dataset.deleteKey,idx=keys.findIndex(k=>k.id===id);if(idx<0)return;if(b.dataset.editKey){const k=keys[idx];editingKeyId=k.id;$('keyValue').value=k.value;$('keyNote').value=k.note||'';$('keyExpiry').value=k.expiry||'';$('saveKey').textContent='保存修改';$('cancelKeyEdit').disabled=false;setLicenseMsg('managerStatus','正在编辑卡密：'+k.value,'good');}else if(b.dataset.toggleKey){keys[idx].enabled=keys[idx].enabled===false;saveKeys(keys);refreshLicenseList();setLicenseMsg('managerStatus','卡密状态已更新。','good');}else if(b.dataset.deleteKey&&confirm('确定删除卡密 '+keys[idx].value+'？')){keys.splice(idx,1);saveKeys(keys);refreshLicenseList();setLicenseMsg('managerStatus','卡密已删除。','good');}});
+$('verifyLicense').addEventListener('click',()=>{const value=$('licenseInput').value.trim().toUpperCase();const key=readKeys().find(k=>String(k.value).toUpperCase()===value);if(!licenseIsValid(key)){setLicenseMsg('gateStatus',key?'该卡密已停用或过期。':'卡密不存在，请检查输入。','bad');return;}localStorage.setItem(ACTIVE_STORE,key.id);$('licenseGate').style.display='none';setLicenseMsg('gateStatus','验证通过。','good');});
+$('licenseInput').addEventListener('keydown',e=>{if(e.key==='Enter')$('verifyLicense').click();});
+$('openLicenseManager').addEventListener('click',()=>{$('licenseGate').style.display='none';$('licenseManager').scrollIntoView({behavior:'smooth',block:'start'});setLicenseMsg('managerStatus','已打开底部管理区。首次使用先设置管理员 PIN。','');});
+$('exportKeys').addEventListener('click',()=>{if(!managerUnlocked&&!managerAuth())return;download(new Blob([JSON.stringify({version:1,keys:readKeys()},null,2)],{type:'application/json;charset=utf-8'}),'默默AI卡密备份.json');setLicenseMsg('managerStatus','已导出本地卡密备份，请妥善保管。','good');});
+$('importKeys').addEventListener('click',()=>{if(!managerUnlocked&&!managerAuth())return;$('keyImportFile').click();});
+$('keyImportFile').addEventListener('change',async e=>{const f=e.target.files?.[0];if(!f)return;try{const o=JSON.parse(await f.text()),a=Array.isArray(o)?o:o.keys;if(!Array.isArray(a)||a.some(k=>!k||typeof k.value!=='string'))throw new Error('备份格式不正确');if(!confirm('导入将替换当前卡密列表，继续吗？'))return;saveKeys(a.map(k=>({id:String(k.id||('k_'+Math.random().toString(36).slice(2))),value:k.value,note:String(k.note||''),expiry:String(k.expiry||''),enabled:k.enabled!==false,createdAt:k.createdAt||new Date().toISOString()})));refreshLicenseList();setLicenseMsg('managerStatus','卡密备份导入成功。','good');}catch(err){setLicenseMsg('managerStatus','导入失败：'+err.message,'bad');}finally{e.target.value='';}});
+refreshLicenseList();
+
 window.addEventListener('resize',draw);
 clearStats();draw();
 })();
