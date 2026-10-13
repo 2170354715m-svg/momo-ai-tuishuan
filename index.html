@@ -98,6 +98,17 @@ header{display:flex;justify-content:space-between;align-items:center;gap:12px;ma
  <div class="status" id="aiEngineSummary">先选择一个 JSON 文件，然后运行离线分析。</div><div class="table-wrap" id="aiEngineTable" style="margin-top:10px"><div class="empty">优化前后差异将在这里显示；没有可靠异常时会保留原值。</div></div>
 </section>
 
+
+<section class="card report" id="verifiedGameStats">
+ <div class="card-head"><div><h3>⑨ 角色与武器数值库</h3><div class="kicker">独立只读资料表：只显示有来源依据的数值，不把目录关键词当成真实数值</div></div><span class="num" id="statsDbState">等待数据</span></div>
+ <div class="status">字段范围：角色模型身高、移动速度；武器真实弹速、伤害、射程。当前压缩包的已提取文本能看到部分标识符（例如 MoveSpeed2、Damage_*、QSpeed），但尚未解析出足以确认单位、对象对应关系和数值的完整字段，因此不会把猜测值填入资料库。此资料库与参数优化器分离。</div>
+ <div class="actions"><label class="btn secondary" for="statsDbFile">导入已核实的数值 JSON</label><input id="statsDbFile" type="file" accept=".json,application/json" style="display:none"><button class="btn secondary" id="statsDbTemplate" type="button">导出 JSON 模板</button><button class="btn secondary" id="statsDbExport" type="button" disabled>导出当前资料</button></div>
+ <div class="metrics" style="margin-top:12px"><div class="metric"><div class="label">角色记录</div><strong id="statsDbChars">0</strong><small>含来源字段的记录</small></div><div class="metric"><div class="label">武器记录</div><strong id="statsDbWeapons">0</strong><small>含来源字段的记录</small></div><div class="metric"><div class="label">字段缺失</div><strong id="statsDbMissing">—</strong><small>只统计已导入记录</small></div></div>
+ <div class="grid" style="margin-top:12px"><div><label class="kicker" for="statsDbSearch">搜索名称 / 来源</label><input id="statsDbSearch" class="btn" style="width:100%;margin-top:7px;text-align:left" placeholder="输入角色名、武器名或文件路径"></div><div><label class="kicker" for="statsDbType">记录类型</label><select id="statsDbType" class="btn" style="width:100%;margin-top:7px"><option value="all">全部</option><option value="characters">角色</option><option value="weapons">武器</option></select></div></div>
+ <div class="table-wrap" style="margin-top:10px;max-height:420px"><table><thead><tr><th>类型</th><th>名称</th><th>身高</th><th>移动速度</th><th>弹速</th><th>伤害</th><th>射程</th><th>来源 / 说明</th></tr></thead><tbody id="statsDbRows"><tr><td colspan="8">尚无已核实数值。请导入带来源的 JSON；不会用推测值填充。</td></tr></tbody></table></div>
+ <div class="status" id="statsDbNote">JSON 模板会包含所有目标字段与 source 字段。数值单位请在 units 中明确注明；无法核实的字段留空。</div>
+</section>
+
 <section class="card report" id="gameResourceExplorer">
  <div class="card-head"><div><h3>⑦ 游戏资源索引库</h3><div class="kicker">内置 1.zip–4.zip 文件目录索引；可搜索资源路径、筛选候选类别并导出清单</div></div><span class="num" id="resourceCount">读取索引中…</span></div>
  <div class="grid">
