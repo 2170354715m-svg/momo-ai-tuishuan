@@ -28,9 +28,32 @@ header{display:flex;justify-content:space-between;align-items:center;gap:12px;ma
 </head>
 <body>
 <div class="gate" id="licenseGate">
- <div class="gate-box"><h2>默默 AI 推算 · 卡密验证</h2><p>请输入你手动添加的卡密以继续使用。无服务器验证，卡密只在本浏览器本地核验。</p><input id="licenseInput" placeholder="请输入卡密" autocomplete="off" autocapitalize="characters"><div class="gate-actions"><button class="btn primary" id="verifyLicense" type="button">验证并进入</button></div><div class="license-status" id="gateStatus">等待输入卡密。</div><small>卡密由管理员直接修改 HTML 源码末尾的 LICENSE_KEYS 列表配置。此离线方案不是防篡改授权。</small></div>
+ <div class="gate-box">
+  <h2>默默 AI 推算 · 登录验证</h2>
+  <p>可以使用卡密进入，也可以使用管理员账号登录。本页面为纯离线本地验证。</p>
+  <input id="licenseInput" placeholder="请输入卡密" autocomplete="off" autocapitalize="characters">
+  <div class="gate-actions"><button class="btn primary" id="verifyLicense" type="button">卡密验证并进入</button></div>
+  <div style="height:1px;background:#26344a;margin:16px 0"></div>
+  <h3 style="margin:0 0 8px;font-size:15px">管理员登录</h3>
+  <input id="adminUsername" placeholder="管理员账号" autocomplete="username" autocapitalize="off">
+  <input id="adminPassword" type="password" placeholder="管理员密码" autocomplete="current-password">
+  <div class="gate-actions"><button class="btn" id="adminLogin" type="button">管理员登录</button></div>
+  <div class="license-status" id="gateStatus">等待输入卡密或管理员账号。</div>
+  <small>提示：离线 HTML 中的账号密码可被查看或修改，只适合个人本地使用，不属于安全的服务器授权。</small>
+ </div>
 </div>
 <div class="app">
+<section class="card license-card" id="licenseManager" style="display:none">
+ <div class="card-head"><div><h3>管理员 · 卡密管理</h3><div class="kicker">新增、停用、删除卡密；数据保存在当前浏览器本地</div></div><span class="num" id="licenseCount">0 个卡密</span></div>
+ <div class="license-grid">
+  <input id="newLicenseValue" placeholder="输入新卡密，例如 MOMO-2026-001" autocomplete="off" autocapitalize="characters">
+  <input id="newLicenseExpiry" type="date" aria-label="卡密到期日期（可选）">
+ </div>
+ <label style="display:flex;align-items:center;gap:8px;margin-top:10px;font-size:12px;color:var(--muted)"><input id="newLicenseNoExpiry" type="checkbox" checked style="width:auto"> 永不过期</label>
+ <div class="actions"><button class="btn primary" id="addLicenseBtn" type="button">＋ 添加卡密</button><button class="btn secondary" id="exportLicensesBtn" type="button">导出卡密备份</button><button class="btn secondary" id="importLicensesBtn" type="button">导入卡密备份</button><button class="btn secondary" id="adminLogoutBtn" type="button">管理员退出</button><input id="importLicensesFile" type="file" accept=".json,application/json" style="display:none"></div>
+ <div class="license-status" id="licenseManagerStatus">卡密列表只保存在当前浏览器；清除浏览器数据可能会丢失，请定期导出备份。</div>
+ <div class="license-list" id="licenseList"><div class="empty">暂无卡密</div></div>
+</section>
 <header>
   <div class="brand"><div class="logo">M</div><div><h1>默默 AI 推算</h1><div class="tagline">参数识别 · 趋势分析 · 结构诊断</div></div></div>
   <div class="chips"><span class="chip">移动端优化版</span><span class="chip local">本地处理</span></div>
@@ -426,26 +449,91 @@ $('reportCsv').addEventListener('click',()=>{
  setStatus('诊断报告 CSV 已导出。报告只包含统计结果和结构提醒。','good');
 });
 
-// ==================== 卡密配置区（管理员手动修改这里） ====================
-// 添加卡密：复制一行 { value: '你的卡密', expiry: '', enabled: true },
-// expiry 填 YYYY-MM-DD；留空表示不设置到期日。enabled=false 表示停用。
-// 修改保存 HTML 文件后，所有拿到新文件的人都会拿到这份卡密列表。
-// 注意：纯前端卡密可被查看/修改源码绕过，不属于强安全授权。
-const LICENSE_KEYS = [
-  // 示例：{ value: 'MOMO-2026-ABCD', expiry: '2026-12-31', enabled: true },
-  // 请在此处添加你自己的卡密；删除下面注释并修改示例即可。
-];
-// ==================== 卡密配置区结束 ====================
+// ==================== 卡密管理与本地管理员登录 ====================
+// 说明：纯离线 HTML 只能将卡密保存在当前浏览器，不会自动同步到其他设备或 HTML 副本。
+// 需要跨设备共享/真正安全的授权时，必须使用后端服务。
+const DEFAULT_LICENSE_KEYS = [];
+const LICENSE_STORAGE_KEY = 'momo_ai_license_keys_v1';
 const todayISO=()=>new Date().toISOString().slice(0,10);
+const safeReadLicenses=()=>{
+ try {
+  const raw=localStorage.getItem(LICENSE_STORAGE_KEY);
+  if(!raw) return DEFAULT_LICENSE_KEYS.slice();
+  const parsed=JSON.parse(raw);
+  return Array.isArray(parsed)?parsed.filter(x=>x&&typeof x.value==='string').map(x=>({value:x.value.trim().toUpperCase(),expiry:typeof x.expiry==='string'?x.expiry:'',enabled:x.enabled!==false})):DEFAULT_LICENSE_KEYS.slice();
+ } catch(e) { return DEFAULT_LICENSE_KEYS.slice(); }
+};
+let LICENSE_KEYS=safeReadLicenses();
+function persistLicenses(){
+ try{localStorage.setItem(LICENSE_STORAGE_KEY,JSON.stringify(LICENSE_KEYS));return true;}
+ catch(e){setManagerMsg('保存失败：浏览器可能禁用了本地存储。请允许此页面使用网站数据，或导出备份。','bad');return false;}
+}
 function licenseIsValid(key){return !!key&&key.enabled!==false&&(!key.expiry||key.expiry>=todayISO());}
 function setGateMsg(msg,kind=''){const e=$('gateStatus');e.textContent=msg;e.className='license-status'+(kind?' '+kind:'');}
+function setManagerMsg(msg,kind=''){const e=$('licenseManagerStatus');if(!e)return;e.textContent=msg;e.className='license-status'+(kind?' '+kind:'');}
+function renderLicenseList(){
+ const host=$('licenseList'); if(!host)return;
+ $('licenseCount').textContent=LICENSE_KEYS.length+' 个卡密';
+ if(!LICENSE_KEYS.length){host.innerHTML='<div class="empty">暂无卡密，请在上方添加。</div>';return;}
+ host.innerHTML=LICENSE_KEYS.map((k,i)=>{
+  const expired=!!k.expiry&&k.expiry<todayISO();
+  const state=k.enabled===false?'已停用':expired?'已过期':'启用中';
+  const color=k.enabled===false||expired?'var(--orange)':'var(--green)';
+  return '<div class="license-row"><span><b>'+escAI(k.value)+'</b><br><small style="color:var(--muted)">到期：'+(k.expiry||'永不过期')+' · <span style="color:'+color+'">'+state+'</span></small></span><span style="display:flex;gap:6px;flex-wrap:wrap"><button class="btn secondary" type="button" data-license-toggle="'+i+'">'+(k.enabled===false?'启用':'停用')+'</button><button class="btn secondary" type="button" data-license-delete="'+i+'">删除</button></span></div>';
+ }).join('');
+}
+let adminMode=false;
+// 本地管理员凭据：按用户指定值设置。由于密码写在 HTML 中，不能抵御查看源码的人。
+const ADMIN_USERNAME = 'momonb';
+const ADMIN_PASSWORD = 'QX.';
 $('verifyLicense').addEventListener('click',()=>{
+ LICENSE_KEYS=safeReadLicenses();
  const value=$('licenseInput').value.trim().toUpperCase();
  const key=LICENSE_KEYS.find(k=>String(k.value||'').trim().toUpperCase()===value);
  if(!licenseIsValid(key)){setGateMsg(key?'该卡密已停用或过期。':'卡密不存在，请检查输入。','bad');return;}
- $('licenseGate').style.display='none';setGateMsg('验证通过。','good');
+ adminMode=false;$('licenseManager').style.display='none';$('licenseGate').style.display='none';setGateMsg('卡密验证通过。','good');
 });
 $('licenseInput').addEventListener('keydown',e=>{if(e.key==='Enter')$('verifyLicense').click();});
+$('adminLogin').addEventListener('click',()=>{
+ const username=$('adminUsername').value.trim();const password=$('adminPassword').value;
+ if(username===ADMIN_USERNAME && password===ADMIN_PASSWORD){
+  adminMode=true;LICENSE_KEYS=safeReadLicenses();$('licenseGate').style.display='none';$('licenseManager').style.display='block';renderLicenseList();setManagerMsg('管理员登录成功。新增或删除的卡密会保存到当前浏览器。','good');
+ }else setGateMsg('管理员账号或密码错误。','bad');
+});
+$('adminPassword').addEventListener('keydown',e=>{if(e.key==='Enter')$('adminLogin').click();});
+$('newLicenseNoExpiry').addEventListener('change',()=>{$('newLicenseExpiry').disabled=$('newLicenseNoExpiry').checked;});
+$('newLicenseExpiry').disabled=true;
+$('addLicenseBtn').addEventListener('click',()=>{
+ if(!adminMode){setManagerMsg('请先使用管理员账号登录。','bad');return;}
+ const value=$('newLicenseValue').value.trim().toUpperCase();const noExpiry=$('newLicenseNoExpiry').checked;const expiry=noExpiry?'':$('newLicenseExpiry').value;
+ if(!value){setManagerMsg('请先输入卡密内容。','bad');return;}
+ if(!noExpiry&&!expiry){setManagerMsg('请选择到期日期，或勾选“永不过期”。','bad');return;}
+ if(LICENSE_KEYS.some(k=>k.value.toUpperCase()===value)){setManagerMsg('这个卡密已经存在，请换一个。','bad');return;}
+ LICENSE_KEYS.push({value,expiry,enabled:true});
+ if(persistLicenses()){renderLicenseList();$('newLicenseValue').value='';$('newLicenseExpiry').value='';setManagerMsg('已添加卡密：'+value,'good');}
+});
+$('licenseList').addEventListener('click',e=>{
+ if(!adminMode)return;
+ const del=e.target.closest('[data-license-delete]');const tog=e.target.closest('[data-license-toggle]');
+ if(del){const i=Number(del.dataset.licenseDelete);if(!Number.isInteger(i)||!LICENSE_KEYS[i])return;const value=LICENSE_KEYS[i].value;if(!confirm('确定删除卡密 '+value+' 吗？'))return;LICENSE_KEYS.splice(i,1);if(persistLicenses()){renderLicenseList();setManagerMsg('已删除卡密：'+value,'good');}}
+ if(tog){const i=Number(tog.dataset.licenseToggle);if(!Number.isInteger(i)||!LICENSE_KEYS[i])return;LICENSE_KEYS[i].enabled=LICENSE_KEYS[i].enabled===false; if(persistLicenses()){renderLicenseList();setManagerMsg('卡密状态已更新。','good');}}
+});
+$('exportLicensesBtn').addEventListener('click',()=>{
+ if(!adminMode)return;
+ const blob=new Blob([JSON.stringify({format:'momo-ai-license-backup-v1',licenses:LICENSE_KEYS},null,2)+'\n'],{type:'application/json;charset=utf-8'});
+ const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='卡密备份.json';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1200);setManagerMsg('已导出卡密备份文件。请妥善保管。','good');
+});
+$('importLicensesBtn').addEventListener('click',()=>{if(adminMode)$('importLicensesFile').click();});
+$('importLicensesFile').addEventListener('change',async e=>{
+ const file=e.target.files&&e.target.files[0];if(!file||!adminMode)return;
+ try{const data=JSON.parse(await file.text());const list=Array.isArray(data)?data:data.licenses;if(!Array.isArray(list))throw new Error('文件中没有有效的 licenses 数组');
+  const cleaned=list.filter(k=>k&&typeof k.value==='string'&&k.value.trim()).map(k=>({value:k.value.trim().toUpperCase(),expiry:typeof k.expiry==='string'?k.expiry:'',enabled:k.enabled!==false}));
+  if(!confirm('导入将替换当前全部 '+LICENSE_KEYS.length+' 个卡密。文件内有 '+cleaned.length+' 个，是否继续？'))return;
+  LICENSE_KEYS=cleaned.filter((k,i,a)=>a.findIndex(x=>x.value===k.value)===i);if(persistLicenses()){renderLicenseList();setManagerMsg('导入完成，共 '+LICENSE_KEYS.length+' 个卡密。','good');}
+ }catch(err){setManagerMsg('导入失败：'+err.message,'bad');}finally{e.target.value='';}
+});
+$('adminLogoutBtn').addEventListener('click',()=>{adminMode=false;$('licenseManager').style.display='none';$('licenseGate').style.display='flex';$('adminUsername').value='';$('adminPassword').value='';setGateMsg('管理员已退出。','good');});
+// ==================== 卡密管理与本地管理员登录结束 ===================='' '
 
 
 // Offline data-driven optimizer: conservative numeric outlier cleanup only.
