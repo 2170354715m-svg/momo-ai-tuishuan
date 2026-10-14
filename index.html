@@ -29,6 +29,7 @@ header{display:flex;justify-content:space-between;align-items:center;gap:12px;ma
 .advanced-panel>summary:after{content:"＋";float:right;color:var(--muted)}
 .advanced-panel[open]>summary:after{content:"−"}
 .advanced-panel>section{margin-top:0!important}
+.hidden-tech-panel{display:none!important}
 </style>
 </head>
 <body>
@@ -103,7 +104,7 @@ header{display:flex;justify-content:space-between;align-items:center;gap:12px;ma
 </section>
 
 
-<details class="advanced-panel"><summary>角色与武器数值库（高级数据） · 点击展开</summary>
+<details class="advanced-panel hidden-tech-panel"><summary>角色与武器数值库（高级数据） · 点击展开</summary>
 <section class="card report" id="verifiedGameStats">
  <div class="card-head"><div><h3>⑨ 角色与武器数值库</h3><div class="kicker">独立只读资料表：只显示有来源依据的数值，不把目录关键词当成真实数值</div></div><span class="num" id="statsDbState">等待数据</span></div>
  <div class="status">当前重点：角色移动速度及其随时间递增的实测趋势。有效射程与每秒射速不再作为本轮分析目标；武器字段仅保留为已有归档资料。下方数据库列出的值均保留原始来源，未确认单位或对象关系的值不会被冒充为真实物理数值。</div>
@@ -116,7 +117,7 @@ header{display:flex;justify-content:space-between;align-items:center;gap:12px;ma
 </details>
 
 
-<details class="advanced-panel"><summary>UnityFS 深层解析报告（开发者） · 点击展开</summary>
+<details class="advanced-panel hidden-tech-panel"><summary>UnityFS 深层解析报告（开发者） · 点击展开</summary>
 <section class="card report" id="unityDeepParse">
  <div class="card-head"><div><h3>⑪ UnityFS 深层解析结果</h3><div class="kicker">已解析配置资源的 ObjectInfo/TypeTree、配置表记录与 DLL 字段名；并扫描 1,451 个 UnityFS 包</div></div><span class="num">容器解包成功</span></div>
  <div class="status">进展：已解析 config 的 884 个 TextAsset 配置表、101,285 条记录，解析 UpdateScript_500.dll 的字段元数据，并扫描 1,451 个 UnityFS 包中的 1,454 个 Mesh 对象。当前优先核查移动速度字段与用户提供的递增实测读数；gameWalkSpeed=0.4 是体型配置字段，单位未标注，不能直接视为逐角色实测速度。</div>
@@ -136,7 +137,7 @@ header{display:flex;justify-content:space-between;align-items:center;gap:12px;ma
 </script>
 
 
-<details class="advanced-panel"><summary>已解码配置表与模型网格数据库（开发者） · 点击展开</summary>
+<details class="advanced-panel hidden-tech-panel"><summary>已解码配置表与模型网格数据库（开发者） · 点击展开</summary>
 <section class="card report" id="gameDataWorkbench">
  <div class="card-head"><div><h3>⑫ 已解码配置表与模型网格数据库</h3><div class="kicker">配置对象、字段名、武器速度值与1454条 Mesh 对象清单；可离线搜索、查看和导出</div></div><span class="num" id="gameDbState">索引就绪</span></div>
  <div class="status">本轮从 4.zip 的 UnityFS 配置资源中提取了 884 个 TextAsset 表，解析出 101,285 条配置记录；已从 UpdateScript_500.dll 类型定义中确认 GunItemConfig.MuzzleVelocity、AmmoItemConfig.Damage、SomatotypeConfig.gameWalkSpeed 等字段。另扫描了 data/ 下 1,451 个 UnityFS 包并记录 1,454 个 Mesh 对象，其中 1,200 个成功读取完整 Mesh 局部 AABB；根据 Suit/Head 同源模型组得到 3 组约 2.475–2.493 Unity 局部单位的包络高度估算。所有数字均保留来源和字段编号；未知单位不换算，局部网格边界不冒充角色真实身高。</div>
@@ -157,7 +158,7 @@ header{display:flex;justify-content:space-between;align-items:center;gap:12px;ma
 </section>
 </details>
 
-<details class="advanced-panel"><summary>压缩包字段证据与模型候选库（开发者） · 点击展开</summary>
+<details class="advanced-panel hidden-tech-panel"><summary>压缩包字段证据与模型候选库（开发者） · 点击展开</summary>
 <section class="card report" id="gameEvidenceCatalog">
  <div class="card-head"><div><h3>⑩ 压缩包字段证据与模型候选库</h3><div class="kicker">从本次上传的 1.zip–4.zip 中按路径和精确标识符扫描生成，并直接嵌入本 HTML 源码</div></div><span class="num" id="evidenceCount">读取中…</span></div>
  <div class="status">数据边界：该库把资源路径和可读标识符作为检索线索，不把它们伪装成真实数值。当前扫描能确认 config 资源里存在 MoveSpeed2、QSpeed、Damage_ 等标识符，以及若干武器/子弹音效名称；该候选索引本身不保存数值；下方新数据库已映射 11 条枪械 MuzzleVelocity、5 条弹药 Damage 与 1 条体型 gameWalkSpeed。逐角色真实身高、射速、射程和单位仍待核实。此索引只读，不会把数据自动写入游戏或用于实时控制。 </div>
@@ -169,7 +170,7 @@ header{display:flex;justify-content:space-between;align-items:center;gap:12px;ma
 </section>
 </details>
 
-<details class="advanced-panel"><summary>游戏资源索引库（开发者） · 点击展开</summary>
+<details class="advanced-panel hidden-tech-panel"><summary>游戏资源索引库（开发者） · 点击展开</summary>
 <section class="card report" id="gameResourceExplorer">
  <div class="card-head"><div><h3>⑦ 游戏资源索引库</h3><div class="kicker">内置 1.zip–4.zip 文件目录索引；可搜索资源路径、筛选候选类别并导出清单</div></div><span class="num" id="resourceCount">读取索引中…</span></div>
  <div class="grid">
@@ -618,13 +619,13 @@ renderDb();
 
 
 <section class="card report" id="movementBaselineLab">
- <div class="card-head"><div><h3>⑫-A 用户实测基准与记录方案</h3><div class="kicker">将用户报告的实测值与待验证假设分开保存；不把未知单位换算成 m/s</div></div><span class="num">基准 v1</span></div>
+ <div class="card-head"><div><h3>⑫-A 制造者实测基准与记录方案</h3><div class="kicker">将制造者报告的实测值与待验证假设分开保存；不把未知单位换算成 m/s</div></div><span class="num">基准 v1</span></div>
  <div class="status">数据来源：用户在游戏内测试后提供。速度单位、测量软件精度、角色、地图、帧率和测试重复次数尚未提供；以下数值仅作为当前基准，不等于已独立复测或验证的游戏引擎参数。</div>
  <div class="table-wrap" style="margin-top:10px"><table><thead><tr><th>移动状态</th><th>当前读数</th><th>证据状态</th><th>备注 / 未知项</th></tr></thead><tbody>
- <tr><td>普通走路</td><td><b>5.3</b></td><td>用户实测报告</td><td>单位、角色与地图待补充</td></tr>
- <tr><td>普通跑步</td><td><b>10.3</b></td><td>用户实测报告</td><td>未确认是否稳定最高值</td></tr>
- <tr><td>跑步 + 黄牛增益</td><td><b>11.3</b></td><td>用户实测报告</td><td>增益持续时间与叠加条件待记录</td></tr>
- <tr><td>飞天水平移动，持续朝同一方向</td><td><b>最高约 20</b></td><td>用户实测报告</td><td>需区分瞬时读数、稳定值与峰值</td></tr>
+ <tr><td>普通走路</td><td><b>5.3</b></td><td>制造者实测</td><td>单位、角色与地图待补充</td></tr>
+ <tr><td>普通跑步</td><td><b>10.3</b></td><td>制造者实测</td><td>未确认是否稳定最高值</td></tr>
+ <tr><td>跑步 + 黄牛增益</td><td><b>11.3</b></td><td>制造者实测</td><td>增益持续时间与叠加条件待记录</td></tr>
+ <tr><td>飞天水平移动，持续朝同一方向</td><td><b>最高约 20</b></td><td>制造者实测</td><td>需区分瞬时读数、稳定值与峰值</td></tr>
  <tr><td>垂直上升</td><td>未测定</td><td>待验证假设</td><td>用户观察为越飞越快；空气墙限制位置不等于限制速度</td></tr>
  <tr><td>垂直下坠</td><td>未测定</td><td>待验证假设</td><td>需测读数随时间变化，并记录是否触地/撞墙</td></tr>
  </tbody></table></div>
@@ -644,16 +645,16 @@ renderDb();
 </section>
 <script>
 (function(){
- const baseline={title:'游戏移动速度用户实测基准',version:1,source:'用户在游戏内测试后报告；本页面未独立复测',unit:'未说明，不自动换算为 m/s',observations:[
-  {mode:'普通走路',value:5.3,evidence:'用户实测报告',status:'reported',notes:'单位、角色、地图和工具精度待补充'},
-  {mode:'普通跑步',value:10.3,evidence:'用户实测报告',status:'reported',notes:'是否稳定最高值待复测'},
-  {mode:'跑步 + 黄牛增益',value:11.3,evidence:'用户实测报告',status:'reported',notes:'增益持续时间与叠加条件待记录'},
-  {mode:'飞天水平移动（同一方向）',value:20,evidence:'用户实测报告',status:'approximate_peak',notes:'最高约 20；瞬时值/稳定值待区分'},
+ const baseline={title:'游戏移动速度制造者实测基准',version:1,source:'制造者在游戏内测试后报告；本页面未独立复测',unit:'未说明，不自动换算为 m/s',observations:[
+  {mode:'普通走路',value:5.3,evidence:'制造者实测',status:'reported',notes:'单位、角色、地图和工具精度待补充'},
+  {mode:'普通跑步',value:10.3,evidence:'制造者实测',status:'reported',notes:'是否稳定最高值待复测'},
+  {mode:'跑步 + 黄牛增益',value:11.3,evidence:'制造者实测',status:'reported',notes:'增益持续时间与叠加条件待记录'},
+  {mode:'飞天水平移动（同一方向）',value:20,evidence:'制造者实测',status:'approximate_peak',notes:'最高约 20；瞬时值/稳定值待区分'},
   {mode:'垂直上升',value:null,evidence:'用户观察',status:'hypothesis_unmeasured',notes:'观察为越飞越快；空气墙限制位置不等于限制速度'},
   {mode:'垂直下坠',value:null,evidence:'用户观察/待验证',status:'hypothesis_unmeasured',notes:'速度曲线、触地前读数待记录'}
  ],derived:{buffDelta:1.0,runToWalkRatio:10.3/5.3,horizontalFlightToWalkRatio:20/5.3},limitations:['速度单位未知','测试条件尚未完全固定','未独立复测','不能仅凭空气墙判断速度上限']};
  const $=id=>document.getElementById(id);
- $('exportMovementBaseline').addEventListener('click',()=>download(JSON.stringify(baseline,null,2),'游戏移动速度用户实测基准.json','application/json;charset=utf-8'));
+ $('exportMovementBaseline').addEventListener('click',()=>download(JSON.stringify(baseline,null,2),'游戏移动速度制造者实测基准.json','application/json;charset=utf-8'));
  $('exportMovementTemplate').addEventListener('click',()=>{const rows=[['trial_id','mode','elapsed_seconds','observed_speed','unit','character','map','direction','buff_state','equipment','fps','peak_or_stable','wall_or_ground_contact','end_reason','notes']];const csv='\ufeff'+rows.map(r=>r.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(',')).join('\r\n');download(csv,'移动速度实测记录空白模板.csv','text/csv;charset=utf-8')});
  function download(data,name,type){const b=new Blob([data],{type}),u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(u),1000)}
 })();
