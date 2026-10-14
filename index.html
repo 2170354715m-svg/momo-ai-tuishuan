@@ -617,6 +617,48 @@ renderDb();
 </script>
 
 
+<section class="card report" id="movementBaselineLab">
+ <div class="card-head"><div><h3>⑫-A 用户实测基准与记录方案</h3><div class="kicker">将用户报告的实测值与待验证假设分开保存；不把未知单位换算成 m/s</div></div><span class="num">基准 v1</span></div>
+ <div class="status">数据来源：用户在游戏内测试后提供。速度单位、测量软件精度、角色、地图、帧率和测试重复次数尚未提供；以下数值仅作为当前基准，不等于已独立复测或验证的游戏引擎参数。</div>
+ <div class="table-wrap" style="margin-top:10px"><table><thead><tr><th>移动状态</th><th>当前读数</th><th>证据状态</th><th>备注 / 未知项</th></tr></thead><tbody>
+ <tr><td>普通走路</td><td><b>5.3</b></td><td>用户实测报告</td><td>单位、角色与地图待补充</td></tr>
+ <tr><td>普通跑步</td><td><b>10.3</b></td><td>用户实测报告</td><td>未确认是否稳定最高值</td></tr>
+ <tr><td>跑步 + 黄牛增益</td><td><b>11.3</b></td><td>用户实测报告</td><td>增益持续时间与叠加条件待记录</td></tr>
+ <tr><td>飞天水平移动，持续朝同一方向</td><td><b>最高约 20</b></td><td>用户实测报告</td><td>需区分瞬时读数、稳定值与峰值</td></tr>
+ <tr><td>垂直上升</td><td>未测定</td><td>待验证假设</td><td>用户观察为越飞越快；空气墙限制位置不等于限制速度</td></tr>
+ <tr><td>垂直下坠</td><td>未测定</td><td>待验证假设</td><td>需测读数随时间变化，并记录是否触地/撞墙</td></tr>
+ </tbody></table></div>
+ <div class="metrics" style="margin-top:12px">
+  <div class="metric"><div class="label">黄牛增益差值</div><strong>+1.0</strong><small>11.3 − 10.3；读数单位</small></div>
+  <div class="metric"><div class="label">跑 / 走比值</div><strong>1.94×</strong><small>10.3 ÷ 5.3</small></div>
+  <div class="metric"><div class="label">水平飞 / 走比值</div><strong>约 3.77×</strong><small>20 ÷ 5.3；使用报告峰值</small></div>
+ </div>
+ <div class="actions"><button class="btn primary" id="exportMovementBaseline" type="button">导出基准 JSON</button><button class="btn secondary" id="exportMovementTemplate" type="button">导出空白实测 CSV</button></div>
+ <div class="status" style="margin-top:10px"><b>统一测试流程：</b>每种状态至少重复 3 次；每次从静止开始，固定角色、地图、方向、装备/增益与帧率；按 0、1、2、3、4、5 秒记录速度读数。若状态在 5 秒前结束或碰到空气墙/地面，记录实际结束时间和原因，不要补造后续读数。</div>
+ <div class="table-wrap" style="margin-top:10px"><table><thead><tr><th>测试组</th><th>控制变量</th><th>建议记录时间点</th><th>额外记录</th></tr></thead><tbody>
+ <tr><td>走路 / 跑步 / 跑步增益</td><td>同角色、同地图、同直线路径；每次重新静止起步</td><td>0、1、2、3、4、5 秒</td><td>增益开启时间、峰值、稳定值</td></tr>
+ <tr><td>水平飞行</td><td>固定水平朝向；避免转向和碰撞</td><td>0、0.5、1、2、3、5 秒</td><td>方向、峰值、是否撞空气墙/障碍</td></tr>
+ <tr><td>垂直上升</td><td>固定起点与垂直输入；尽量不碰侧墙</td><td>0、0.5、1、2、3、5 秒，碰墙时立即补记</td><td>高度/位置读数、撞墙时刻、是否仍在加速</td></tr>
+ <tr><td>垂直下坠</td><td>固定起始高度；不施加水平输入</td><td>开始后每 0.5–1 秒；触地前尽可能多记</td><td>起始高度、触地时刻、是否碰撞/减速</td></tr>
+ </tbody></table></div>
+</section>
+<script>
+(function(){
+ const baseline={title:'游戏移动速度用户实测基准',version:1,source:'用户在游戏内测试后报告；本页面未独立复测',unit:'未说明，不自动换算为 m/s',observations:[
+  {mode:'普通走路',value:5.3,evidence:'用户实测报告',status:'reported',notes:'单位、角色、地图和工具精度待补充'},
+  {mode:'普通跑步',value:10.3,evidence:'用户实测报告',status:'reported',notes:'是否稳定最高值待复测'},
+  {mode:'跑步 + 黄牛增益',value:11.3,evidence:'用户实测报告',status:'reported',notes:'增益持续时间与叠加条件待记录'},
+  {mode:'飞天水平移动（同一方向）',value:20,evidence:'用户实测报告',status:'approximate_peak',notes:'最高约 20；瞬时值/稳定值待区分'},
+  {mode:'垂直上升',value:null,evidence:'用户观察',status:'hypothesis_unmeasured',notes:'观察为越飞越快；空气墙限制位置不等于限制速度'},
+  {mode:'垂直下坠',value:null,evidence:'用户观察/待验证',status:'hypothesis_unmeasured',notes:'速度曲线、触地前读数待记录'}
+ ],derived:{buffDelta:1.0,runToWalkRatio:10.3/5.3,horizontalFlightToWalkRatio:20/5.3},limitations:['速度单位未知','测试条件尚未完全固定','未独立复测','不能仅凭空气墙判断速度上限']};
+ const $=id=>document.getElementById(id);
+ $('exportMovementBaseline').addEventListener('click',()=>download(JSON.stringify(baseline,null,2),'游戏移动速度用户实测基准.json','application/json;charset=utf-8'));
+ $('exportMovementTemplate').addEventListener('click',()=>{const rows=[['trial_id','mode','elapsed_seconds','observed_speed','unit','character','map','direction','buff_state','equipment','fps','peak_or_stable','wall_or_ground_contact','end_reason','notes']];const csv='\ufeff'+rows.map(r=>r.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(',')).join('\r\n');download(csv,'移动速度实测记录空白模板.csv','text/csv;charset=utf-8')});
+ function download(data,name,type){const b=new Blob([data],{type}),u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(u),1000)}
+})();
+</script>
+
 <section class="card report" id="movementTrendLab">
  <div class="card-head"><div><h3>⑬ 移动速度递增实测分析</h3><div class="kicker">记录游戏内测量软件读数，计算速度增量、变化趋势与线性拟合；不读取/控制游戏进程</div></div><span class="num" id="speedLabState">等待样本</span></div>
  <div class="status">你的观测是：游戏内测量软件显示移动速度会递增。本节把“速度随时间变化”作为核心，而不是假定角色始终以固定速度移动。请记录同一角色、同一移动方式下的时间与软件显示读数。若软件显示的数值单位未知，分析结果也会保留为“显示单位/秒”，不会擅自换算成 m/s。最好固定地图、装备、增益状态、方向与帧率，并分别测试普通移动、冲刺、斜向移动等条件。</div>
