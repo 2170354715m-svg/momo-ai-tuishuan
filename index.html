@@ -260,7 +260,7 @@ body.admin-mode .admin-only{display:block!important}
       <input id="optStrength" type="range" min="10" max="100" step="10" value="50" style="width:100%;margin-top:15px;accent-color:#76a8ff">
     </div>
   </div>
-  <div class="status">算法说明：按每个字段自己的有效数值范围，把较小参数值映射为较高的相对强度；将当前趋势与所选目标趋势按调整幅度混合。该结果是数学建议，不代表实测命中率或真实游戏效果。</div>
+  <div class="status">参数含义（按你提供的 JSON 规则）：数值越大，预判越弱；数值越小，预判越强。因此目标设为“预判强度随距离增强”时，建议参数值应随距离整体减小；目标设为“预判强度随距离减弱”时，建议参数值应随距离整体增大。算法按每个字段独立计算，并按调整幅度混合。结果仅为数学建议，不代表实测命中率或真实游戏效果。</div>
   <div class="status" id="weaponSpeedReference"><b>武器弹速参考（用户提供的近似实测范围）</b>：喷子 365–395；左轮 315–345；狙击枪 425–455。此范围用于对照和诊断，不会把所有参数强行改成区间中值；配置中的距离序列、字段格式和实际值仍需逐项核验。</div>
   <div class="actions"><button class="btn primary" id="runOpt" type="button" disabled>检测趋势并生成建议</button><button class="btn secondary" id="clearOpt" type="button" disabled>清除预览</button><button class="btn secondary" id="exportOpt" type="button" disabled>另存优化 JSON</button></div>
   <div id="optSummary" class="status">加载 JSON 文件后即可生成建议。</div>
@@ -475,7 +475,7 @@ function runOptimization(){
   if(pts.length<2){report.push(`${g.type} ${g.field}：有效点不足（${pts.length} 个），跳过`);continue;}
   const raw=pts.map(p=>p[g.field]),lo=Math.min(...raw),hi=Math.max(...raw),span=hi-lo;
   const fitNow=trendFit(pts,g.field),xmin=pts[0].x,xmax=pts[pts.length-1].x;
-  // 参数越小，相对预判强度越高。先按当前字段独立归一化，再向目标趋势靠拢。
+  // 用户确认该 JSON 的参数方向：数值越大，预判越小；数值越小，预判越大。故先将参数反向映射为预判强度，再按目标趋势混合。
   // 如果原字段完全相同，也用字段量级的 0.01% 作为最小可见调整，避免“优化了但导出完全没变化”。
   const epsilon=Math.max(Math.abs(lo),Math.abs(hi),1)*0.0001;
   const strengths=span>0?raw.map(v=>(hi-v)/span):raw.map((v,i)=>pts.length===1?0.5:i/(pts.length-1));
@@ -510,7 +510,7 @@ function runOptimization(){
   report.push(`${g.type} ${g.field}：趋势斜率 ${fitNow?fmt(fitNow.slope,5):'—'}，R² ${fitNow?fmt(fitNow.r2*100,1)+'%':'—'}；有效点 ${pts.length}，建议改动 ${groupChanged} 项${refNote}`);
  }
  $('optState').textContent='建议已生成';$('clearOpt').disabled=false;$('exportOpt').disabled=!optimizedData;
- $('optSummary').textContent=`检测完成。目标：${target==='up'?'预判强度随距离增强':target==='down'?'预判强度随距离减弱':'预判强度尽量平稳'}；调整幅度 ${Math.round(blend*100)}%；生成 ${optChanges.length} 项数值差异。即使变化很小也会记录并导出；结果仅为数学建议，不代表实测命中率。\n`+report.join('；');
+ $('optSummary').textContent=`检测完成。参数方向：数值越大预判越小，数值越小预判越大。目标：${target==='up'?'预判强度随距离增强（参数值倾向随距离减小）':target==='down'?'预判强度随距离减弱（参数值倾向随距离增大）':'预判强度尽量平稳'}；调整幅度 ${Math.round(blend*100)}%；生成 ${optChanges.length} 项数值差异。即使变化很小也会记录并导出；结果仅为数学建议，不代表实测命中率。\n`+report.join('；');
  renderOptTable();
 }
 function renderOptTable(){
