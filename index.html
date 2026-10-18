@@ -24,15 +24,6 @@ header{display:flex;justify-content:space-between;align-items:center;gap:12px;ma
 
 .license-card{margin-top:14px;border-color:#314463}.license-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}.license-card input,.license-card select{width:100%;min-width:0;background:#080f1b;color:var(--text);border:1px solid #2b3c58;border-radius:10px;padding:11px}.license-status{margin-top:10px;padding:10px 12px;border:1px solid #26344a;border-radius:11px;color:var(--muted);font-size:12px;white-space:pre-wrap}.license-status.good{color:var(--green);border-color:#245b4c}.license-status.bad{color:var(--red);border-color:#6b3440}.license-list{display:grid;gap:7px;margin-top:10px}.license-row{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px;border:1px solid #202c40;border-radius:10px;background:#0a101a;font-size:12px}.license-row span{overflow-wrap:anywhere}.gate{position:fixed;inset:0;z-index:9999;background:#080b12f5;display:flex;align-items:center;justify-content:center;padding:20px}.gate-box{width:min(100%,420px);padding:22px;border:1px solid #314463;border-radius:20px;background:#101725;box-shadow:0 20px 70px #0008}.gate-box h2{margin:0 0 7px}.gate-box p{color:#9cacc4;font-size:13px}.gate-box input{width:100%;background:#080f1b;color:white;border:1px solid #2b3c58;border-radius:11px;padding:13px;margin:7px 0 10px}.gate-actions{display:grid;gap:8px}.gate small{display:block;color:#7788a3;margin-top:12px;font-size:11px}@media(max-width:420px){.license-grid{grid-template-columns:1fr}.license-row{align-items:flex-start;flex-direction:column}}
 
-
-.movement-grid .speed-row{display:grid;grid-template-columns:minmax(112px,190px) minmax(0,1fr) 70px;align-items:center;gap:10px;border:1px solid #202c40;border-radius:12px;background:#0a101a;padding:10px 12px;font-size:12px}
-.movement-grid .speed-label{color:#dce6f7}.movement-grid .speed-track{height:10px;background:#182337;border-radius:99px;overflow:hidden}.movement-grid .speed-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,#477be7,#62e4b2)}.movement-grid .speed-value{text-align:right;color:#a9c5ff;font-weight:800;font-variant-numeric:tabular-nums}
-@media(max-width:520px){.movement-grid .speed-row{grid-template-columns:1fr 58px;gap:7px}.movement-grid .speed-track{grid-column:1 / -1;grid-row:2}.movement-grid .speed-value{grid-column:2;grid-row:1}}
-
-
-/* 管理员专属数据区：普通用户登录时不显示 */
-.admin-only{display:none!important}
-body.admin-mode .admin-only{display:block!important}
 </style>
 </head>
 <body>
@@ -122,7 +113,7 @@ body.admin-mode .admin-only{display:block!important}
 
 
 
-<section class="card report admin-only" id="genericAIEngine">
+<section class="card report" id="genericAIEngine">
  <div class="card-head"><div><h3>⑧ 离线数据驱动优化引擎</h3><div class="kicker">自动检查 JSON 结构与数值序列；仅修正有充分证据的孤立异常值，并生成独立文件</div></div><span class="num" id="aiEngineState">等待 JSON</span></div>
  <div class="metrics"><div class="metric"><div class="label">已检查数值序列</div><strong id="aiSeriesCount">—</strong><small>同一对象数组中的重复字段</small></div><div class="metric"><div class="label">发现异常候选</div><strong id="aiCandidateCount">—</strong><small>需满足保守阈值</small></div><div class="metric"><div class="label">实际调整项</div><strong id="aiChangeCount">—</strong><small>原始文件保持不变</small></div></div>
  <div class="status">引擎原理：只使用导入 JSON 中已有的数据，分析同字段序列的局部中位数和稳健离散程度；样本不足或证据不强时跳过。为避免凭空推测，默认不改动武器、弹道、瞄准、预判、移动速度、骨骼、碰撞盒等字段；这不是训练过的机器学习模型，也不会声称提升游戏实测效果。</div>
@@ -131,9 +122,9 @@ body.admin-mode .admin-only{display:block!important}
 </section>
 
 
-<section class="card report admin-only" id="verifiedGameStats">
+<section class="card report" id="verifiedGameStats">
  <div class="card-head"><div><h3>⑨ 角色与武器数值库</h3><div class="kicker">独立只读资料表：只显示有来源依据的数值，不把目录关键词当成真实数值</div></div><span class="num" id="statsDbState">等待数据</span></div>
- <div class="status">字段重点：角色移动速度与模型关联；武器弹速、伤害作为辅助数据。下方“已解码配置表与模型网格数据库”已给出可核实的配置字段和来源；此旧表仍用于导入你自己补充的逐角色实测数据。未确认单位或对象关系的值不会被冒充为真实物理数值。</div>
+ <div class="status">字段范围：角色模型身高、移动速度；武器弹速、伤害、射程。下方“已解码配置表与模型网格数据库”已给出可核实的配置字段和来源；此旧表仍用于导入你自己补充的逐角色实测数据。未确认单位或对象关系的值不会被冒充为真实物理数值。</div>
  <div class="actions"><label class="btn secondary" for="statsDbFile">导入已核实的数值 JSON</label><input id="statsDbFile" type="file" accept=".json,application/json" style="display:none"><button class="btn secondary" id="statsDbTemplate" type="button">导出 JSON 模板</button><button class="btn secondary" id="statsDbExport" type="button" disabled>导出当前资料</button></div>
  <div class="metrics" style="margin-top:12px"><div class="metric"><div class="label">角色记录</div><strong id="statsDbChars">0</strong><small>含来源字段的记录</small></div><div class="metric"><div class="label">武器记录</div><strong id="statsDbWeapons">0</strong><small>含来源字段的记录</small></div><div class="metric"><div class="label">字段缺失</div><strong id="statsDbMissing">—</strong><small>只统计已导入记录</small></div></div>
  <div class="grid" style="margin-top:12px"><div><label class="kicker" for="statsDbSearch">搜索名称 / 来源</label><input id="statsDbSearch" class="btn" style="width:100%;margin-top:7px;text-align:left" placeholder="输入角色名、武器名或文件路径"></div><div><label class="kicker" for="statsDbType">记录类型</label><select id="statsDbType" class="btn" style="width:100%;margin-top:7px"><option value="all">全部</option><option value="characters">角色</option><option value="weapons">武器</option></select></div></div>
@@ -142,7 +133,7 @@ body.admin-mode .admin-only{display:block!important}
 </section>
 
 
-<section class="card report admin-only" id="unityDeepParse">
+<section class="card report" id="unityDeepParse">
  <div class="card-head"><div><h3>⑪ UnityFS 深层解析结果</h3><div class="kicker">已解析配置资源的 ObjectInfo/TypeTree、配置表记录与 DLL 字段名；并扫描 1,451 个 UnityFS 包</div></div><span class="num">容器解包成功</span></div>
  <div class="status">进展：已解析 config 的 884 个 TextAsset 配置表、101,285 条记录，解析 UpdateScript_500.dll 的字段元数据，并扫描 1,451 个 UnityFS 包中的 1,454 个 Mesh 对象。枪械 MuzzleVelocity、弹药 Damage 与体型 gameWalkSpeed 已关联到明确字段；逐角色真实身高、射速、射程和未标注单位仍保持待核实。</div>
  <div class="metrics" style="margin-top:12px"><div class="metric"><div class="label">config 解包后</div><strong>5.11 MB</strong><small>39 个压缩数据块</small></div><div class="metric"><div class="label">baseplayer 解包后</div><strong>558 KB</strong><small>5 个压缩数据块</small></div><div class="metric"><div class="label">已映射字段记录</div><strong>17</strong><small>11 条 MuzzleVelocity、5 条 Damage、1 条 gameWalkSpeed</small></div></div>
@@ -160,9 +151,9 @@ body.admin-mode .admin-only{display:block!important}
 </script>
 
 
-<section class="card report admin-only" id="gameDataWorkbench">
+<section class="card report" id="gameDataWorkbench">
  <div class="card-head"><div><h3>⑫ 已解码配置表与模型网格数据库</h3><div class="kicker">配置对象、字段名、武器速度值与1454条 Mesh 对象清单；可离线搜索、查看和导出</div></div><span class="num" id="gameDbState">索引就绪</span></div>
- <div class="status">本轮联合使用 1.zip 恢复出的模型/资源名称索引与 4.zip 的 UnityFS 配置资源；从 4.zip 提取了 884 个 TextAsset 表，解析出 101,285 条配置记录；已从 UpdateScript_500.dll 类型定义中确认 GunItemConfig.MuzzleVelocity、AmmoItemConfig.Damage、SomatotypeConfig.gameWalkSpeed 等字段。另扫描了 data/ 下 1,451 个 UnityFS 包并记录 1,454 个 Mesh 对象，其中 1,200 个成功读取完整 Mesh 局部 AABB；根据 Suit/Head 同源模型组得到 3 组约 2.475–2.493 Unity 局部单位的包络高度估算。所有数字均保留来源和字段编号；未知单位不换算，局部网格边界不冒充角色真实身高。</div>
+ <div class="status">本轮从 4.zip 的 UnityFS 配置资源中提取了 884 个 TextAsset 表，解析出 101,285 条配置记录；已从 UpdateScript_500.dll 类型定义中确认 GunItemConfig.MuzzleVelocity、AmmoItemConfig.Damage、SomatotypeConfig.gameWalkSpeed 等字段。另扫描了 data/ 下 1,451 个 UnityFS 包并记录 1,454 个 Mesh 对象，其中 1,200 个成功读取完整 Mesh 局部 AABB；根据 Suit/Head 同源模型组得到 3 组约 2.475–2.493 Unity 局部单位的包络高度估算。所有数字均保留来源和字段编号；未知单位不换算，局部网格边界不冒充角色真实身高。</div>
  <div class="metrics" style="margin-top:12px">
   <div class="metric"><div class="label">配置表 / 记录</div><strong>884 / 101,285</strong><small>809 张表完整解析；70 张空/头部表；5 张保留未解析尾段</small></div>
   <div class="metric"><div class="label">Mesh 对象</div><strong>1,454</strong><small>918 个不同名称，1,200 个 Mesh 已解析完整局部 AABB，覆盖 1,451 个 UnityFS 包</small></div>
@@ -179,45 +170,7 @@ body.admin-mode .admin-only{display:block!important}
  <div class="status">关键结果与边界：枪械配置明确给出 MuzzleVelocity（11 条），弹药配置明确给出 Damage（5 条），标准体型配置 gameWalkSpeed=0.4（单位未标注）。没有可靠证据把该速度换算成 m/s，也没有逐角色真实身高、枪械射速或有效射程的已核实值。MeshAgentTypeConfig.Height 是代理/碰撞维度；Alice 手臂网格的局部 AABB 也不是完整人物高度。现已提取基础人物模型组的网格局部包络估算，但仍未确认单位换算和最终 Transform 缩放。</div>
 </section>
 
-<section class="card report admin-only" id="movementReferenceWorkbench">
- <div class="card-head"><div><h3>⑬ 移动速度重点库 · 1.zip + 4.zip 联合关联</h3><div class="kicker">优先记录移动速度；区分游戏配置字段与“制造者实测”，不把不同来源混为一谈</div></div><span class="num" id="movementReferenceState">内置数据</span></div>
- <div class="status">联合解码说明：1.zip 的恢复资源中包含 meta_assets.bytes 资源/模型名称索引与 baseplayer 相关资源；4.zip 的 config 资源解析出 RoleConfig、SomatotypeConfig 等结构化配置。通过角色资源名、BaseBone 与配置表建立候选关联。注意：此前恢复报告显示 1.zip 的 ZIP 中央目录不完整，已恢复文件并非完整原包；4.zip 的配置字段值可独立核实，但两包中同名资源不代表字节完全相同。</div>
- <div class="metrics" style="margin-top:12px">
-  <div class="metric"><div class="label">配置字段 gameWalkSpeed</div><strong class="blue">0.4</strong><small>SomatotypeConfig · field #6；单位未标注</small></div>
-  <div class="metric"><div class="label">实测行走 / 奔跑</div><strong>5.3 / 10.3</strong><small>制造者实测；保留原始读数，不换算单位</small></div>
-  <div class="metric"><div class="label">水平飞行观察峰值</div><strong class="green">20</strong><small>单方向持续飞行；制造者实测</small></div>
- </div>
- <div class="movement-grid" id="movementSpeedBars" style="display:grid;gap:10px;margin-top:14px"></div>
- <div class="table-wrap" style="margin-top:12px"><table><thead><tr><th>模式 / 观察项</th><th>记录值</th><th>证据类型</th><th>说明</th></tr></thead><tbody id="movementReferenceRows"></tbody></table></div>
- <div class="grid" style="margin-top:12px">
-  <div class="status"><b>1.zip 资源侧证据</b><br>资源索引：<code>assets/android/data/meta_assets.bytes_u_b0c38f54275e36d912425af4555b61c0</code><br>相关资源：<code>assets/android/data/config.ab_u_221fde080da3de8868bf73da1477e6eb</code>、<code>baseplayer</code>、<code>ClothBaseBone3_notControl</code>、<code>Mod_Character_*</code>。这些用于建立模型与骨骼的候选映射，不是移动速度数值本身。</div>
-  <div class="status"><b>4.zip 配置侧证据</b><br>配置资源：<code>data/config.ab_u_221fde080da3de8868bf73da1477e6eb</code><br>已确认：<code>SomatotypeConfig.gameWalkSpeed = 0.4</code>（单位未知）；<code>RoleConfig</code> 中有角色 ID、BaseBone 和动画控制器。暂未证明 0.4 与实测读数采用同一单位或相同计算阶段。</div>
- </div>
- <div class="status" style="margin-top:12px"><b>当前移动模型假设（待进一步实测验证）</b><br>① 行走、奔跑、增益奔跑、水平飞行先作为不同运动状态分别建档；② 垂直飞行记录为“速度随持续上升而递增”的观察，不虚构固定上限；③ 地图空气墙、碰撞模型是否限制垂直速度，需要用相同角色、相同场景、固定计时的重复实验验证。此库只用于离线数据分析与实验记录，不连接游戏进程、不自动写入游戏或操控角色。</div>
- <div class="actions"><button class="btn primary" id="exportMovementReference" type="button">导出移动速度联合数据 JSON</button><button class="btn secondary" id="exportArchiveJoinEvidence" type="button">导出 1.zip + 4.zip 关联证据</button></div>
-</section>
-
-
-<section class="card report admin-only" id="pureAIReview">
- <div class="card-head"><div><h3>⑭ 纯离线 AI 数据关联诊断</h3><div class="kicker">用当前上传的 JSON 对照内置游戏配置证据；不把 1.json 写入 HTML，不覆盖原文件</div></div><span class="num" id="pureAIState">等待导入</span></div>
- <div class="status">本模块负责识别、关联和解释证据，不会自动改写瞄准、目标预判或弹道参数。原因是当前 JSON 的 flySpeed/landSpeed 与游戏配置 MuzzleVelocity 尚无已证实的同单位映射；直接用数值接近来“自动调最优”会把猜测伪装成结论。可以导入你的 1.json，分析现有分段曲线和字段关系，并导出单独的诊断报告。</div>
- <div class="actions">
-  <label class="btn secondary" for="pureAIFile">选择当前参数 JSON</label><input id="pureAIFile" type="file" accept=".json,application/json" style="display:none">
-  <button class="btn primary" id="pureAIAnalyze" type="button" disabled>开始关联分析</button>
-  <button class="btn secondary" id="pureAIExport" type="button" disabled>导出诊断报告 JSON</button>
- </div>
- <div class="file-meta" id="pureAIMeta"></div>
- <div class="metrics" style="margin-top:12px">
-  <div class="metric"><div class="label">识别的参数键</div><strong id="pureAIKeys">—</strong><small>JSON 顶层键</small></div>
-  <div class="metric"><div class="label">分段曲线</div><strong id="pureAISegments">—</strong><small>左轮 / 喷子</small></div>
-  <div class="metric"><div class="label">趋势结论</div><strong id="pureAITrend">—</strong><small>只描述当前参数走势</small></div>
- </div>
- <div class="status" id="pureAISummary">请选择 1.json 或其他参数 JSON；文件只在本地浏览器内存中处理。</div>
- <div class="table-wrap" style="margin-top:10px"><table><thead><tr><th>项目</th><th>当前文件证据</th><th>游戏数据对照</th><th>判断</th></tr></thead><tbody id="pureAIRows"><tr><td colspan="4">等待导入 JSON。</td></tr></tbody></table></div>
- <div class="status" style="margin-top:10px"><b>已知限制：</b>游戏配置的 MuzzleVelocity 单位未标注；SomatotypeConfig.gameWalkSpeed = 0.4 也未标注单位；模型局部包围盒未应用最终 prefab/root 缩放。因此，当前能做字段映射和趋势诊断，但不能严谨地宣称已算出“最佳瞄准预判值”或“真实角色身高”。</div>
-</section>
-
-<section class="card report admin-only" id="gameEvidenceCatalog">
+<section class="card report" id="gameEvidenceCatalog">
  <div class="card-head"><div><h3>⑩ 压缩包字段证据与模型候选库</h3><div class="kicker">从本次上传的 1.zip–4.zip 中按路径和精确标识符扫描生成，并直接嵌入本 HTML 源码</div></div><span class="num" id="evidenceCount">读取中…</span></div>
  <div class="status">数据边界：该库把资源路径和可读标识符作为检索线索，不把它们伪装成真实数值。当前扫描能确认 config 资源里存在 MoveSpeed2、QSpeed、Damage_ 等标识符，以及若干武器/子弹音效名称；该候选索引本身不保存数值；下方新数据库已映射 11 条枪械 MuzzleVelocity、5 条弹药 Damage 与 1 条体型 gameWalkSpeed。逐角色真实身高、射速、射程和单位仍待核实。此索引只读，不会把数据自动写入游戏或用于实时控制。 </div>
  <div class="metrics" style="margin-top:12px"><div class="metric"><div class="label">候选资源</div><strong id="evidenceResourceCount">—</strong><small>路径命中或字段标识符命中</small></div><div class="metric"><div class="label">字段证据</div><strong id="evidenceFieldCount">—</strong><small>附带来源路径与解释</small></div><div class="metric"><div class="label">已映射配置值</div><strong>17</strong><small>字段名和配置记录已关联；单位仍需核实</small></div></div>
@@ -227,8 +180,8 @@ body.admin-mode .admin-only{display:block!important}
  <div class="status" id="evidenceStatus">证据列表内嵌在 HTML 中，可离线搜索与导出。未核实的真实身高、移动速度、弹速、射速和射程不会被自动填入。</div>
 </section>
 
-<section class="card report admin-only" id="gameResourceExplorer">
- <div class="card-head"><div><h3>⑦ 游戏资源索引库</h3><div class="kicker">内置 1.zip–4.zip 联合资源目录索引；可搜索资源路径、筛选候选类别并导出清单</div></div><span class="num" id="resourceCount">读取索引中…</span></div>
+<section class="card report" id="gameResourceExplorer">
+ <div class="card-head"><div><h3>⑦ 游戏资源索引库</h3><div class="kicker">内置 1.zip–4.zip 文件目录索引；可搜索资源路径、筛选候选类别并导出清单</div></div><span class="num" id="resourceCount">读取索引中…</span></div>
  <div class="grid">
   <div><label class="kicker" for="resourceSearch">搜索文件名或路径</label><input id="resourceSearch" class="btn" style="width:100%;margin-top:7px;text-align:left" placeholder="例如 weapon、model、config、.ab_u_…"></div>
   <div><label class="kicker" for="resourceArchive">压缩包</label><select id="resourceArchive" class="btn" style="width:100%;margin-top:7px"><option value="all">全部压缩包</option><option>1.zip</option><option>2.zip</option><option>3.zip</option><option>4.zip</option></select></div>
@@ -260,8 +213,25 @@ body.admin-mode .admin-only{display:block!important}
       <input id="optStrength" type="range" min="10" max="100" step="10" value="50" style="width:100%;margin-top:15px;accent-color:#76a8ff">
     </div>
   </div>
-  <div class="status">参数含义（按你提供的 JSON 规则）：数值越大，预判越弱；数值越小，预判越强。因此目标设为“预判强度随距离增强”时，建议参数值应随距离整体减小；目标设为“预判强度随距离减弱”时，建议参数值应随距离整体增大。算法按每个字段独立计算，并按调整幅度混合。结果仅为数学建议，不代表实测命中率或真实游戏效果。</div>
-  <div class="status" id="weaponSpeedReference"><b>武器弹速参考（用户提供的近似实测范围）</b>：喷子 365–395；左轮 315–345；狙击枪 425–455。此范围用于对照和诊断，不会把所有参数强行改成区间中值；配置中的距离序列、字段格式和实际值仍需逐项核验。</div>
+  <div class="grid" style="margin-top:12px">
+    <div>
+      <label class="kicker" for="goalHeightMode">fly_goal_high 高度建议</label>
+      <select id="goalHeightMode" class="btn" style="width:100%;margin-top:7px">
+        <option value="auto">按当前值识别并提示，不擅自改变目标</option>
+        <option value="0">脚底 · 0</option>
+        <option value="1.4">地面中心 · 1.4</option>
+        <option value="1.5">飞天中心 · 1.5</option>
+        <option value="2.35">地面/飞天头顶 · 2.35</option>
+      </select>
+    </div>
+    <div>
+      <label class="kicker" for="xyzScale">XYZ 三轴同步缩放建议：<b id="xyzScaleLabel">0%</b></label>
+      <input id="xyzScale" type="range" min="-20" max="20" step="1" value="0" style="width:100%;margin-top:15px;accent-color:#76a8ff">
+      <div class="kicker">只识别名称含 position / offset / coordinate / xyz / 位置 / 坐标 / 预判 / goal 的三数数组；X、Y、Z 都按同一比例处理，避免只改 X。0% 表示不改三轴。</div>
+    </div>
+  </div>
+  <div class="status" id="axisHeightSummary">高度锚点：0=脚底；1.4=走地中心；1.5=飞天中心；2.35=走地/飞天头顶。以上是你提供的实测对应关系，不等同于从模型自动推导出的世界坐标。三轴数组只有在字段名看起来像坐标/偏移/预判参数时才会参与。</div>
+  <div class="status">算法说明：按每个字段自己的有效数值范围，把较小参数值映射为较高的相对强度；将当前趋势与所选目标趋势按调整幅度混合。该结果是数学建议，不代表实测命中率或真实游戏效果。</div>
   <div class="actions"><button class="btn primary" id="runOpt" type="button" disabled>检测趋势并生成建议</button><button class="btn secondary" id="clearOpt" type="button" disabled>清除预览</button><button class="btn secondary" id="exportOpt" type="button" disabled>另存优化 JSON</button></div>
   <div id="optSummary" class="status">加载 JSON 文件后即可生成建议。</div>
   <div class="table-wrap" id="optTable" style="margin-top:10px"><div class="empty">优化前后差异将在这里显示。</div></div>
@@ -301,7 +271,7 @@ fileInput.addEventListener('change',e=>{if(e.target.files&&e.target.files[0])rea
 drop.addEventListener('drop',e=>{const f=e.dataTransfer.files&&e.dataTransfer.files[0];if(f)readFile(f);});
 $('reset').addEventListener('click',resetPage);
 function speed(v){if(Array.isArray(v))return Number(v[0]);return Number(v);}
-function extract(arr,type){if(!Array.isArray(arr))return [];return arr.map((o,i)=>{const fly=speed(o&&o.flySpeed),land=speed(o&&o.landSpeed);return {x:Number(o&&o.maxDist),min:Number(o&&o.minDist),y:fly,land,flySpeed:fly,landSpeed:land,idx:i+1,type,raw:o};});}
+function extract(arr,type){if(!Array.isArray(arr))return [];return arr.map((o,i)=>({x:Number(o&&o.maxDist),min:Number(o&&o.minDist),y:speed(o&&o.flySpeed),land:speed(o&&o.landSpeed),idx:i+1,type,raw:o}));}
 function validFieldPoints(arr,field){return arr.filter(p=>Number.isFinite(p.x)&&Number.isFinite(p[field]));}
 function finitePoints(a){return a.filter(p=>Number.isFinite(p.x)&&Number.isFinite(p.y));}
 function supported(o){return !!o&&typeof o==='object'&&!Array.isArray(o)&&(Array.isArray(o.segments_revolver)||Array.isArray(o.segments_shotgun));}
@@ -465,6 +435,48 @@ function allGroups(){return [
  {key:'segments_shotgun',type:'喷子',field:'flySpeed',series:series.shotgun},
  {key:'segments_shotgun',type:'喷子',field:'landSpeed',series:series.shotgun}
 ];}
+function collectXYZVectors(root){
+ const out=[],seen=new Set();
+ const keyOk=/(position|offset|coordinate|coordinates|xyz|axis|predict|prediction|lead|goal|预判|坐标|位置|偏移|位移|目标点)/i;
+ function walk(node,path,parentKey){
+  if(!node||typeof node!=='object'||seen.has(node))return;seen.add(node);
+  if(Array.isArray(node)){
+   if(node.length===3&&node.every(v=>typeof v==='number'&&Number.isFinite(v))&&keyOk.test(parentKey||''))out.push({path,arr:node,key:parentKey});
+   node.forEach((v,i)=>{if(v&&typeof v==='object')walk(v,`${path}[${i}]`,String(i));});
+  }else for(const [k,v] of Object.entries(node)){if(v&&typeof v==='object')walk(v,path?`${path}.${k}`:k,k);}
+ }
+ walk(root,'','');return out;
+}
+function nearestHeightAnchor(v){
+ const anchors=[{v:0,label:'脚底'},{v:1.4,label:'走地中心'},{v:1.5,label:'飞天中心'},{v:2.35,label:'走地/飞天头顶'}];
+ return anchors.reduce((best,a)=>Math.abs(a.v-v)<Math.abs(best.v-v)?a:best,anchors[0]);
+}
+function applyXYZAndHeightSuggestions(){
+ if(!loadedData||!optimizedData)return {axisCount:0,heightCount:0,notes:[]};
+ const notes=[];let axisCount=0,heightCount=0;
+ const scale=1+Number($('xyzScale').value)/100;
+ if(scale!==1){
+  for(const item of collectXYZVectors(optimizedData)){
+   const original=collectXYZVectors(loadedData).find(x=>x.path===item.path);if(!original)continue;
+   const next=original.arr.map(v=>Number((v*scale).toFixed(6)));
+   item.arr.splice(0,3,...next);
+   for(let i=0;i<3;i++)if(next[i]!==original.arr[i]){optChanges.push({type:'三轴坐标',field:`${item.key}[${'XYZ'[i]}]`,idx:item.path, x:'—',old:original.arr[i],newValue:next[i],axis:'XYZ'[i]});axisCount++;}
+  }
+  notes.push(`三轴候选数组同步缩放 ${Number($('xyzScale').value)>0?'+':''}${$('xyzScale').value}%；涉及 ${new Set(optChanges.filter(c=>c.type==='三轴坐标').map(c=>c.idx)).size} 组`);
+ }else notes.push('XYZ 三轴缩放为 0%，本次不改坐标数组');
+ const mode=$('goalHeightMode').value;
+ const current=Number(loadedData.fly_goal_high);
+ if(Object.prototype.hasOwnProperty.call(loadedData,'fly_goal_high')&&Number.isFinite(current)){
+  const anchor=nearestHeightAnchor(current);
+  if(mode!=='auto'){
+   const next=Number(mode);optimizedData.fly_goal_high=next;
+   if(next!==current){optChanges.push({type:'高度建议',field:'fly_goal_high',idx:'顶层',x:'—',old:current,newValue:next});heightCount++;}
+   notes.push(`fly_goal_high：${anchor.label}锚点识别；按所选目标设为 ${next}`);
+  }else notes.push(`fly_goal_high 当前值 ${current}，最接近「${anchor.label}」锚点 ${anchor.v}；自动识别模式保留原值，请按目标位置手动选择高度`);
+ }else notes.push('未找到顶层数值 fly_goal_high，未自动新增该字段');
+ $('axisHeightSummary').textContent=notes.join('；')+'。三轴缩放属于用户指定的比例变换，不代表模型推导出的最佳值。';
+ return {axisCount,heightCount,notes};
+}
 function runOptimization(){
  if(!loadedData)return;
  const target=$('targetTrend').value,blend=Number($('optStrength').value)/100;
@@ -475,7 +487,7 @@ function runOptimization(){
   if(pts.length<2){report.push(`${g.type} ${g.field}：有效点不足（${pts.length} 个），跳过`);continue;}
   const raw=pts.map(p=>p[g.field]),lo=Math.min(...raw),hi=Math.max(...raw),span=hi-lo;
   const fitNow=trendFit(pts,g.field),xmin=pts[0].x,xmax=pts[pts.length-1].x;
-  // 用户确认该 JSON 的参数方向：数值越大，预判越小；数值越小，预判越大。故先将参数反向映射为预判强度，再按目标趋势混合。
+  // 参数越小，相对预判强度越高。先按当前字段独立归一化，再向目标趋势靠拢。
   // 如果原字段完全相同，也用字段量级的 0.01% 作为最小可见调整，避免“优化了但导出完全没变化”。
   const epsilon=Math.max(Math.abs(lo),Math.abs(hi),1)*0.0001;
   const strengths=span>0?raw.map(v=>(hi-v)/span):raw.map((v,i)=>pts.length===1?0.5:i/(pts.length-1));
@@ -504,13 +516,12 @@ function runOptimization(){
    }else obj[g.field]=next;
    if(next!==raw[i]){optChanges.push({type:g.type,field:g.field,idx:p.idx,x:p.x,old:raw[i],newValue:next,strengthBefore:strengths[i]*100,strengthAfter:nextStrength*100});groupChanged++;}
   }
-  const refRange=g.type==='喷子'?[365,395]:g.type==='左轮'?[315,345]:null;
-  const observed=raw.filter(Number.isFinite);
-  const refNote=(g.field==='flySpeed'&&refRange&&observed.length)?`；用户弹速参考 ${refRange[0]}–${refRange[1]}，当前范围 ${fmt(Math.min(...observed),2)}–${fmt(Math.max(...observed),2)}${Math.min(...observed)>=refRange[0]&&Math.max(...observed)<=refRange[1]?'（范围内）':'（需核对，未强制修正）'}`:'';
-  report.push(`${g.type} ${g.field}：趋势斜率 ${fitNow?fmt(fitNow.slope,5):'—'}，R² ${fitNow?fmt(fitNow.r2*100,1)+'%':'—'}；有效点 ${pts.length}，建议改动 ${groupChanged} 项${refNote}`);
+  report.push(`${g.type} ${g.field}：趋势斜率 ${fitNow?fmt(fitNow.slope,5):'—'}，R² ${fitNow?fmt(fitNow.r2*100,1)+'%':'—'}；有效点 ${pts.length}，建议改动 ${groupChanged} 项`);
  }
+ const extra=applyXYZAndHeightSuggestions();
+ report.push(...extra.notes);
  $('optState').textContent='建议已生成';$('clearOpt').disabled=false;$('exportOpt').disabled=!optimizedData;
- $('optSummary').textContent=`检测完成。参数方向：数值越大预判越小，数值越小预判越大。目标：${target==='up'?'预判强度随距离增强（参数值倾向随距离减小）':target==='down'?'预判强度随距离减弱（参数值倾向随距离增大）':'预判强度尽量平稳'}；调整幅度 ${Math.round(blend*100)}%；生成 ${optChanges.length} 项数值差异。即使变化很小也会记录并导出；结果仅为数学建议，不代表实测命中率。\n`+report.join('；');
+ $('optSummary').textContent=`检测完成。目标：${target==='up'?'预判强度随距离增强':target==='down'?'预判强度随距离减弱':'预判强度尽量平稳'}；调整幅度 ${Math.round(blend*100)}%；生成 ${optChanges.length} 项数值差异（含 XYZ 三轴与 fly_goal_high 选择项）。结果是可复核的参数建议，不代表实测效果。\n`+report.join('；');
  renderOptTable();
 }
 function renderOptTable(){
@@ -519,9 +530,10 @@ function renderOptTable(){
 }
 function clearOptimization(){
  optimizedData=null;optChanges=[];$('optState').textContent='等待数据';$('exportOpt').disabled=true;$('clearOpt').disabled=true;
- $('optSummary').textContent='优化预览已清除；原始文件未修改。';$('optTable').innerHTML='<div class="empty">优化前后差异将在这里显示。</div>';
+ $('optSummary').textContent='优化预览已清除；原始文件未修改。';$('axisHeightSummary').textContent='高度锚点：0=脚底；1.4=走地中心；1.5=飞天中心；2.35=走地/飞天头顶。';$('optTable').innerHTML='<div class="empty">优化前后差异将在这里显示。</div>';
 }
 $('optStrength').addEventListener('input',()=>{$('strengthLabel').textContent=$('optStrength').value+'%';});
+$('xyzScale').addEventListener('input',()=>{$('xyzScaleLabel').textContent=($('xyzScale').value>0?'+':'')+$('xyzScale').value+'%';});
 $('runOpt').addEventListener('click',runOptimization);
 $('clearOpt').addEventListener('click',clearOptimization);
 $('exportOpt').addEventListener('click',()=>{
@@ -551,23 +563,13 @@ $('reportCsv').addEventListener('click',()=>{
 // ==================== 卡密管理与本地管理员登录 ====================
 // 说明：纯离线 HTML 只能将卡密保存在当前浏览器，不会自动同步到其他设备或 HTML 副本。
 // 需要跨设备共享/真正安全的授权时，必须使用后端服务。
-const DEFAULT_LICENSE_KEYS = [{value:'MOMO',expiry:'',enabled:true}];
-const LICENSE_STORAGE_KEY = 'momo_ai_license_keys_v2';
-const LEGACY_LICENSE_STORAGE_KEY = 'momo_ai_license_keys_v1';
+const DEFAULT_LICENSE_KEYS = [];
+const LICENSE_STORAGE_KEY = 'momo_ai_license_keys_v1';
 const todayISO=()=>new Date().toISOString().slice(0,10);
 const safeReadLicenses=()=>{
  try {
-  let raw=localStorage.getItem(LICENSE_STORAGE_KEY);
-  if(!raw){
-   // 首次打开新版本时迁移旧卡密；默认加入用户指定的 MOMO，避免旧版本保存过空列表导致无法登录。
-   const legacyRaw=localStorage.getItem(LEGACY_LICENSE_STORAGE_KEY);
-   let legacy=[];
-   if(legacyRaw){try{const old=JSON.parse(legacyRaw);if(Array.isArray(old))legacy=old;}catch(e){}}
-   const cleaned=legacy.filter(x=>x&&typeof x.value==='string').map(x=>({value:x.value.trim().toUpperCase(),expiry:typeof x.expiry==='string'?x.expiry:'',enabled:x.enabled!==false}));
-   if(!cleaned.some(x=>x.value==='MOMO'))cleaned.unshift({value:'MOMO',expiry:'',enabled:true});
-   try{localStorage.setItem(LICENSE_STORAGE_KEY,JSON.stringify(cleaned));}catch(e){}
-   return cleaned;
-  }
+  const raw=localStorage.getItem(LICENSE_STORAGE_KEY);
+  if(!raw) return DEFAULT_LICENSE_KEYS.slice();
   const parsed=JSON.parse(raw);
   return Array.isArray(parsed)?parsed.filter(x=>x&&typeof x.value==='string').map(x=>({value:x.value.trim().toUpperCase(),expiry:typeof x.expiry==='string'?x.expiry:'',enabled:x.enabled!==false})):DEFAULT_LICENSE_KEYS.slice();
  } catch(e) { return DEFAULT_LICENSE_KEYS.slice(); }
@@ -600,13 +602,13 @@ $('verifyLicense').addEventListener('click',()=>{
  const value=$('licenseInput').value.trim().toUpperCase();
  const key=LICENSE_KEYS.find(k=>String(k.value||'').trim().toUpperCase()===value);
  if(!licenseIsValid(key)){setGateMsg(key?'该卡密已停用或过期。':'卡密不存在，请检查输入。','bad');return;}
- adminMode=false;document.body.classList.remove('admin-mode');$('licenseManager').style.display='none';$('licenseGate').style.display='none';setGateMsg('卡密验证通过。','good');
+ adminMode=false;$('licenseManager').style.display='none';$('licenseGate').style.display='none';setGateMsg('卡密验证通过。','good');
 });
 $('licenseInput').addEventListener('keydown',e=>{if(e.key==='Enter')$('verifyLicense').click();});
 $('adminLogin').addEventListener('click',()=>{
  const username=$('adminUsername').value.trim();const password=$('adminPassword').value;
  if(username===ADMIN_USERNAME && password===ADMIN_PASSWORD){
-  adminMode=true;document.body.classList.add('admin-mode');LICENSE_KEYS=safeReadLicenses();$('licenseGate').style.display='none';$('licenseManager').style.display='block';renderLicenseList();setManagerMsg('管理员登录成功。新增或删除的卡密会保存到当前浏览器。','good');
+  adminMode=true;LICENSE_KEYS=safeReadLicenses();$('licenseGate').style.display='none';$('licenseManager').style.display='block';renderLicenseList();setManagerMsg('管理员登录成功。新增或删除的卡密会保存到当前浏览器。','good');
  }else setGateMsg('管理员账号或密码错误。','bad');
 });
 $('adminPassword').addEventListener('keydown',e=>{if(e.key==='Enter')$('adminLogin').click();});
@@ -641,7 +643,7 @@ $('importLicensesFile').addEventListener('change',async e=>{
   LICENSE_KEYS=cleaned.filter((k,i,a)=>a.findIndex(x=>x.value===k.value)===i);if(persistLicenses()){renderLicenseList();setManagerMsg('导入完成，共 '+LICENSE_KEYS.length+' 个卡密。','good');}
  }catch(err){setManagerMsg('导入失败：'+err.message,'bad');}finally{e.target.value='';}
 });
-$('adminLogoutBtn').addEventListener('click',()=>{adminMode=false;document.body.classList.remove('admin-mode');$('licenseManager').style.display='none';$('licenseGate').style.display='flex';$('adminUsername').value='';$('adminPassword').value='';setGateMsg('管理员已退出。','good');});
+$('adminLogoutBtn').addEventListener('click',()=>{adminMode=false;$('licenseManager').style.display='none';$('licenseGate').style.display='flex';$('adminUsername').value='';$('adminPassword').value='';setGateMsg('管理员已退出。','good');});
 // ==================== 卡密管理与本地管理员登录结束 ===================='' '
 
 
@@ -674,11 +676,11 @@ function analyzeAI(){
  };
  walk(loadedData,aiOptimized,'$');
  $ai('aiSeriesCount').textContent=aiSeriesCount.toLocaleString('zh-CN');$ai('aiCandidateCount').textContent=aiCandidates.toLocaleString('zh-CN');$ai('aiChangeCount').textContent=aiChanges.length.toLocaleString('zh-CN');$ai('aiEngineState').textContent=aiChanges.length?'分析完成':'检查完成';$ai('exportAIEngine').disabled=false;$ai('clearAIEngine').disabled=false;
- $ai('aiEngineSummary').textContent=`检查 ${aiSeriesCount} 组普通数值序列，发现 ${aiCandidates} 个异常候选，实际修正 ${aiChanges.length} 项。该功能是通用异常值检查，不负责优化预判、武器弹速或移动参数。${aiChanges.length?'修正值取自相邻样本中位数，请核对差异后再决定是否导入。':'未发现达到保守阈值的可修正异常，导出文件将保留原始数值。'} 原文件不会被覆盖，也不代表游戏表现会改善。`;
+ $ai('aiEngineSummary').textContent=`检查 ${aiSeriesCount} 组数值序列，发现 ${aiCandidates} 个异常候选，实际修正 ${aiChanges.length} 项。${aiChanges.length?'修正值取自相邻样本中位数，请核对差异后再决定是否导入。':'未发现达到保守阈值的可修正异常，导出文件将保留原始数值。'} 原文件不会被覆盖，也不代表游戏表现会改善。`;
  renderAIChanges();
  downloadAI();
 }
-function downloadAI(){if(!aiOptimized)return;const blob=new Blob([JSON.stringify(aiOptimized,null,2)+'\n'],{type:'application/json;charset=utf-8'});download(blob,(loadedName||'parameters').replace(/\.json$/i,'')+'-离线分析优化.json');$ai('aiEngineSummary').textContent+=' 已生成独立 JSON 副本；原文件未覆盖。';}
+function downloadAI(){if(!aiOptimized)return;const blob=new Blob([JSON.stringify(aiOptimized,null,2)+'\n'],{type:'application/json;charset=utf-8'});download(blob,(loadedName||'parameters').replace(/\.json$/i,'')+'-离线分析优化.json');$ai('aiEngineSummary').textContent+=' 已自动生成独立优化文件；原文件未覆盖。';}
 function renderAIChanges(){if(!aiChanges.length){$ai('aiEngineTable').innerHTML='<div class="empty">没有足够证据支持修改。仍可另存 JSON 副本；受保护字段保持原样。</div>';return;}$ai('aiEngineTable').innerHTML='<table><thead><tr><th>JSON 路径</th><th>原值</th><th>新值</th><th>理由</th></tr></thead><tbody>'+aiChanges.map(c=>`<tr><td style="white-space:normal;overflow-wrap:anywhere">${escAI(c.path)}</td><td>${escAI(c.old)}</td><td>${escAI(c.newValue)}</td><td style="white-space:normal;overflow-wrap:anywhere">${escAI(c.reason)}</td></tr>`).join('')+'</tbody></table>';}
 function clearAI(){aiOptimized=null;aiChanges=[];aiSeriesCount=0;aiCandidates=0;$ai('aiEngineState').textContent='等待 JSON';['aiSeriesCount','aiCandidateCount','aiChangeCount'].forEach(id=>$ai(id).textContent='—');$ai('exportAIEngine').disabled=true;$ai('clearAIEngine').disabled=true;$ai('aiEngineSummary').textContent='分析结果已清除；原始文件没有修改。';$ai('aiEngineTable').innerHTML='<div class="empty">优化前后差异将在这里显示。</div>';}
 $ai('runAIEngine').addEventListener('click',analyzeAI);$ai('clearAIEngine').addEventListener('click',clearAI);
@@ -750,7 +752,7 @@ function getTag(row,n){const a=(row||[]).filter(x=>x[0]===n).map(x=>x[2]);return
 function roleRows(){return GAME_VERIFIED_STATS.character_roles.map(x=>({type:'角色资源',name:x.role_name||('Role '+x.id),id:x.id,height:'未核实',speed:'未核实',bullet:'—',damage:'—',range:'—',source:x.source_path+' / RoleConfig',detail:`BaseBone=${x.base_bone}; Animator=${x.anim_controller}; HeadIcon=${x.head_icon}; nameId=${x.name_id}`}))}
 function weaponRows(){return GAME_VERIFIED_STATS.weapon_configs.map(x=>({type:'枪械配置',name:x.name||('未知名称 ID '+x.id),id:x.id,height:'—',speed:'—',bullet:x.MuzzleVelocity??'未配置',damage:'—',range:'未核实',source:'4.zip / '+x.source_table+' / field#6 MuzzleVelocity',detail:`ShootLimit=${x.ShootLimit??'未记录'}; Distribution=${x.Distribution??'未记录'}; 单位未标注`}))}
 function ammoRows(){return GAME_VERIFIED_STATS.ammo_configs.map(x=>({type:'弹药配置',name:x.name||('Ammo '+x.id),id:x.id,height:'—',speed:'—',bullet:'—',damage:x.Damage??'未配置',range:'—',source:'4.zip / AmmoItemConfig / field#3 Damage',detail:`DistributionType=${x.DistributionType??'—'}; Shots=${x.Shots??'—'}; 最终结算机制未核实`}))}
-function movementRows(){const a=[];for(const x of GAME_VERIFIED_STATS.body_type_walk_speed)a.push({type:'体型移动配置',name:x.body_type_name||'标准体型',id:x.id,height:'未核实',speed:x.gameWalkSpeed,bullet:'—',damage:'—',range:'—',source:'SomatotypeConfig / gameWalkSpeed field#6',detail:'单位未标注；不是逐角色实测速度'});for(const x of GAME_VERIFIED_STATS.mesh_agent_dimensions)a.push({type:'代理/碰撞尺寸',name:'MeshAgentType '+x.id,id:x.id,height:x.Height,speed:'—',bullet:'—',damage:'—',range:'—',source:'MeshAgentTypeConfig / Height field#5',detail:`Radius=${x.Radius}; 不是人物模型真实身高`});for(const x of GAME_VERIFIED_STATS.farm_creature_speed_configs)a.push({type:'农场生物速度',name:x.name,id:x.id,height:'—',speed:x.Speed,bullet:'—',damage:'—',range:'—',source:'FarmMonsterConfig / Speed field#6',detail:'不是玩家角色移动速度'});for(const x of GAME_VERIFIED_STATS.pet_appearance_configs)a.push({type:'宠物移动配置',name:x.GamePetRes||x.PetRes,id:x.id,height:'未核实',speed:x.PetMoveSpeed,bullet:'—',damage:'—',range:'—',source:'PetAppearanceConfig / PetMoveSpeed field#10',detail:`PetScale=${x.PetScale??'—'}; PetGameNameHeight=${x.PetGameNameHeight??'—'}; 单位未标注`});for(const x of GAME_VERIFIED_STATS.pet_height_configs)a.push({type:'宠物高度配置',name:'Pet '+x.pet_id+' level '+x.level,id:x.id,height:x.PetHeight,speed:'—',bullet:'—',damage:'—',range:'—',source:'PetConfig / PetHeight field#31',detail:'显式宠物配置值；未确认等于网格实际高度'});for(const x of GAME_VERIFIED_STATS.model_mesh_envelopes||[])a.push({type:'基础角色网格包络估算',name:x.model_group,id:x.mesh_count,height:x.height_local_units+' Unity局部单位',speed:'—',bullet:'—',damage:'—',range:'—',source:'Mesh localAABB / '+x.source_meshes.length+' 个Suit/Head网格',detail:x.status+'；Y范围 '+x.y_min_local+' 至 '+x.y_max_local+'；单位不是已确认的米'});for(const x of ((window.GAME_MOVEMENT_REFERENCE&&window.GAME_MOVEMENT_REFERENCE.measurements)||[]))a.push({type:'制造者实测移动',name:x.mode,id:x.id,height:'—',speed:x.value===null?'递增 / 未定值':x.value,bullet:'—',damage:'—',range:'—',source:x.source,detail:x.note+'；实测读数单位未与配置单位建立换算关系'});return a}
+function movementRows(){const a=[];for(const x of GAME_VERIFIED_STATS.body_type_walk_speed)a.push({type:'体型移动配置',name:x.body_type_name||'标准体型',id:x.id,height:'未核实',speed:x.gameWalkSpeed,bullet:'—',damage:'—',range:'—',source:'SomatotypeConfig / gameWalkSpeed field#6',detail:'单位未标注；不是逐角色实测速度'});for(const x of GAME_VERIFIED_STATS.mesh_agent_dimensions)a.push({type:'代理/碰撞尺寸',name:'MeshAgentType '+x.id,id:x.id,height:x.Height,speed:'—',bullet:'—',damage:'—',range:'—',source:'MeshAgentTypeConfig / Height field#5',detail:`Radius=${x.Radius}; 不是人物模型真实身高`});for(const x of GAME_VERIFIED_STATS.farm_creature_speed_configs)a.push({type:'农场生物速度',name:x.name,id:x.id,height:'—',speed:x.Speed,bullet:'—',damage:'—',range:'—',source:'FarmMonsterConfig / Speed field#6',detail:'不是玩家角色移动速度'});for(const x of GAME_VERIFIED_STATS.pet_appearance_configs)a.push({type:'宠物移动配置',name:x.GamePetRes||x.PetRes,id:x.id,height:'未核实',speed:x.PetMoveSpeed,bullet:'—',damage:'—',range:'—',source:'PetAppearanceConfig / PetMoveSpeed field#10',detail:`PetScale=${x.PetScale??'—'}; PetGameNameHeight=${x.PetGameNameHeight??'—'}; 单位未标注`});for(const x of GAME_VERIFIED_STATS.pet_height_configs)a.push({type:'宠物高度配置',name:'Pet '+x.pet_id+' level '+x.level,id:x.id,height:x.PetHeight,speed:'—',bullet:'—',damage:'—',range:'—',source:'PetConfig / PetHeight field#31',detail:'显式宠物配置值；未确认等于网格实际高度'});for(const x of GAME_VERIFIED_STATS.model_mesh_envelopes||[])a.push({type:'基础角色网格包络估算',name:x.model_group,id:x.mesh_count,height:x.height_local_units+' Unity局部单位',speed:'—',bullet:'—',damage:'—',range:'—',source:'Mesh localAABB / '+x.source_meshes.length+' 个Suit/Head网格',detail:x.status+'；Y范围 '+x.y_min_local+' 至 '+x.y_max_local+'；单位不是已确认的米'});return a}
 function statRows(){const mode=$db('gameDbMode').value;if(mode==='roles')return roleRows();if(mode==='weapons')return weaponRows();if(mode==='ammo')return ammoRows();if(mode==='movement')return movementRows();return []}
 function renderDb(){const mode=$db('gameDbMode').value,q=$db('gameDbSearch').value.trim().toLowerCase();const head=$db('gameDbHead'),body=$db('gameDbRows');$db('gameDbDetailWrap').style.display='none';selectedDbTable=null;
  if(mode==='tables'){head.innerHTML='<tr><th>配置表</th><th>记录数</th><th>原始字节</th><th>解析状态</th><th>样例</th><th>操作</th></tr>';const a=GAME_CONFIG_TABLE_SUMMARY.filter(x=>!q||(x.n+' '+x.sample+' '+x.status).toLowerCase().includes(q));body.innerHTML=a.slice(0,250).map(x=>`<tr><td>${escDb(x.n)}</td><td>${x.r.toLocaleString('zh-CN')}</td><td>${fmtDb(x.b)}</td><td>${x.status==='parsed'?'已解析':x.status==='empty-or-header'?'空表/头部':'部分解析'}</td><td style="white-space:normal;overflow-wrap:anywhere">${escDb(x.sample||'—')}</td><td><button class="btn secondary" data-open-table="${escDb(x.n)}" type="button">查看</button></td></tr>`).join('')||'<tr><td colspan="6" class="empty">没有匹配的配置表</td></tr>';$db('gameDbStatus').textContent=`配置表匹配 ${a.length.toLocaleString('zh-CN')} 张；最多显示 250 张。点击“查看”后才会解压完整数据库。`;}
@@ -767,87 +769,6 @@ $db('gameDbExportStats').addEventListener('click',()=>downloadDb(new Blob([JSON.
 $db('gameDbExportMeshes').addEventListener('click',async()=>{try{const d=await loadPayload();downloadDb(new Blob([JSON.stringify(d.mesh_inventory,null,2)],{type:'application/json;charset=utf-8'}),'全部Mesh模型对象清单.json');}catch(e){$db('gameDbStatus').textContent='导出失败：'+e.message;}});
 function downloadDb(blob,name){const u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),1200)}
 renderDb();
-})();
-</script>
-
-<script>
-(()=>{'use strict';
-const GAME_MOVEMENT_REFERENCE={
- schemaVersion:1,
- title:'超自然行动组移动速度联合参考库',
- sourceJoin:{
-  archive1:{archive:'1.zip',status:'恢复出的资源集合；原 ZIP 中央目录不完整，不能视为完整原包',resources:['assets/android/data/meta_assets.bytes_u_b0c38f54275e36d912425af4555b61c0','assets/android/data/config.ab_u_221fde080da3de8868bf73da1477e6eb','assets/android/data/baseplayer.ab_u_6b07294f5a3ca12395cb231c52f98f1e'],signals:['baseplayer','ClothBaseBone3_notControl','ClothBaseBone_Phantom_1_notControl','Mod_Character_*']},
-  archive4:{archive:'4.zip',status:'UnityFS/config 配置解析来源',resources:['data/config.ab_u_221fde080da3de8868bf73da1477e6eb','data/baseplayer.ab_u_6b07294f5a3ca12395cb231c52f98f1e'],verifiedFields:[{table:'SomatotypeConfig',field:'gameWalkSpeed',fieldNumber:6,value:0.4,unit:null},{table:'RoleConfig',fields:['BaseBone','DefaultAnimControl'],note:'角色与骨骼/动画控制器候选关联' }]},
-  joinRules:['用资源路径、角色名称、BaseBone 和动画控制器做交叉检索；不能仅凭名称认定同一资源字节完全相同。','1.zip 恢复出的资源索引提供模型/骨骼名称线索；4.zip 提供结构化配置记录和数值。','0.4 的单位未标注，不得直接换算成下方实测读数的单位。'],correlations:[{key:'ClothBaseBone3_notControl',roleIds:[1,2,3,4,5,6,7,8,9,11,12],roleCount:11,source:'4.zip RoleConfig + 1.zip meta_assets.bytes 字符串索引',status:'骨骼标识符交叉命中；尚未确认每个角色最终装配的完整模型。'},{key:'ClothBaseBone_Phantom_1_notControl',roleIds:[10],roleCount:1,source:'4.zip RoleConfig + 1.zip meta_assets.bytes 字符串索引',status:'候选骨骼关联。'},{key:'PVM_Monster_Marmot',roleIds:[102],roleCount:1,source:'4.zip RoleConfig + 1.zip 资源索引',status:'怪物候选，不计入可玩角色。'},{key:'PVM_Monster_FemaleCorpse_2',roleIds:[103],roleCount:1,source:'4.zip RoleConfig + 1.zip 资源索引',status:'怪物候选，不计入可玩角色。'}]
- },
- measurements:[
-  {id:'walk',mode:'行走最高速度',value:5.3,source:'制造者实测（用户提供）',kind:'measured',note:'游戏内测得的行走最高值；原始读数照录，单位尚未与配置值对齐。'},
-  {id:'run',mode:'奔跑最高速度',value:10.3,source:'制造者实测（用户提供）',kind:'measured',note:'游戏内测得的奔跑最高值；未推断加速度曲线。'},
-  {id:'buffRun',mode:'奔跑 + 黄牛增益',value:11.3,source:'制造者实测（用户提供）',kind:'measured',note:'带黄牛增益时的奔跑读数；增益机制/叠加方式尚未从配置中确认。'},
-  {id:'horizontalFlight',mode:'水平飞行（单方向持续）',value:20,source:'制造者实测（用户提供）',kind:'measured',note:'持续向一个水平方向飞行时观察到的最大值；不是已解码配置字段。'},
-  {id:'verticalFlight',mode:'垂直飞行上升',value:null,source:'制造者实测现象 / 机制假设',kind:'observation',note:'观察为持续上升时速度递增，尚无可靠固定数值；地图边界/模型接触是否构成限制仍待重复实验验证。'}
- ],
- configValue:{name:'SomatotypeConfig.gameWalkSpeed',value:0.4,unit:null,source:'4.zip / data/config.ab_u_221fde080da3de8868bf73da1477e6eb',status:'字段与序列化值已关联；单位未知；不是逐角色实测速度。'},
- cautions:['用户实测读数与游戏配置字段分别保存，不做未经验证的单位换算。','垂直飞行不填虚构的速度上限；记录趋势与实验条件即可。','本数据库用于离线分析和实验记录，不连接游戏进程、不自动写入游戏或控制角色。']
-};
-window.GAME_MOVEMENT_REFERENCE=GAME_MOVEMENT_REFERENCE;
-const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const rows=document.getElementById('movementReferenceRows'),bars=document.getElementById('movementSpeedBars');
-if(rows&&bars){
- rows.innerHTML=GAME_MOVEMENT_REFERENCE.measurements.map(x=>`<tr><td>${esc(x.mode)}</td><td>${x.value===null?'递增（未定值）':esc(x.value)}</td><td>${esc(x.source)}</td><td style="white-space:normal;min-width:220px">${esc(x.note)}</td></tr>`).join('')+`<tr><td>配置：gameWalkSpeed</td><td>0.4</td><td>4.zip 配置字段</td><td style="white-space:normal;min-width:220px">单位未标注；不能直接与实测值比较。</td></tr>`;
- bars.innerHTML=GAME_MOVEMENT_REFERENCE.measurements.filter(x=>x.value!==null).map(x=>{const width=Math.max(0,Math.min(100,x.value/20*100));return `<div class="speed-row"><div class="speed-label">${esc(x.mode)}</div><div class="speed-track" aria-label="相对数值条"><div class="speed-fill" style="width:${width}%"></div></div><div class="speed-value">${esc(x.value)}</div></div>`}).join('')+`<div class="status">垂直飞行：观察为“递增”，未测得固定值，因此不绘制伪造数值条。上方数值条仅比较同一套实测读数，不代表已知物理单位。</div>`;
-}
-const download=(obj,name)=>{const blob=new Blob([JSON.stringify(obj,null,2)+'\n'],{type:'application/json;charset=utf-8'});const u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),1200)};
-const exportBtn=document.getElementById('exportMovementReference');if(exportBtn)exportBtn.addEventListener('click',()=>download(GAME_MOVEMENT_REFERENCE,'移动速度联合参考库.json'));
-const joinBtn=document.getElementById('exportArchiveJoinEvidence');if(joinBtn)joinBtn.addEventListener('click',()=>download({sourceJoin:GAME_MOVEMENT_REFERENCE.sourceJoin,configValue:GAME_MOVEMENT_REFERENCE.configValue,measurements:GAME_MOVEMENT_REFERENCE.measurements,cautions:GAME_MOVEMENT_REFERENCE.cautions},'1zip-4zip联合关联证据.json'));
-})();
-</script>
-
-
-<script>
-(()=>{'use strict';
-const REF={"weapons":[{"id":10205,"name":"转轮手枪","MuzzleVelocity":330.0,"ShootLimit":45,"Distribution":40.0,"source":"4.zip:data/config.ab_u_221fde080da3de8868bf73da1477e6eb / GunItemConfig"},{"id":400001,"name":"名称未解析","MuzzleVelocity":380.0,"ShootLimit":null,"Distribution":35.0,"source":"4.zip:data/config.ab_u_221fde080da3de8868bf73da1477e6eb / GunItemConfig"},{"id":400002,"name":"熊用猎枪","MuzzleVelocity":300.0,"ShootLimit":null,"Distribution":1.0,"source":"4.zip:data/config.ab_u_221fde080da3de8868bf73da1477e6eb / GunItemConfig"},{"id":400005,"name":"短管猎枪","MuzzleVelocity":380.0,"ShootLimit":60,"Distribution":33.0,"source":"4.zip:data/config.ab_u_221fde080da3de8868bf73da1477e6eb / GunItemConfig"},{"id":700022,"name":"短管猎枪","MuzzleVelocity":380.0,"ShootLimit":200,"Distribution":35.0,"source":"4.zip:data/config.ab_u_221fde080da3de8868bf73da1477e6eb / GunItemConfig"},{"id":700023,"name":"短管猎枪","MuzzleVelocity":380.0,"ShootLimit":200,"Distribution":35.0,"source":"4.zip:data/config.ab_u_221fde080da3de8868bf73da1477e6eb / GunItemConfig"},{"id":700024,"name":"转轮手枪","MuzzleVelocity":480.0,"ShootLimit":40,"Distribution":4.0,"source":"4.zip:data/config.ab_u_221fde080da3de8868bf73da1477e6eb / GunItemConfig"},{"id":700025,"name":"自动手枪","MuzzleVelocity":480.0,"ShootLimit":150,"Distribution":4.0,"source":"4.zip:data/config.ab_u_221fde080da3de8868bf73da1477e6eb / GunItemConfig"},{"id":700026,"name":"步枪","MuzzleVelocity":380.0,"ShootLimit":60,"Distribution":40.0,"source":"4.zip:data/config.ab_u_221fde080da3de8868bf73da1477e6eb / GunItemConfig"},{"id":400009,"name":"兵俑用猎枪","MuzzleVelocity":300.0,"ShootLimit":null,"Distribution":700.0,"source":"4.zip:data/config.ab_u_221fde080da3de8868bf73da1477e6eb / GunItemConfig"},{"id":700415,"name":"短管猎枪","MuzzleVelocity":380.0,"ShootLimit":200,"Distribution":43.0,"source":"4.zip:data/config.ab_u_221fde080da3de8868bf73da1477e6eb / GunItemConfig"}],"characters":[{"id":1,"name":"PlayerA","baseBone":"ClothBaseBone3_notControl","animController":"Ani_Female_Controller2","source":"4.zip / RoleConfig"},{"id":2,"name":"Alice","baseBone":"ClothBaseBone3_notControl","animController":"Ani_Female_Controller2","source":"4.zip / RoleConfig"},{"id":3,"name":"Zero","baseBone":"ClothBaseBone3_notControl","animController":"Ani_Female_Controller2","source":"4.zip / RoleConfig"},{"id":4,"name":"ANian","baseBone":"ClothBaseBone3_notControl","animController":"Ani_Female_Controller2","source":"4.zip / RoleConfig"},{"id":5,"name":"XiaoYao","baseBone":"ClothBaseBone3_notControl","animController":"Ani_Female_Controller2","source":"4.zip / RoleConfig"},{"id":6,"name":"Vivian","baseBone":"ClothBaseBone3_notControl","animController":"Ani_Female_Controller2","source":"4.zip / RoleConfig"},{"id":7,"name":"LingEr","baseBone":"ClothBaseBone3_notControl","animController":"Ani_Female_Controller2","source":"4.zip / RoleConfig"},{"id":8,"name":"Lily","baseBone":"ClothBaseBone3_notControl","animController":"Ani_Female_Controller2","source":"4.zip / RoleConfig"},{"id":9,"name":"Ailun","baseBone":"ClothBaseBone3_notControl","animController":"Ani_Female_Controller2","source":"4.zip / RoleConfig"},{"id":10,"name":"Aidehua","baseBone":"ClothBaseBone_Phantom_1_notControl","animController":"Ani_Female_Controller2","source":"4.zip / RoleConfig"},{"id":11,"name":"Lan","baseBone":"ClothBaseBone3_notControl","animController":"Ani_Female_Controller2","source":"4.zip / RoleConfig"},{"id":12,"name":"XiaoMan","baseBone":"ClothBaseBone3_notControl","animController":"Ani_Female_Controller2","source":"4.zip / RoleConfig"}],"movementConfig":{"field":"SomatotypeConfig.gameWalkSpeed","value":0.4,"unit":"未标注","source":"4.zip:data/config.ab_u_221fde080da3de8868bf73da1477e6eb"},"meshEnvelopes":[{"model":"Mod_Female_BasePlayer_3","heightLocalUnits":2.48311,"meshCount":3,"sourceMeshes":[{"name":"Mod_Female_BasePlayer_3_Suit_LOD3","path":"data/s_c7/c702200e781a161a225a9b9545aa9140_1.ab_u_9120a8c0e48c9edb5e4743c77fc56b27","minY":0.0005168914794921875,"maxY":2.4836268424987793},{"name":"Mod_Female_BasePlayer_3_Head_LOD2","path":"data/s_c7/c702200e781a161a225a9b9545aa9140_1.ab_u_9120a8c0e48c9edb5e4743c77fc56b27","minY":1.8127599954605103,"maxY":2.4525903463363647},{"name":"Mod_Female_BasePlayer_3_Head_LOD3","path":"data/s_c7/c702200e781a161a225a9b9545aa9140_1.ab_u_9120a8c0e48c9edb5e4743c77fc56b27","minY":1.8127597570419312,"maxY":2.457379937171936}],"status":"approximate mesh-local envelope; suit/head mesh bounds grouped by shared model prefix; prefab root scale and final character transform not applied"},{"model":"Mod_Female_BasePlayer_4","heightLocalUnits":2.475101,"meshCount":6,"sourceMeshes":[{"name":"Mod_Female_BasePlayer_4_Suit","path":"data/s_77/774877b3725fe74dfb9adf5f8d3e85cc.ab_u_84989479408ada9dba09fcea681f10de","minY":-0.00019085407257080078,"maxY":1.944960594177246},{"name":"Mod_Female_BasePlayer_4_Head_LOD1","path":"data/s_e0/e0cbb6a75af63022358149e8c427794b.ab_u_5b5d9abfd0011030fefd7e99bf7bd140","minY":1.80913507938385,"maxY":2.4699615240097046},{"name":"Mod_Female_BasePlayer_4_Head_LOD0","path":"data/s_e0/e0cbb6a75af63022358149e8c427794b.ab_u_5b5d9abfd0011030fefd7e99bf7bd140","minY":1.8091355562210083,"maxY":2.4749096632003784},{"name":"Mod_Female_BasePlayer_4_Suit_LOD2","path":"data/s_e0/e0cbb6a75af63022358149e8c427794b.ab_u_5b5d9abfd0011030fefd7e99bf7bd140","minY":0.0,"maxY":1.9446557760238647},{"name":"Mod_Female_BasePlayer_4_Suit_LOD1","path":"data/s_e0/e0cbb6a75af63022358149e8c427794b.ab_u_5b5d9abfd0011030fefd7e99bf7bd140","minY":-0.00019085407257080078,"maxY":1.9446557760238647},{"name":"Mod_Female_BasePlayer_4_Suit_LOD0","path":"data/s_e0/e0cbb6a75af63022358149e8c427794b.ab_u_5b5d9abfd0011030fefd7e99bf7bd140","minY":-0.00019085407257080078,"maxY":1.944960594177246}],"status":"approximate mesh-local envelope; suit/head mesh bounds grouped by shared model prefix; prefab root scale and final character transform not applied"},{"model":"Mod_Male_BasePlayer_1","heightLocalUnits":2.492515,"meshCount":6,"sourceMeshes":[{"name":"Mod_Male_BasePlayer_1_Suit_LOD0","path":"data/s_0b/0b9dfacfa0d681005b5b470c6640f735.ab_u_c79cc3ea44dac3e9f7992391841d1e21","minY":-0.0003066062927246094,"maxY":2.012413501739502},{"name":"Mod_Male_BasePlayer_1_Suit_LOD1","path":"data/s_27/271e5772c04219fa1c8cb7d82d513383.ab_u_ffc1049753e67b6870a096d68ecba2bb","minY":-0.0003066062927246094,"maxY":2.012413263320923},{"name":"Mod_Male_BasePlayer_1_Suit_LOD2","path":"data/s_27/271e5772c04219fa1c8cb7d82d513383.ab_u_ffc1049753e67b6870a096d68ecba2bb","minY":-0.00010323524475097656,"maxY":2.012413263320923},{"name":"Mod_Male_BasePlayer_1_Head_LOD0","path":"data/s_62/62b33443d8855e4e2ce50c5f455a5d60.ab_u_f123af48d65b53b35c7b01c760163ca1","minY":1.88213449716568,"maxY":2.490879476070404},{"name":"Mod_Male_BasePlayer_1_Head_LOD2","path":"data/s_65/65f417db189266e12db986aa8fd48f64.ab_u_ed056792a8a90ead8892f44fdcf20042","minY":1.88213449716568,"maxY":2.491074502468109},{"name":"Mod_Male_BasePlayer_1_Head_LOD1","path":"data/s_65/65f417db189266e12db986aa8fd48f64.ab_u_ed056792a8a90ead8892f44fdcf20042","minY":1.8821346163749695,"maxY":2.492208778858185}],"status":"approximate mesh-local envelope; suit/head mesh bounds grouped by shared model prefix; prefab root scale and final character transform not applied"}],"measurements":[{"mode":"行走最高速度","value":5.3,"source":"制造者实测（用户提供）"},{"mode":"奔跑最高速度","value":10.3,"source":"制造者实测（用户提供）"},{"mode":"奔跑 + 黄牛增益","value":11.3,"source":"制造者实测（用户提供）"},{"mode":"水平飞行持续单向观察峰值","value":20,"source":"制造者实测（用户提供）"},{"mode":"垂直飞行上升","value":null,"source":"现象记录：速度递增，未测得固定值"}]};
-const $=id=>document.getElementById(id);
-let loaded=null, loadedName='', report=null;
-const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const fmt=v=>typeof v==='number'&&Number.isFinite(v)?Number(v.toFixed(3)).toString():'—';
-const speedVal=v=>Array.isArray(v)?(typeof v[0]==='number'?v[0]:null):(typeof v==='number'?v:null);
-const listSegments=(obj,key)=>Array.isArray(obj[key])?obj[key].map((x,i)=>({i,dist:Number(x?.maxDist),fly:speedVal(x?.flySpeed),land:speedVal(x?.landSpeed)})).filter(x=>Number.isFinite(x.dist)):[];
-const trend=arr=>{const vals=arr.map(x=>x.fly).filter(Number.isFinite);if(vals.length<2)return '样本不足';let inc=0,dec=0,flat=0;for(let i=1;i<vals.length;i++){if(vals[i]>vals[i-1])inc++;else if(vals[i]<vals[i-1])dec++;else flat++;}if(inc>dec*1.5)return '整体递增';if(dec>inc*1.5)return '整体递减';return '混合/局部变化';};
-function renderRows(rows){$('pureAIRows').innerHTML=rows.map(r=>`<tr><td>${esc(r[0])}</td><td style="white-space:normal;min-width:180px">${esc(r[1])}</td><td style="white-space:normal;min-width:180px">${esc(r[2])}</td><td style="white-space:normal;min-width:200px">${esc(r[3])}</td></tr>`).join('');}
-$('pureAIFile').addEventListener('change',async e=>{
- const f=e.target.files?.[0]; if(!f)return;
- try{loaded=JSON.parse(await f.text());if(!loaded||typeof loaded!=='object'||Array.isArray(loaded))throw new Error('JSON 顶层必须是对象');loadedName=f.name;
- $('pureAIMeta').style.display='block';$('pureAIMeta').textContent=`已读取：${f.name} · ${(f.size/1024).toFixed(1)} KB · 只读分析`;
- $('pureAIAnalyze').disabled=false;$('pureAIExport').disabled=true;$('pureAIState').textContent='文件已读取';$('pureAISummary').textContent='文件解析成功。点击“开始关联分析”查看字段、曲线和游戏配置证据之间的对应关系。';
- }catch(err){loaded=null;$('pureAIAnalyze').disabled=true;$('pureAIState').textContent='读取失败';$('pureAISummary').textContent='无法解析 JSON：'+err.message;}
-});
-$('pureAIAnalyze').addEventListener('click',()=>{
- if(!loaded)return;
- const rev=listSegments(loaded,'segments_revolver'),shot=listSegments(loaded,'segments_shotgun');
- const all=[...rev,...shot], rows=[];
- $('pureAIKeys').textContent=Object.keys(loaded).length;
- $('pureAISegments').textContent=`${rev.length} / ${shot.length}`;
- const tr=[trend(rev),trend(shot)];$('pureAITrend').textContent=tr.every(x=>x==='整体递减')?'两条均递减':tr.join(' / ');
- const add=(...r)=>rows.push(r);
- add('segments_revolver',`${rev.length} 段；距离 ${rev.length?fmt(rev[0].dist)+'–'+fmt(rev[rev.length-1].dist):'未识别'}`,`候选武器记录：${REF.weapons.filter(w=>(w.name||'').includes('转轮')).map(w=>`${w.name} ID ${w.id} · MuzzleVelocity ${w.MuzzleVelocity}`).join('；')||'无'}`,'JSON 没有在分段内提供明确 weaponId；只能建立类别候选，不能确认具体配置行。');
- add('segments_shotgun',`${shot.length} 段；距离 ${shot.length?fmt(shot[0].dist)+'–'+fmt(shot[shot.length-1].dist):'未识别'}`,`候选武器记录：${REF.weapons.filter(w=>(w.name||'').includes('猎枪')).map(w=>`${w.name} ID ${w.id} · MuzzleVelocity ${w.MuzzleVelocity}`).join('；')||'无'}`,'名称相近不等于同一武器 ID；配置表中还有 NPC/变体记录，不能仅按名称强行匹配。');
- for(const [name,arr] of [['左轮',rev],['喷子',shot]]){
-  if(arr.length){const first=arr[0],last=arr[arr.length-1];const landFirst=first.land,landLast=last.land;
-   add(name+' flySpeed',`首段 ${fmt(first.fly)}；末段 ${fmt(last.fly)}；${trend(arr)}`,'游戏字段 MuzzleVelocity 存在 300、330、380、480 等配置值，单位未标注。','这是 1.json 中的距离分段参数序列；尚未证明其数值等于游戏配置弹丸速度，不能直接替换或按比例自动校正。');
-   add(name+' landSpeed',`首段 ${fmt(landFirst)}；末段 ${fmt(landLast)}；${landLast<landFirst?'整体端点下降':landLast>landFirst?'整体端点上升':'端点相同'}`,'游戏数据没有已核实的“地面目标速度”同名字段。','地面/飞天属于参数文件语义；不能与角色移动速度字段直接等同。');
-  }else add(name+' 分段','未找到可解析分段','预期字段应为数组，元素包含 maxDist / flySpeed / landSpeed。','检查字段名和 JSON 结构。');
- }
- add('角色移动速度',`JSON 顶层含 gamespeed=${fmt(loaded.gamespeed)}；不等于已确认的玩家实际移动速度字段。`,`SomatotypeConfig.gameWalkSpeed = ${REF.movementConfig.value}（单位未标注）；实测行走 5.3、奔跑 10.3、增益奔跑 11.3、水平飞行 20。`,'配置值和实测读数单位未对齐；不要直接换算或把 gamespeed 当作角色速度。');
- add('模型尺寸',`JSON 中未发现可确认的逐角色身高字段。`,`已提取基础模型局部包络：${REF.meshEnvelopes.map(m=>m.model+': '+fmt(m.heightLocalUnits)).join('；')}；单位为局部 Unity 单位。`,'未应用最终根节点缩放、骨骼姿态与装配；不能直接当成真实身高。');
- const hasPrediction=Object.keys(loaded).some(k=>/anticipate|predict|target|aim/i.test(k))||rev.length+shot.length>0;
- add('纯 AI 调参边界',hasPrediction?'文件含预判/瞄准相关键或武器距离分段。':'未发现明显的预判/瞄准键。','当前内置资料可以提供候选武器速度、角色骨骼候选和移动实测基准。','此报告只做离线证据关联，不自动生成/修改瞄准或目标预判数值；关键单位和对象映射未被证明。');
- renderRows(rows);
- report={reportType:'offline-game-data-association-diagnostic',createdAt:new Date().toISOString(),inputFileName:loadedName,inputTopLevelKeys:Object.keys(loaded),summary:{revolverSegments:rev.length,shotgunSegments:shot.length,revolverFlyTrend:trend(rev),shotgunFlyTrend:trend(shot)},rows:rows.map(r=>({item:r[0],inputEvidence:r[1],gameReference:r[2],conclusion:r[3]})),references:{movementConfig:REF.movementConfig,measurements:REF.measurements,weaponConfigs:REF.weapons,characterCandidates:REF.characters,modelMeshEnvelopes:REF.meshEnvelopes},notes:['本报告不包含上传 JSON 的完整原始内容。','MuzzleVelocity 与 flySpeed/landSpeed 未证实同单位或同语义。','未自动更改任何参数。']};
- $('pureAIState').textContent='分析完成';$('pureAISummary').textContent=`已完成本地关联分析：${rev.length} 条左轮分段、${shot.length} 条喷子分段。检测到的曲线趋势是当前 JSON 参数的数学趋势，不代表角色移动速度的物理规律。未修改原 JSON，也未将其嵌入 HTML。`;
- $('pureAIExport').disabled=false;
-});
-$('pureAIExport').addEventListener('click',()=>{if(!report)return;const blob=new Blob([JSON.stringify(report,null,2)+'\n'],{type:'application/json;charset=utf-8'});const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='离线AI游戏数据关联诊断.json';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1200);});
 })();
 </script>
 
