@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#080b12">
 <meta name="description" content="默默 AI 推算：本地 JSON 参数识别、线性趋势可视化与诊断报告。">
-<title>默默 AI 推算 · 本地参数诊断台</title>
+<title>默默 AI 推算 · 参数诊断台</title>
 <style>
 :root{color-scheme:dark;--bg:#080b12;--panel:#0e1320;--panel2:#111a2a;--line:#202b3e;--text:#eef3ff;--muted:#8e9bb2;--blue:#76a8ff;--blue2:#2d62d8;--orange:#ffbd70;--green:#62e4b2;--red:#ff8e9b;--r:20px}
 *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:radial-gradient(ellipse at 12% -12%,#1b3159 0,transparent 38%),radial-gradient(ellipse at 100% 15%,#171c35 0,transparent 34%),var(--bg);color:var(--text);font:15px/1.55 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Noto Sans SC",sans-serif}
@@ -22,19 +22,43 @@ header{display:flex;justify-content:space-between;align-items:center;gap:12px;ma
 @media(max-width:680px){.app{padding:14px 11px calc(24px + env(safe-area-inset-bottom))}header{align-items:flex-start;margin-bottom:12px}.logo{width:39px;height:39px;border-radius:13px}.brand h1{font-size:18px}.tagline{font-size:11px;max-width:215px}.chips{max-width:112px}.chip{font-size:10px;padding:4px 7px}.hero{padding:18px 16px;border-radius:20px;margin-bottom:11px}.hero h2{font-size:25px}.hero p{font-size:12px}.hero-actions{display:grid;grid-template-columns:1fr 1fr}.hero-actions .btn{padding:10px 8px;font-size:12px}.grid,.two{grid-template-columns:1fr;gap:11px}.card{padding:14px;border-radius:17px}.card-head{margin-bottom:10px}.drop{padding:20px 11px}.metrics{gap:7px}.metric{padding:10px;min-height:86px}.metric .label{font-size:10px}.metric strong{font-size:19px}.report-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.report-item{padding:10px}.report-item strong{font-size:16px}.chartbox{height:230px}.btn{min-height:43px}.actions .btn{flex:1}.table-wrap{max-height:300px}}
 @media(max-width:360px){.tagline{max-width:165px}.chips{max-width:90px}.metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.hero-actions{grid-template-columns:1fr}.hero h2{font-size:23px}}
 
+.license-card{margin-top:14px;border-color:#314463}.license-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}.license-card input,.license-card select{width:100%;min-width:0;background:#080f1b;color:var(--text);border:1px solid #2b3c58;border-radius:10px;padding:11px}.license-status{margin-top:10px;padding:10px 12px;border:1px solid #26344a;border-radius:11px;color:var(--muted);font-size:12px;white-space:pre-wrap}.license-status.good{color:var(--green);border-color:#245b4c}.license-status.bad{color:var(--red);border-color:#6b3440}.license-list{display:grid;gap:7px;margin-top:10px}.license-row{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px;border:1px solid #202c40;border-radius:10px;background:#0a101a;font-size:12px}.license-row span{overflow-wrap:anywhere}.gate{position:fixed;inset:0;z-index:9999;background:#080b12f5;display:flex;align-items:center;justify-content:center;padding:20px}.gate-box{width:min(100%,420px);padding:22px;border:1px solid #314463;border-radius:20px;background:#101725;box-shadow:0 20px 70px #0008}.gate-box h2{margin:0 0 7px}.gate-box p{color:#9cacc4;font-size:13px}.gate-box input{width:100%;background:#080f1b;color:white;border:1px solid #2b3c58;border-radius:11px;padding:13px;margin:7px 0 10px}.gate-actions{display:grid;gap:8px}.gate small{display:block;color:#7788a3;margin-top:12px;font-size:11px}@media(max-width:420px){.license-grid{grid-template-columns:1fr}.license-row{align-items:flex-start;flex-direction:column}}
 
-.advanced-panel{margin:14px 0;border:1px solid var(--line);border-radius:16px;background:#0b111c;overflow:hidden}
-.advanced-panel>summary{cursor:pointer;list-style:none;padding:14px 16px;color:#c5d6f2;font-weight:750}
-.advanced-panel>summary::-webkit-details-marker{display:none}
-.advanced-panel>summary:after{content:"＋";float:right;color:var(--muted)}
-.advanced-panel[open]>summary:after{content:"−"}
-.advanced-panel>section{margin-top:0!important}
-.hidden-tech-panel{display:none!important}
+
+.movement-grid .speed-row{display:grid;grid-template-columns:minmax(112px,190px) minmax(0,1fr) 70px;align-items:center;gap:10px;border:1px solid #202c40;border-radius:12px;background:#0a101a;padding:10px 12px;font-size:12px}
+.movement-grid .speed-label{color:#dce6f7}.movement-grid .speed-track{height:10px;background:#182337;border-radius:99px;overflow:hidden}.movement-grid .speed-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,#477be7,#62e4b2)}.movement-grid .speed-value{text-align:right;color:#a9c5ff;font-weight:800;font-variant-numeric:tabular-nums}
+@media(max-width:520px){.movement-grid .speed-row{grid-template-columns:1fr 58px;gap:7px}.movement-grid .speed-track{grid-column:1 / -1;grid-row:2}.movement-grid .speed-value{grid-column:2;grid-row:1}}
+
 </style>
 </head>
 <body>
+<div class="gate" id="licenseGate">
+ <div class="gate-box">
+  <h2>默默 AI 推算 · 登录验证</h2>
+  <p>可以使用卡密进入，也可以使用管理员账号登录。本页面为纯离线本地验证。</p>
+  <input id="licenseInput" placeholder="请输入卡密" autocomplete="off" autocapitalize="characters">
+  <div class="gate-actions"><button class="btn primary" id="verifyLicense" type="button">卡密验证并进入</button></div>
+  <div style="height:1px;background:#26344a;margin:16px 0"></div>
+  <h3 style="margin:0 0 8px;font-size:15px">管理员登录</h3>
+  <input id="adminUsername" placeholder="管理员账号" autocomplete="username" autocapitalize="off">
+  <input id="adminPassword" type="password" placeholder="管理员密码" autocomplete="current-password">
+  <div class="gate-actions"><button class="btn" id="adminLogin" type="button">管理员登录</button></div>
+  <div class="license-status" id="gateStatus">等待输入卡密或管理员账号。</div>
+  <small>提示：离线 HTML 中的账号密码可被查看或修改，只适合个人本地使用，不属于安全的服务器授权。</small>
+ </div>
+</div>
 <div class="app">
-
+<section class="card license-card" id="licenseManager" style="display:none">
+ <div class="card-head"><div><h3>管理员 · 卡密管理</h3><div class="kicker">新增、停用、删除卡密；数据保存在当前浏览器本地</div></div><span class="num" id="licenseCount">0 个卡密</span></div>
+ <div class="license-grid">
+  <input id="newLicenseValue" placeholder="输入新卡密，例如 MOMO-2026-001" autocomplete="off" autocapitalize="characters">
+  <input id="newLicenseExpiry" type="date" aria-label="卡密到期日期（可选）">
+ </div>
+ <label style="display:flex;align-items:center;gap:8px;margin-top:10px;font-size:12px;color:var(--muted)"><input id="newLicenseNoExpiry" type="checkbox" checked style="width:auto"> 永不过期</label>
+ <div class="actions"><button class="btn primary" id="addLicenseBtn" type="button">＋ 添加卡密</button><button class="btn secondary" id="exportLicensesBtn" type="button">导出卡密备份</button><button class="btn secondary" id="importLicensesBtn" type="button">导入卡密备份</button><button class="btn secondary" id="adminLogoutBtn" type="button">管理员退出</button><input id="importLicensesFile" type="file" accept=".json,application/json" style="display:none"></div>
+ <div class="license-status" id="licenseManagerStatus">卡密列表只保存在当前浏览器；清除浏览器数据可能会丢失，请定期导出备份。</div>
+ <div class="license-list" id="licenseList"><div class="empty">暂无卡密</div></div>
+</section>
 <header>
   <div class="brand"><div class="logo">M</div><div><h1>默默 AI 推算</h1><div class="tagline">参数识别 · 趋势分析 · 结构诊断</div></div></div>
   <div class="chips"><span class="chip">移动端优化版</span><span class="chip local">本地处理</span></div>
@@ -51,7 +75,6 @@ header{display:flex;justify-content:space-between;align-items:center;gap:12px;ma
     <button class="btn secondary" id="reset" type="button">重置页面</button>
     <input class="file-input" id="file" type="file" accept=".json,application/json">
   </div>
-  <div class="status">本工具为离线本地页面，不提供真正的账号/卡密安全验证。请勿将敏感凭据或不应公开的数据嵌入 HTML；页面内置的数据与算法都可被查看。</div>
 </section>
 
 <div class="grid">
@@ -104,23 +127,20 @@ header{display:flex;justify-content:space-between;align-items:center;gap:12px;ma
 </section>
 
 
-<details class="advanced-panel hidden-tech-panel"><summary>角色与武器数值库（高级数据） · 点击展开</summary>
 <section class="card report" id="verifiedGameStats">
  <div class="card-head"><div><h3>⑨ 角色与武器数值库</h3><div class="kicker">独立只读资料表：只显示有来源依据的数值，不把目录关键词当成真实数值</div></div><span class="num" id="statsDbState">等待数据</span></div>
- <div class="status">当前重点：角色移动速度及其随时间递增的实测趋势。有效射程与每秒射速不再作为本轮分析目标；武器字段仅保留为已有归档资料。下方数据库列出的值均保留原始来源，未确认单位或对象关系的值不会被冒充为真实物理数值。</div>
+ <div class="status">字段重点：角色移动速度与模型关联；武器弹速、伤害作为辅助数据。下方“已解码配置表与模型网格数据库”已给出可核实的配置字段和来源；此旧表仍用于导入你自己补充的逐角色实测数据。未确认单位或对象关系的值不会被冒充为真实物理数值。</div>
  <div class="actions"><label class="btn secondary" for="statsDbFile">导入已核实的数值 JSON</label><input id="statsDbFile" type="file" accept=".json,application/json" style="display:none"><button class="btn secondary" id="statsDbTemplate" type="button">导出 JSON 模板</button><button class="btn secondary" id="statsDbExport" type="button" disabled>导出当前资料</button></div>
  <div class="metrics" style="margin-top:12px"><div class="metric"><div class="label">角色记录</div><strong id="statsDbChars">0</strong><small>含来源字段的记录</small></div><div class="metric"><div class="label">武器记录</div><strong id="statsDbWeapons">0</strong><small>含来源字段的记录</small></div><div class="metric"><div class="label">字段缺失</div><strong id="statsDbMissing">—</strong><small>只统计已导入记录</small></div></div>
  <div class="grid" style="margin-top:12px"><div><label class="kicker" for="statsDbSearch">搜索名称 / 来源</label><input id="statsDbSearch" class="btn" style="width:100%;margin-top:7px;text-align:left" placeholder="输入角色名、武器名或文件路径"></div><div><label class="kicker" for="statsDbType">记录类型</label><select id="statsDbType" class="btn" style="width:100%;margin-top:7px"><option value="all">全部</option><option value="characters">角色</option><option value="weapons">武器</option></select></div></div>
  <div class="table-wrap" style="margin-top:10px;max-height:420px"><table><thead><tr><th>类型</th><th>名称</th><th>身高</th><th>移动速度</th><th>弹速</th><th>伤害</th><th>射程</th><th>来源 / 说明</th></tr></thead><tbody id="statsDbRows"><tr><td colspan="8">尚无已核实数值。请导入带来源的 JSON；不会用推测值填充。</td></tr></tbody></table></div>
  <div class="status" id="statsDbNote">JSON 模板会包含所有目标字段与 source 字段。数值单位请在 units 中明确注明；无法核实的字段留空。</div>
 </section>
-</details>
 
 
-<details class="advanced-panel hidden-tech-panel"><summary>UnityFS 深层解析报告（开发者） · 点击展开</summary>
 <section class="card report" id="unityDeepParse">
  <div class="card-head"><div><h3>⑪ UnityFS 深层解析结果</h3><div class="kicker">已解析配置资源的 ObjectInfo/TypeTree、配置表记录与 DLL 字段名；并扫描 1,451 个 UnityFS 包</div></div><span class="num">容器解包成功</span></div>
- <div class="status">进展：已解析 config 的 884 个 TextAsset 配置表、101,285 条记录，解析 UpdateScript_500.dll 的字段元数据，并扫描 1,451 个 UnityFS 包中的 1,454 个 Mesh 对象。当前优先核查移动速度字段与用户提供的递增实测读数；gameWalkSpeed=0.4 是体型配置字段，单位未标注，不能直接视为逐角色实测速度。</div>
+ <div class="status">进展：已解析 config 的 884 个 TextAsset 配置表、101,285 条记录，解析 UpdateScript_500.dll 的字段元数据，并扫描 1,451 个 UnityFS 包中的 1,454 个 Mesh 对象。枪械 MuzzleVelocity、弹药 Damage 与体型 gameWalkSpeed 已关联到明确字段；逐角色真实身高、射速、射程和未标注单位仍保持待核实。</div>
  <div class="metrics" style="margin-top:12px"><div class="metric"><div class="label">config 解包后</div><strong>5.11 MB</strong><small>39 个压缩数据块</small></div><div class="metric"><div class="label">baseplayer 解包后</div><strong>558 KB</strong><small>5 个压缩数据块</small></div><div class="metric"><div class="label">已映射字段记录</div><strong>17</strong><small>11 条 MuzzleVelocity、5 条 Damage、1 条 gameWalkSpeed</small></div></div>
  <div class="table-wrap" style="margin-top:10px"><table><thead><tr><th>资源/字段</th><th>来源与证据</th><th>当前结论</th></tr></thead><tbody>
  <tr><td>MoveSpeed（偏移 0x32EE91）</td><td>4.zip / data/config.ab_u_221fde080da3de8868bf73da1477e6eb；邻近文本 ID 60069</td><td>字段标识符已找到；具体数值、单位和对象对应关系未核实</td></tr>
@@ -131,16 +151,14 @@ header{display:flex;justify-content:space-between;align-items:center;gap:12px;ma
  <div class="actions"><button class="btn primary" id="exportUnityDeepReport" type="button">导出本轮深层解析报告 JSON</button></div>
  <div class="status">剩余技术关卡是将每个可玩角色的骨骼/Transform/网格边界完整关联，并确认枪械射速、射程和速度单位。已解析的局部子网格 AABB 仅作为模型资源证据，不会被当作人物身高。</div>
 </section>
-</details>
 <script>
 (function(){const data={"title":"UnityFS/配置表/网格对象解析阶段报告","source_archives":["1.zip","2.zip","3.zip","4.zip"],"method":"对4.zip的UnityFS容器和LZ4块进行离线解包；解析Unity SerializedFile的TypeTree与ObjectInfo；从config资源中提取884个TextAsset配置表，并以三字节大端长度前缀解析protobuf-wire记录；读取UpdateScript_500.dll的.NET元数据以核实关键字段名称；扫描全部data/目录UnityFS资源并记录Mesh对象名称。","config_decode":{"source":"4.zip:data/config.ab_u_221fde080da3de8868bf73da1477e6eb","textasset_tables":884,"fully_parsed_tables":809,"empty_or_header_tables":70,"partially_parsed_tables":["CzrIntimateLevelConfig","LanguageLibConfig","WarmRoomConfig","PeakMatchOccConfig","GunTypeConfig"],"parsed_rows":101285,"decoded_bytes":4977568,"notes":"5张表保留未解析尾段；其余空/头部表不伪造记录。"},"unityfs_scan":{"bundles_scanned":1451,"unpacked_bytes":777683169,"mesh_objects":1454,"unique_mesh_names":918,"mesh_objects_with_partial_submesh_bounds":115,"notes":"网格清单覆盖所有扫描到的data/目录UnityFS包；局部AABB为子网格/部分解析结果，不可直接等同角色身高。"},"verified_field_values":{"body_type_gameWalkSpeed":{"value":0.4,"unit":null,"source_table":"SomatotypeConfig","field":"gameWalkSpeed","status":"字段名称和序列化值已关联；单位未标注，不代表每个角色的实际移动速度。"},"weapon_MuzzleVelocity":{"records":11,"source_table":"GunItemConfig","field":"MuzzleVelocity","status":"字段名称已由DLL类型定义确认；单位未标注，未换算为m/s。"},"ammo_Damage":{"records":5,"source_table":"AmmoItemConfig","field":"Damage","status":"字段名称已由DLL类型定义确认；是配置值，不保证等于所有距离/命中部位的最终结算伤害。"},"mesh_agent_Height":{"records":3,"source_table":"MeshAgentTypeConfig","field":"Height","status":"代理/碰撞维度，不是每个角色的网格真实身高。"}},"not_yet_verified":["每个可玩角色的真实身高（尚未把网格、骨骼、Transform与最终世界缩放完整关联）","每个角色的实际移动速度与单位（目前只确认共用体型gameWalkSpeed=0.4）","武器每秒射速/射击间隔（没有可靠映射的字段）","武器有效射程（没有可靠映射的枪械射程字段）","MuzzleVelocity的物理单位（配置未标注）"],"model_mesh_sample":{"name":"Mod_Character_Alice_18_Arm_04e5826d","path":"data/res_program/res_program_mod_character_alice_suit_18.ab_u_f5f88e78f23d1fec94a341b477f37e2c","status":"仅为手臂网格的部分子网格AABB，不代表完整角色高度。"},"data_export":"使用“配置解码库”中的导出按钮可导出全部结构化配置表、已核实字段汇总和1454条Mesh对象清单。"};const b=document.getElementById('exportUnityDeepReport');if(b)b.addEventListener('click',()=>{const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json;charset=utf-8'});const u=URL.createObjectURL(blob);const a=document.createElement('a');a.href=u;a.download='UnityFS深层解析报告.json';a.click();setTimeout(()=>URL.revokeObjectURL(u),1000);});})();
 </script>
 
 
-<details class="advanced-panel hidden-tech-panel"><summary>已解码配置表与模型网格数据库（开发者） · 点击展开</summary>
 <section class="card report" id="gameDataWorkbench">
  <div class="card-head"><div><h3>⑫ 已解码配置表与模型网格数据库</h3><div class="kicker">配置对象、字段名、武器速度值与1454条 Mesh 对象清单；可离线搜索、查看和导出</div></div><span class="num" id="gameDbState">索引就绪</span></div>
- <div class="status">本轮从 4.zip 的 UnityFS 配置资源中提取了 884 个 TextAsset 表，解析出 101,285 条配置记录；已从 UpdateScript_500.dll 类型定义中确认 GunItemConfig.MuzzleVelocity、AmmoItemConfig.Damage、SomatotypeConfig.gameWalkSpeed 等字段。另扫描了 data/ 下 1,451 个 UnityFS 包并记录 1,454 个 Mesh 对象，其中 1,200 个成功读取完整 Mesh 局部 AABB；根据 Suit/Head 同源模型组得到 3 组约 2.475–2.493 Unity 局部单位的包络高度估算。所有数字均保留来源和字段编号；未知单位不换算，局部网格边界不冒充角色真实身高。</div>
+ <div class="status">本轮联合使用 1.zip 恢复出的模型/资源名称索引与 4.zip 的 UnityFS 配置资源；从 4.zip 提取了 884 个 TextAsset 表，解析出 101,285 条配置记录；已从 UpdateScript_500.dll 类型定义中确认 GunItemConfig.MuzzleVelocity、AmmoItemConfig.Damage、SomatotypeConfig.gameWalkSpeed 等字段。另扫描了 data/ 下 1,451 个 UnityFS 包并记录 1,454 个 Mesh 对象，其中 1,200 个成功读取完整 Mesh 局部 AABB；根据 Suit/Head 同源模型组得到 3 组约 2.475–2.493 Unity 局部单位的包络高度估算。所有数字均保留来源和字段编号；未知单位不换算，局部网格边界不冒充角色真实身高。</div>
  <div class="metrics" style="margin-top:12px">
   <div class="metric"><div class="label">配置表 / 记录</div><strong>884 / 101,285</strong><small>809 张表完整解析；70 张空/头部表；5 张保留未解析尾段</small></div>
   <div class="metric"><div class="label">Mesh 对象</div><strong>1,454</strong><small>918 个不同名称，1,200 个 Mesh 已解析完整局部 AABB，覆盖 1,451 个 UnityFS 包</small></div>
@@ -154,11 +172,27 @@ header{display:flex;justify-content:space-between;align-items:center;gap:12px;ma
  <div class="table-wrap" style="margin-top:10px;max-height:380px"><table><thead id="gameDbHead"><tr><th>配置表</th><th>记录数</th><th>原始字节</th><th>解析状态</th><th>样例</th><th>操作</th></tr></thead><tbody id="gameDbRows"></tbody></table></div>
  <div class="status" id="gameDbStatus" role="status" aria-live="polite">配置表名、大小、记录数与样例已内嵌，可立即搜索；首次查看完整记录时会在本地解压约 1.6 MB 的数据包（展开后约 10.1 MB），不上传到网络。</div>
  <div class="table-wrap" id="gameDbDetailWrap" style="margin-top:10px;max-height:420px;display:none"><table><thead id="gameDbDetailHead"></thead><tbody id="gameDbDetailRows"></tbody></table></div>
- <div class="status">移动速度关键结果：标准体型配置 gameWalkSpeed=0.4（单位未标注），目前没有证据证明它就是运行时随时间变化的实际速度。请使用第⑬节记录同一角色在不同时间点的测量读数，以检查增量、变化率和趋势。有效射程与每秒射速不在当前分析重点；模型局部边界仍不能直接当作真实身高。</div>
+ <div class="status">关键结果与边界：枪械配置明确给出 MuzzleVelocity（11 条），弹药配置明确给出 Damage（5 条），标准体型配置 gameWalkSpeed=0.4（单位未标注）。没有可靠证据把该速度换算成 m/s，也没有逐角色真实身高、枪械射速或有效射程的已核实值。MeshAgentTypeConfig.Height 是代理/碰撞维度；Alice 手臂网格的局部 AABB 也不是完整人物高度。现已提取基础人物模型组的网格局部包络估算，但仍未确认单位换算和最终 Transform 缩放。</div>
 </section>
-</details>
 
-<details class="advanced-panel hidden-tech-panel"><summary>压缩包字段证据与模型候选库（开发者） · 点击展开</summary>
+<section class="card report" id="movementReferenceWorkbench">
+ <div class="card-head"><div><h3>⑬ 移动速度重点库 · 1.zip + 4.zip 联合关联</h3><div class="kicker">优先记录移动速度；区分游戏配置字段与“制造者实测”，不把不同来源混为一谈</div></div><span class="num" id="movementReferenceState">内置数据</span></div>
+ <div class="status">联合解码说明：1.zip 的恢复资源中包含 meta_assets.bytes 资源/模型名称索引与 baseplayer 相关资源；4.zip 的 config 资源解析出 RoleConfig、SomatotypeConfig 等结构化配置。通过角色资源名、BaseBone 与配置表建立候选关联。注意：此前恢复报告显示 1.zip 的 ZIP 中央目录不完整，已恢复文件并非完整原包；4.zip 的配置字段值可独立核实，但两包中同名资源不代表字节完全相同。</div>
+ <div class="metrics" style="margin-top:12px">
+  <div class="metric"><div class="label">配置字段 gameWalkSpeed</div><strong class="blue">0.4</strong><small>SomatotypeConfig · field #6；单位未标注</small></div>
+  <div class="metric"><div class="label">实测行走 / 奔跑</div><strong>5.3 / 10.3</strong><small>制造者实测；保留原始读数，不换算单位</small></div>
+  <div class="metric"><div class="label">水平飞行观察峰值</div><strong class="green">20</strong><small>单方向持续飞行；制造者实测</small></div>
+ </div>
+ <div class="movement-grid" id="movementSpeedBars" style="display:grid;gap:10px;margin-top:14px"></div>
+ <div class="table-wrap" style="margin-top:12px"><table><thead><tr><th>模式 / 观察项</th><th>记录值</th><th>证据类型</th><th>说明</th></tr></thead><tbody id="movementReferenceRows"></tbody></table></div>
+ <div class="grid" style="margin-top:12px">
+  <div class="status"><b>1.zip 资源侧证据</b><br>资源索引：<code>assets/android/data/meta_assets.bytes_u_b0c38f54275e36d912425af4555b61c0</code><br>相关资源：<code>assets/android/data/config.ab_u_221fde080da3de8868bf73da1477e6eb</code>、<code>baseplayer</code>、<code>ClothBaseBone3_notControl</code>、<code>Mod_Character_*</code>。这些用于建立模型与骨骼的候选映射，不是移动速度数值本身。</div>
+  <div class="status"><b>4.zip 配置侧证据</b><br>配置资源：<code>data/config.ab_u_221fde080da3de8868bf73da1477e6eb</code><br>已确认：<code>SomatotypeConfig.gameWalkSpeed = 0.4</code>（单位未知）；<code>RoleConfig</code> 中有角色 ID、BaseBone 和动画控制器。暂未证明 0.4 与实测读数采用同一单位或相同计算阶段。</div>
+ </div>
+ <div class="status" style="margin-top:12px"><b>当前移动模型假设（待进一步实测验证）</b><br>① 行走、奔跑、增益奔跑、水平飞行先作为不同运动状态分别建档；② 垂直飞行记录为“速度随持续上升而递增”的观察，不虚构固定上限；③ 地图空气墙、碰撞模型是否限制垂直速度，需要用相同角色、相同场景、固定计时的重复实验验证。此库只用于离线数据分析与实验记录，不连接游戏进程、不自动写入游戏或操控角色。</div>
+ <div class="actions"><button class="btn primary" id="exportMovementReference" type="button">导出移动速度联合数据 JSON</button><button class="btn secondary" id="exportArchiveJoinEvidence" type="button">导出 1.zip + 4.zip 关联证据</button></div>
+</section>
+
 <section class="card report" id="gameEvidenceCatalog">
  <div class="card-head"><div><h3>⑩ 压缩包字段证据与模型候选库</h3><div class="kicker">从本次上传的 1.zip–4.zip 中按路径和精确标识符扫描生成，并直接嵌入本 HTML 源码</div></div><span class="num" id="evidenceCount">读取中…</span></div>
  <div class="status">数据边界：该库把资源路径和可读标识符作为检索线索，不把它们伪装成真实数值。当前扫描能确认 config 资源里存在 MoveSpeed2、QSpeed、Damage_ 等标识符，以及若干武器/子弹音效名称；该候选索引本身不保存数值；下方新数据库已映射 11 条枪械 MuzzleVelocity、5 条弹药 Damage 与 1 条体型 gameWalkSpeed。逐角色真实身高、射速、射程和单位仍待核实。此索引只读，不会把数据自动写入游戏或用于实时控制。 </div>
@@ -168,11 +202,9 @@ header{display:flex;justify-content:space-between;align-items:center;gap:12px;ma
  <div class="table-wrap" style="margin-top:10px;max-height:420px"><table><thead><tr><th>压缩包</th><th>类别</th><th>资源路径</th><th>大小</th><th>命中标识符</th><th>数值状态</th></tr></thead><tbody id="evidenceRows"><tr><td colspan="6">正在载入嵌入索引…</td></tr></tbody></table></div>
  <div class="status" id="evidenceStatus">证据列表内嵌在 HTML 中，可离线搜索与导出。未核实的真实身高、移动速度、弹速、射速和射程不会被自动填入。</div>
 </section>
-</details>
 
-<details class="advanced-panel hidden-tech-panel"><summary>游戏资源索引库（开发者） · 点击展开</summary>
 <section class="card report" id="gameResourceExplorer">
- <div class="card-head"><div><h3>⑦ 游戏资源索引库</h3><div class="kicker">内置 1.zip–4.zip 文件目录索引；可搜索资源路径、筛选候选类别并导出清单</div></div><span class="num" id="resourceCount">读取索引中…</span></div>
+ <div class="card-head"><div><h3>⑦ 游戏资源索引库</h3><div class="kicker">内置 1.zip–4.zip 联合资源目录索引；可搜索资源路径、筛选候选类别并导出清单</div></div><span class="num" id="resourceCount">读取索引中…</span></div>
  <div class="grid">
   <div><label class="kicker" for="resourceSearch">搜索文件名或路径</label><input id="resourceSearch" class="btn" style="width:100%;margin-top:7px;text-align:left" placeholder="例如 weapon、model、config、.ab_u_…"></div>
   <div><label class="kicker" for="resourceArchive">压缩包</label><select id="resourceArchive" class="btn" style="width:100%;margin-top:7px"><option value="all">全部压缩包</option><option>1.zip</option><option>2.zip</option><option>3.zip</option><option>4.zip</option></select></div>
@@ -189,7 +221,6 @@ header{display:flex;justify-content:space-between;align-items:center;gap:12px;ma
  <div class="table-wrap" style="margin-top:10px;max-height:420px"><table><thead><tr><th>压缩包</th><th>候选类别</th><th>资源路径</th><th>原始大小</th></tr></thead><tbody id="resourceRows"></tbody></table></div>
  <div class="status" id="resourceStatus" role="status" aria-live="polite">索引已嵌入网页源码，可离线搜索。</div>
 </section>
-</details>
 
 <section class="card report" id="optimizer">
   <div class="card-head"><div><h3>④ 趋势检测与自动优化</h3><div class="kicker">先检测四组趋势，再按目标生成建议；仅预览，不自动改写原文件</div></div><span class="num" id="optState">等待数据</span></div>
@@ -489,7 +520,101 @@ $('reportCsv').addEventListener('click',()=>{
  setStatus('诊断报告 CSV 已导出。报告只包含统计结果和结构提醒。','good');
 });
 
-// 已移除仅在前端生效的卡密/管理员验证：离线 HTML 中的校验可被源码查看或绕过。'' '
+// ==================== 卡密管理与本地管理员登录 ====================
+// 说明：纯离线 HTML 只能将卡密保存在当前浏览器，不会自动同步到其他设备或 HTML 副本。
+// 需要跨设备共享/真正安全的授权时，必须使用后端服务。
+const DEFAULT_LICENSE_KEYS = [{value:'MOMO',expiry:'',enabled:true}];
+const LICENSE_STORAGE_KEY = 'momo_ai_license_keys_v2';
+const LEGACY_LICENSE_STORAGE_KEY = 'momo_ai_license_keys_v1';
+const todayISO=()=>new Date().toISOString().slice(0,10);
+const safeReadLicenses=()=>{
+ try {
+  let raw=localStorage.getItem(LICENSE_STORAGE_KEY);
+  if(!raw){
+   // 首次打开新版本时迁移旧卡密；默认加入用户指定的 MOMO，避免旧版本保存过空列表导致无法登录。
+   const legacyRaw=localStorage.getItem(LEGACY_LICENSE_STORAGE_KEY);
+   let legacy=[];
+   if(legacyRaw){try{const old=JSON.parse(legacyRaw);if(Array.isArray(old))legacy=old;}catch(e){}}
+   const cleaned=legacy.filter(x=>x&&typeof x.value==='string').map(x=>({value:x.value.trim().toUpperCase(),expiry:typeof x.expiry==='string'?x.expiry:'',enabled:x.enabled!==false}));
+   if(!cleaned.some(x=>x.value==='MOMO'))cleaned.unshift({value:'MOMO',expiry:'',enabled:true});
+   try{localStorage.setItem(LICENSE_STORAGE_KEY,JSON.stringify(cleaned));}catch(e){}
+   return cleaned;
+  }
+  const parsed=JSON.parse(raw);
+  return Array.isArray(parsed)?parsed.filter(x=>x&&typeof x.value==='string').map(x=>({value:x.value.trim().toUpperCase(),expiry:typeof x.expiry==='string'?x.expiry:'',enabled:x.enabled!==false})):DEFAULT_LICENSE_KEYS.slice();
+ } catch(e) { return DEFAULT_LICENSE_KEYS.slice(); }
+};
+let LICENSE_KEYS=safeReadLicenses();
+function persistLicenses(){
+ try{localStorage.setItem(LICENSE_STORAGE_KEY,JSON.stringify(LICENSE_KEYS));return true;}
+ catch(e){setManagerMsg('保存失败：浏览器可能禁用了本地存储。请允许此页面使用网站数据，或导出备份。','bad');return false;}
+}
+function licenseIsValid(key){return !!key&&key.enabled!==false&&(!key.expiry||key.expiry>=todayISO());}
+function setGateMsg(msg,kind=''){const e=$('gateStatus');e.textContent=msg;e.className='license-status'+(kind?' '+kind:'');}
+function setManagerMsg(msg,kind=''){const e=$('licenseManagerStatus');if(!e)return;e.textContent=msg;e.className='license-status'+(kind?' '+kind:'');}
+function renderLicenseList(){
+ const host=$('licenseList'); if(!host)return;
+ $('licenseCount').textContent=LICENSE_KEYS.length+' 个卡密';
+ if(!LICENSE_KEYS.length){host.innerHTML='<div class="empty">暂无卡密，请在上方添加。</div>';return;}
+ host.innerHTML=LICENSE_KEYS.map((k,i)=>{
+  const expired=!!k.expiry&&k.expiry<todayISO();
+  const state=k.enabled===false?'已停用':expired?'已过期':'启用中';
+  const color=k.enabled===false||expired?'var(--orange)':'var(--green)';
+  return '<div class="license-row"><span><b>'+escAI(k.value)+'</b><br><small style="color:var(--muted)">到期：'+(k.expiry||'永不过期')+' · <span style="color:'+color+'">'+state+'</span></small></span><span style="display:flex;gap:6px;flex-wrap:wrap"><button class="btn secondary" type="button" data-license-toggle="'+i+'">'+(k.enabled===false?'启用':'停用')+'</button><button class="btn secondary" type="button" data-license-delete="'+i+'">删除</button></span></div>';
+ }).join('');
+}
+let adminMode=false;
+// 本地管理员凭据：按用户指定值设置。由于密码写在 HTML 中，不能抵御查看源码的人。
+const ADMIN_USERNAME = 'momonb';
+const ADMIN_PASSWORD = 'QX.';
+$('verifyLicense').addEventListener('click',()=>{
+ LICENSE_KEYS=safeReadLicenses();
+ const value=$('licenseInput').value.trim().toUpperCase();
+ const key=LICENSE_KEYS.find(k=>String(k.value||'').trim().toUpperCase()===value);
+ if(!licenseIsValid(key)){setGateMsg(key?'该卡密已停用或过期。':'卡密不存在，请检查输入。','bad');return;}
+ adminMode=false;$('licenseManager').style.display='none';$('licenseGate').style.display='none';setGateMsg('卡密验证通过。','good');
+});
+$('licenseInput').addEventListener('keydown',e=>{if(e.key==='Enter')$('verifyLicense').click();});
+$('adminLogin').addEventListener('click',()=>{
+ const username=$('adminUsername').value.trim();const password=$('adminPassword').value;
+ if(username===ADMIN_USERNAME && password===ADMIN_PASSWORD){
+  adminMode=true;LICENSE_KEYS=safeReadLicenses();$('licenseGate').style.display='none';$('licenseManager').style.display='block';renderLicenseList();setManagerMsg('管理员登录成功。新增或删除的卡密会保存到当前浏览器。','good');
+ }else setGateMsg('管理员账号或密码错误。','bad');
+});
+$('adminPassword').addEventListener('keydown',e=>{if(e.key==='Enter')$('adminLogin').click();});
+$('newLicenseNoExpiry').addEventListener('change',()=>{$('newLicenseExpiry').disabled=$('newLicenseNoExpiry').checked;});
+$('newLicenseExpiry').disabled=true;
+$('addLicenseBtn').addEventListener('click',()=>{
+ if(!adminMode){setManagerMsg('请先使用管理员账号登录。','bad');return;}
+ const value=$('newLicenseValue').value.trim().toUpperCase();const noExpiry=$('newLicenseNoExpiry').checked;const expiry=noExpiry?'':$('newLicenseExpiry').value;
+ if(!value){setManagerMsg('请先输入卡密内容。','bad');return;}
+ if(!noExpiry&&!expiry){setManagerMsg('请选择到期日期，或勾选“永不过期”。','bad');return;}
+ if(LICENSE_KEYS.some(k=>k.value.toUpperCase()===value)){setManagerMsg('这个卡密已经存在，请换一个。','bad');return;}
+ LICENSE_KEYS.push({value,expiry,enabled:true});
+ if(persistLicenses()){renderLicenseList();$('newLicenseValue').value='';$('newLicenseExpiry').value='';setManagerMsg('已添加卡密：'+value,'good');}
+});
+$('licenseList').addEventListener('click',e=>{
+ if(!adminMode)return;
+ const del=e.target.closest('[data-license-delete]');const tog=e.target.closest('[data-license-toggle]');
+ if(del){const i=Number(del.dataset.licenseDelete);if(!Number.isInteger(i)||!LICENSE_KEYS[i])return;const value=LICENSE_KEYS[i].value;if(!confirm('确定删除卡密 '+value+' 吗？'))return;LICENSE_KEYS.splice(i,1);if(persistLicenses()){renderLicenseList();setManagerMsg('已删除卡密：'+value,'good');}}
+ if(tog){const i=Number(tog.dataset.licenseToggle);if(!Number.isInteger(i)||!LICENSE_KEYS[i])return;LICENSE_KEYS[i].enabled=LICENSE_KEYS[i].enabled===false; if(persistLicenses()){renderLicenseList();setManagerMsg('卡密状态已更新。','good');}}
+});
+$('exportLicensesBtn').addEventListener('click',()=>{
+ if(!adminMode)return;
+ const blob=new Blob([JSON.stringify({format:'momo-ai-license-backup-v1',licenses:LICENSE_KEYS},null,2)+'\n'],{type:'application/json;charset=utf-8'});
+ const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='卡密备份.json';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1200);setManagerMsg('已导出卡密备份文件。请妥善保管。','good');
+});
+$('importLicensesBtn').addEventListener('click',()=>{if(adminMode)$('importLicensesFile').click();});
+$('importLicensesFile').addEventListener('change',async e=>{
+ const file=e.target.files&&e.target.files[0];if(!file||!adminMode)return;
+ try{const data=JSON.parse(await file.text());const list=Array.isArray(data)?data:data.licenses;if(!Array.isArray(list))throw new Error('文件中没有有效的 licenses 数组');
+  const cleaned=list.filter(k=>k&&typeof k.value==='string'&&k.value.trim()).map(k=>({value:k.value.trim().toUpperCase(),expiry:typeof k.expiry==='string'?k.expiry:'',enabled:k.enabled!==false}));
+  if(!confirm('导入将替换当前全部 '+LICENSE_KEYS.length+' 个卡密。文件内有 '+cleaned.length+' 个，是否继续？'))return;
+  LICENSE_KEYS=cleaned.filter((k,i,a)=>a.findIndex(x=>x.value===k.value)===i);if(persistLicenses()){renderLicenseList();setManagerMsg('导入完成，共 '+LICENSE_KEYS.length+' 个卡密。','good');}
+ }catch(err){setManagerMsg('导入失败：'+err.message,'bad');}finally{e.target.value='';}
+});
+$('adminLogoutBtn').addEventListener('click',()=>{adminMode=false;$('licenseManager').style.display='none';$('licenseGate').style.display='flex';$('adminUsername').value='';$('adminPassword').value='';setGateMsg('管理员已退出。','good');});
+// ==================== 卡密管理与本地管理员登录结束 ===================='' '
 
 
 // Offline data-driven optimizer: conservative numeric outlier cleanup only.
@@ -597,7 +722,7 @@ function getTag(row,n){const a=(row||[]).filter(x=>x[0]===n).map(x=>x[2]);return
 function roleRows(){return GAME_VERIFIED_STATS.character_roles.map(x=>({type:'角色资源',name:x.role_name||('Role '+x.id),id:x.id,height:'未核实',speed:'未核实',bullet:'—',damage:'—',range:'—',source:x.source_path+' / RoleConfig',detail:`BaseBone=${x.base_bone}; Animator=${x.anim_controller}; HeadIcon=${x.head_icon}; nameId=${x.name_id}`}))}
 function weaponRows(){return GAME_VERIFIED_STATS.weapon_configs.map(x=>({type:'枪械配置',name:x.name||('未知名称 ID '+x.id),id:x.id,height:'—',speed:'—',bullet:x.MuzzleVelocity??'未配置',damage:'—',range:'未核实',source:'4.zip / '+x.source_table+' / field#6 MuzzleVelocity',detail:`ShootLimit=${x.ShootLimit??'未记录'}; Distribution=${x.Distribution??'未记录'}; 单位未标注`}))}
 function ammoRows(){return GAME_VERIFIED_STATS.ammo_configs.map(x=>({type:'弹药配置',name:x.name||('Ammo '+x.id),id:x.id,height:'—',speed:'—',bullet:'—',damage:x.Damage??'未配置',range:'—',source:'4.zip / AmmoItemConfig / field#3 Damage',detail:`DistributionType=${x.DistributionType??'—'}; Shots=${x.Shots??'—'}; 最终结算机制未核实`}))}
-function movementRows(){const a=[];for(const x of GAME_VERIFIED_STATS.body_type_walk_speed)a.push({type:'体型移动配置',name:x.body_type_name||'标准体型',id:x.id,height:'未核实',speed:x.gameWalkSpeed,bullet:'—',damage:'—',range:'—',source:'SomatotypeConfig / gameWalkSpeed field#6',detail:'单位未标注；不是逐角色实测速度'});for(const x of GAME_VERIFIED_STATS.mesh_agent_dimensions)a.push({type:'代理/碰撞尺寸',name:'MeshAgentType '+x.id,id:x.id,height:x.Height,speed:'—',bullet:'—',damage:'—',range:'—',source:'MeshAgentTypeConfig / Height field#5',detail:`Radius=${x.Radius}; 不是人物模型真实身高`});for(const x of GAME_VERIFIED_STATS.farm_creature_speed_configs)a.push({type:'农场生物速度',name:x.name,id:x.id,height:'—',speed:x.Speed,bullet:'—',damage:'—',range:'—',source:'FarmMonsterConfig / Speed field#6',detail:'不是玩家角色移动速度'});for(const x of GAME_VERIFIED_STATS.pet_appearance_configs)a.push({type:'宠物移动配置',name:x.GamePetRes||x.PetRes,id:x.id,height:'未核实',speed:x.PetMoveSpeed,bullet:'—',damage:'—',range:'—',source:'PetAppearanceConfig / PetMoveSpeed field#10',detail:`PetScale=${x.PetScale??'—'}; PetGameNameHeight=${x.PetGameNameHeight??'—'}; 单位未标注`});for(const x of GAME_VERIFIED_STATS.pet_height_configs)a.push({type:'宠物高度配置',name:'Pet '+x.pet_id+' level '+x.level,id:x.id,height:x.PetHeight,speed:'—',bullet:'—',damage:'—',range:'—',source:'PetConfig / PetHeight field#31',detail:'显式宠物配置值；未确认等于网格实际高度'});for(const x of GAME_VERIFIED_STATS.model_mesh_envelopes||[])a.push({type:'基础角色网格包络估算',name:x.model_group,id:x.mesh_count,height:x.height_local_units+' Unity局部单位',speed:'—',bullet:'—',damage:'—',range:'—',source:'Mesh localAABB / '+x.source_meshes.length+' 个Suit/Head网格',detail:x.status+'；Y范围 '+x.y_min_local+' 至 '+x.y_max_local+'；单位不是已确认的米'});return a}
+function movementRows(){const a=[];for(const x of GAME_VERIFIED_STATS.body_type_walk_speed)a.push({type:'体型移动配置',name:x.body_type_name||'标准体型',id:x.id,height:'未核实',speed:x.gameWalkSpeed,bullet:'—',damage:'—',range:'—',source:'SomatotypeConfig / gameWalkSpeed field#6',detail:'单位未标注；不是逐角色实测速度'});for(const x of GAME_VERIFIED_STATS.mesh_agent_dimensions)a.push({type:'代理/碰撞尺寸',name:'MeshAgentType '+x.id,id:x.id,height:x.Height,speed:'—',bullet:'—',damage:'—',range:'—',source:'MeshAgentTypeConfig / Height field#5',detail:`Radius=${x.Radius}; 不是人物模型真实身高`});for(const x of GAME_VERIFIED_STATS.farm_creature_speed_configs)a.push({type:'农场生物速度',name:x.name,id:x.id,height:'—',speed:x.Speed,bullet:'—',damage:'—',range:'—',source:'FarmMonsterConfig / Speed field#6',detail:'不是玩家角色移动速度'});for(const x of GAME_VERIFIED_STATS.pet_appearance_configs)a.push({type:'宠物移动配置',name:x.GamePetRes||x.PetRes,id:x.id,height:'未核实',speed:x.PetMoveSpeed,bullet:'—',damage:'—',range:'—',source:'PetAppearanceConfig / PetMoveSpeed field#10',detail:`PetScale=${x.PetScale??'—'}; PetGameNameHeight=${x.PetGameNameHeight??'—'}; 单位未标注`});for(const x of GAME_VERIFIED_STATS.pet_height_configs)a.push({type:'宠物高度配置',name:'Pet '+x.pet_id+' level '+x.level,id:x.id,height:x.PetHeight,speed:'—',bullet:'—',damage:'—',range:'—',source:'PetConfig / PetHeight field#31',detail:'显式宠物配置值；未确认等于网格实际高度'});for(const x of GAME_VERIFIED_STATS.model_mesh_envelopes||[])a.push({type:'基础角色网格包络估算',name:x.model_group,id:x.mesh_count,height:x.height_local_units+' Unity局部单位',speed:'—',bullet:'—',damage:'—',range:'—',source:'Mesh localAABB / '+x.source_meshes.length+' 个Suit/Head网格',detail:x.status+'；Y范围 '+x.y_min_local+' 至 '+x.y_max_local+'；单位不是已确认的米'});for(const x of ((window.GAME_MOVEMENT_REFERENCE&&window.GAME_MOVEMENT_REFERENCE.measurements)||[]))a.push({type:'制造者实测移动',name:x.mode,id:x.id,height:'—',speed:x.value===null?'递增 / 未定值':x.value,bullet:'—',damage:'—',range:'—',source:x.source,detail:x.note+'；实测读数单位未与配置单位建立换算关系'});return a}
 function statRows(){const mode=$db('gameDbMode').value;if(mode==='roles')return roleRows();if(mode==='weapons')return weaponRows();if(mode==='ammo')return ammoRows();if(mode==='movement')return movementRows();return []}
 function renderDb(){const mode=$db('gameDbMode').value,q=$db('gameDbSearch').value.trim().toLowerCase();const head=$db('gameDbHead'),body=$db('gameDbRows');$db('gameDbDetailWrap').style.display='none';selectedDbTable=null;
  if(mode==='tables'){head.innerHTML='<tr><th>配置表</th><th>记录数</th><th>原始字节</th><th>解析状态</th><th>样例</th><th>操作</th></tr>';const a=GAME_CONFIG_TABLE_SUMMARY.filter(x=>!q||(x.n+' '+x.sample+' '+x.status).toLowerCase().includes(q));body.innerHTML=a.slice(0,250).map(x=>`<tr><td>${escDb(x.n)}</td><td>${x.r.toLocaleString('zh-CN')}</td><td>${fmtDb(x.b)}</td><td>${x.status==='parsed'?'已解析':x.status==='empty-or-header'?'空表/头部':'部分解析'}</td><td style="white-space:normal;overflow-wrap:anywhere">${escDb(x.sample||'—')}</td><td><button class="btn secondary" data-open-table="${escDb(x.n)}" type="button">查看</button></td></tr>`).join('')||'<tr><td colspan="6" class="empty">没有匹配的配置表</td></tr>';$db('gameDbStatus').textContent=`配置表匹配 ${a.length.toLocaleString('zh-CN')} 张；最多显示 250 张。点击“查看”后才会解压完整数据库。`;}
@@ -617,124 +742,36 @@ renderDb();
 })();
 </script>
 
-
-<section class="card report" id="movementBaselineLab">
- <div class="card-head"><div><h3>⑫-A 制造者实测基准与记录方案</h3><div class="kicker">将制造者报告的实测值与待验证假设分开保存；不把未知单位换算成 m/s</div></div><span class="num">基准 v1</span></div>
- <div class="status">数据来源：用户在游戏内测试后提供。速度单位、测量软件精度、角色、地图、帧率和测试重复次数尚未提供；以下数值仅作为当前基准，不等于已独立复测或验证的游戏引擎参数。</div>
- <div class="table-wrap" style="margin-top:10px"><table><thead><tr><th>移动状态</th><th>当前读数</th><th>证据状态</th><th>备注 / 未知项</th></tr></thead><tbody>
- <tr><td>普通走路</td><td><b>5.3</b></td><td>制造者实测</td><td>单位、角色与地图待补充</td></tr>
- <tr><td>普通跑步</td><td><b>10.3</b></td><td>制造者实测</td><td>未确认是否稳定最高值</td></tr>
- <tr><td>跑步 + 黄牛增益</td><td><b>11.3</b></td><td>制造者实测</td><td>增益持续时间与叠加条件待记录</td></tr>
- <tr><td>飞天水平移动，持续朝同一方向</td><td><b>最高约 20</b></td><td>制造者实测</td><td>需区分瞬时读数、稳定值与峰值</td></tr>
- <tr><td>垂直上升</td><td>未测定</td><td>待验证假设</td><td>用户观察为越飞越快；空气墙限制位置不等于限制速度</td></tr>
- <tr><td>垂直下坠</td><td>未测定</td><td>待验证假设</td><td>需测读数随时间变化，并记录是否触地/撞墙</td></tr>
- </tbody></table></div>
- <div class="metrics" style="margin-top:12px">
-  <div class="metric"><div class="label">黄牛增益差值</div><strong>+1.0</strong><small>11.3 − 10.3；读数单位</small></div>
-  <div class="metric"><div class="label">跑 / 走比值</div><strong>1.94×</strong><small>10.3 ÷ 5.3</small></div>
-  <div class="metric"><div class="label">水平飞 / 走比值</div><strong>约 3.77×</strong><small>20 ÷ 5.3；使用报告峰值</small></div>
- </div>
- <div class="actions"><button class="btn primary" id="exportMovementBaseline" type="button">导出基准 JSON</button><button class="btn secondary" id="exportMovementTemplate" type="button">导出空白实测 CSV</button></div>
- <div class="status" style="margin-top:10px"><b>统一测试流程：</b>每种状态至少重复 3 次；每次从静止开始，固定角色、地图、方向、装备/增益与帧率；按 0、1、2、3、4、5 秒记录速度读数。若状态在 5 秒前结束或碰到空气墙/地面，记录实际结束时间和原因，不要补造后续读数。</div>
- <div class="table-wrap" style="margin-top:10px"><table><thead><tr><th>测试组</th><th>控制变量</th><th>建议记录时间点</th><th>额外记录</th></tr></thead><tbody>
- <tr><td>走路 / 跑步 / 跑步增益</td><td>同角色、同地图、同直线路径；每次重新静止起步</td><td>0、1、2、3、4、5 秒</td><td>增益开启时间、峰值、稳定值</td></tr>
- <tr><td>水平飞行</td><td>固定水平朝向；避免转向和碰撞</td><td>0、0.5、1、2、3、5 秒</td><td>方向、峰值、是否撞空气墙/障碍</td></tr>
- <tr><td>垂直上升</td><td>固定起点与垂直输入；尽量不碰侧墙</td><td>0、0.5、1、2、3、5 秒，碰墙时立即补记</td><td>高度/位置读数、撞墙时刻、是否仍在加速</td></tr>
- <tr><td>垂直下坠</td><td>固定起始高度；不施加水平输入</td><td>开始后每 0.5–1 秒；触地前尽可能多记</td><td>起始高度、触地时刻、是否碰撞/减速</td></tr>
- </tbody></table></div>
-</section>
 <script>
-(function(){
- const baseline={title:'游戏移动速度制造者实测基准',version:1,source:'制造者在游戏内测试后报告；本页面未独立复测',unit:'未说明，不自动换算为 m/s',observations:[
-  {mode:'普通走路',value:5.3,evidence:'制造者实测',status:'reported',notes:'单位、角色、地图和工具精度待补充'},
-  {mode:'普通跑步',value:10.3,evidence:'制造者实测',status:'reported',notes:'是否稳定最高值待复测'},
-  {mode:'跑步 + 黄牛增益',value:11.3,evidence:'制造者实测',status:'reported',notes:'增益持续时间与叠加条件待记录'},
-  {mode:'飞天水平移动（同一方向）',value:20,evidence:'制造者实测',status:'approximate_peak',notes:'最高约 20；瞬时值/稳定值待区分'},
-  {mode:'垂直上升',value:null,evidence:'用户观察',status:'hypothesis_unmeasured',notes:'观察为越飞越快；空气墙限制位置不等于限制速度'},
-  {mode:'垂直下坠',value:null,evidence:'用户观察/待验证',status:'hypothesis_unmeasured',notes:'速度曲线、触地前读数待记录'}
- ],derived:{buffDelta:1.0,runToWalkRatio:10.3/5.3,horizontalFlightToWalkRatio:20/5.3},limitations:['速度单位未知','测试条件尚未完全固定','未独立复测','不能仅凭空气墙判断速度上限']};
- const $=id=>document.getElementById(id);
- $('exportMovementBaseline').addEventListener('click',()=>download(JSON.stringify(baseline,null,2),'游戏移动速度制造者实测基准.json','application/json;charset=utf-8'));
- $('exportMovementTemplate').addEventListener('click',()=>{const rows=[['trial_id','mode','elapsed_seconds','observed_speed','unit','character','map','direction','buff_state','equipment','fps','peak_or_stable','wall_or_ground_contact','end_reason','notes']];const csv='\ufeff'+rows.map(r=>r.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(',')).join('\r\n');download(csv,'移动速度实测记录空白模板.csv','text/csv;charset=utf-8')});
- function download(data,name,type){const b=new Blob([data],{type}),u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(u),1000)}
-})();
-</script>
-
-<section class="card report" id="movementTrendLab">
- <div class="card-head"><div><h3>⑬ 移动速度递增实测分析</h3><div class="kicker">记录游戏内测量软件读数，计算速度增量、变化趋势与线性拟合；不读取/控制游戏进程</div></div><span class="num" id="speedLabState">等待样本</span></div>
- <div class="status">你的观测是：游戏内测量软件显示移动速度会递增。本节把“速度随时间变化”作为核心，而不是假定角色始终以固定速度移动。请记录同一角色、同一移动方式下的时间与软件显示读数。若软件显示的数值单位未知，分析结果也会保留为“显示单位/秒”，不会擅自换算成 m/s。最好固定地图、装备、增益状态、方向与帧率，并分别测试普通移动、冲刺、斜向移动等条件。</div>
- <div class="status" style="margin-top:10px"><b>代码侧速度线索（候选，不是已核实的运行时数值）</b><br>在 UpdateScript_500.dll 的可读符号中发现：<code>gameWalkSpeed</code>、<code>MoveSpeedMin</code>、<code>MoveSpeedMax</code>、<code>MaxGroundSpeed</code>、<code>MaxAirSpeed</code>、<code>AccumulateMoveSpeed</code>、<code>MoveAddSpeed</code>、<code>DashSpeed</code>、<code>SprintSpeed</code>、<code>DownedMoveSpeed</code>、<code>SlowMoveSpeed</code>、<code>JumpRunAddSpeed</code>、<code>MsgUpdateMoveRate</code>。这些名称说明代码里存在多种速度/移动状态相关概念，但当前静态字符串扫描无法证明它们全部作用于可玩角色，也不能推导递增公式或实际单位；请以手动实测记录和可验证的字段映射为准。</div>
- <div class="grid" style="margin-top:12px">
-  <div><label class="kicker" for="speedSampleTime">经过时间（秒）</label><input id="speedSampleTime" type="number" min="0" step="0.01" value="0" class="btn" style="width:100%;margin-top:7px;text-align:left"></div>
-  <div><label class="kicker" for="speedSampleValue">软件显示的速度读数</label><input id="speedSampleValue" type="number" step="any" class="btn" placeholder="例如 0.40" style="width:100%;margin-top:7px;text-align:left"></div>
-  <div><label class="kicker" for="speedSampleUnit">读数单位</label><select id="speedSampleUnit" class="btn" style="width:100%;margin-top:7px"><option value="未知显示单位">未知显示单位</option><option value="m/s">m/s（已由测量工具确认）</option><option value="Unity单位/秒">Unity单位/秒（已确认）</option><option value="工具自定义单位">工具自定义单位</option></select></div>
-  <div><label class="kicker" for="speedSampleNote">测试条件 / 备注</label><input id="speedSampleNote" class="btn" placeholder="角色、走/跑、增益、方向等" style="width:100%;margin-top:7px;text-align:left"></div>
- </div>
- <div class="actions"><button class="btn primary" id="speedAddSample" type="button">＋ 添加速度样本</button><button class="btn secondary" id="speedAddNextSecond" type="button">时间 +1 秒</button><button class="btn secondary" id="speedUndoSample" type="button">撤销最后一条</button><button class="btn secondary" id="speedClearSamples" type="button">清空样本</button><button class="btn secondary" id="speedExportJson" type="button" disabled>导出 JSON</button><button class="btn secondary" id="speedExportCsv" type="button" disabled>导出 CSV</button></div>
- <div class="metrics" style="margin-top:12px">
-  <div class="metric"><div class="label">有效样本数</div><strong id="speedSampleCount">0</strong><small>按时间排序分析</small></div>
-  <div class="metric"><div class="label">首末读数变化</div><strong id="speedTotalDelta">—</strong><small>末值 − 首值</small></div>
-  <div class="metric"><div class="label">趋势斜率</div><strong id="speedTrendSlope">—</strong><small>读数单位 / 秒²（若速度单位已确认）</small></div>
- </div>
- <div class="status" id="speedTrendSummary" role="status" aria-live="polite">至少添加两个不同时间点的样本，才能估算递增趋势。只有读数时间和单位都可信时，斜率才有明确物理意义。</div>
- <div class="table-wrap" style="margin-top:10px;max-height:320px"><table><thead><tr><th>时间（秒）</th><th>速度读数</th><th>相邻变化</th><th>相邻时间</th><th>变化率</th><th>测试条件</th></tr></thead><tbody id="speedSampleRows"><tr><td colspan="6">尚无样本</td></tr></tbody></table></div>
- <div class="status">解释限制：本工具只统计你手动录入的观测值。若读数递增，也可能来自角色加速、测量软件的采样/平滑、状态增益、单位缩放或取样时机；单凭递增不能判定游戏底层参数就是线性加速。建议至少重复 3 次，并保留每次原始样本。</div>
-</section>
-<script>
-(function(){
- const $=id=>document.getElementById(id); let samples=[];
- const num=(x,d=3)=>Number.isFinite(x)?x.toFixed(d):'—';
- function ordered(){return samples.slice().sort((a,b)=>a.time-b.time)}
- function stats(){
-  const a=ordered(), n=a.length;
-  if(!n)return {a,n,delta:null,slope:null,r2:null,intervals:[]};
-  const intervals=[];
-  for(let i=0;i<n;i++){
-   if(i===0){intervals.push({delta:null,dt:null,rate:null});continue;}
-   const dt=a[i].time-a[i-1].time, delta=a[i].value-a[i-1].value;
-   intervals.push({delta,dt,rate:dt>0?delta/dt:null});
-  }
-  let slope=null,r2=null;
-  if(n>=2){
-   const mt=a.reduce((s,x)=>s+x.time,0)/n, mv=a.reduce((s,x)=>s+x.value,0)/n;
-   const den=a.reduce((s,x)=>s+(x.time-mt)**2,0);
-   if(den>0){slope=a.reduce((s,x)=>s+(x.time-mt)*(x.value-mv),0)/den;
-    const intercept=mv-slope*mt, ssRes=a.reduce((s,x)=>s+(x.value-(intercept+slope*x.time))**2,0), ssTot=a.reduce((s,x)=>s+(x.value-mv)**2,0);
-    r2=ssTot>0?1-ssRes/ssTot:null;
-   }
-  }
-  return {a,n,delta:n>=2?a[n-1].value-a[0].value:null,slope,r2,intervals};
- }
- function render(){
-  const z=stats(); $('speedSampleCount').textContent=z.n;
-  $('speedTotalDelta').textContent=z.delta===null?'—':(z.delta>0?'+':'')+num(z.delta,4);
-  $('speedTrendSlope').textContent=z.slope===null?'—':(z.slope>0?'+':'')+num(z.slope,5);
-  $('speedExportJson').disabled=$('speedExportCsv').disabled=z.n===0;
-  $('speedLabState').textContent=z.n?(z.n+' 条样本'):'等待样本';
-  const unit=$('speedSampleUnit').value;
-  if(z.n<2) $('speedTrendSummary').textContent='至少添加两个不同时间点的样本，才能估算递增趋势。';
-  else if(z.slope===null) $('speedTrendSummary').textContent='样本的时间点没有差异，无法计算趋势斜率。请使用不同的经过时间。';
-  else {
-   const word=z.slope>1e-9?'整体呈上升趋势':z.slope< -1e-9?'整体呈下降趋势':'整体趋势接近平稳';
-   $('speedTrendSummary').textContent=word+'；线性拟合斜率 '+(z.slope>0?'+':'')+num(z.slope,5)+' '+unit+'/秒²'+(z.r2===null?'。':'，R²='+num(z.r2,4)+'。')+' 这是对录入样本的统计描述，不代表已确认游戏物理机制。';
-  }
-  $('speedSampleRows').innerHTML=z.n?z.a.map((x,i)=>{const q=z.intervals[i];return '<tr><td>'+num(x.time,3)+'</td><td>'+num(x.value,5)+'</td><td>'+(q.delta===null?'—':(q.delta>0?'+':'')+num(q.delta,5))+'</td><td>'+(q.dt===null?'—':num(q.dt,3))+'</td><td>'+(q.rate===null?'—':(q.rate>0?'+':'')+num(q.rate,5))+'</td><td>'+esc(x.note||'—')+'</td></tr>'}).join(''):'<tr><td colspan="6">尚无样本</td></tr>';
- }
- function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
- $('speedAddSample').addEventListener('click',()=>{
-  const time=Number($('speedSampleTime').value), value=Number($('speedSampleValue').value);
-  if(!Number.isFinite(time)||time<0||$('speedSampleTime').value===''||!Number.isFinite(value)||$('speedSampleValue').value===''){$('speedTrendSummary').textContent='请填写有效的非负时间和速度读数。';return;}
-  if(samples.some(x=>x.time===time)){$('speedTrendSummary').textContent='已有相同时间点。请修改时间，或先删除重复样本；同一时间点无法计算区间变化率。';return;}
-  samples.push({time,value,unit:$('speedSampleUnit').value,note:$('speedSampleNote').value.trim()}); samples.sort((a,b)=>a.time-b.time); $('speedSampleTime').value=String(time+1); render();
- });
- $('speedAddNextSecond').addEventListener('click',()=>{const t=Number($('speedSampleTime').value);$('speedSampleTime').value=String((Number.isFinite(t)?t:0)+1)});
- $('speedUndoSample').addEventListener('click',()=>{if(samples.length)samples.pop();render()});
- $('speedClearSamples').addEventListener('click',()=>{samples=[];render()});
- $('speedSampleUnit').addEventListener('change',render);
- $('speedExportJson').addEventListener('click',()=>{const z=stats();download(JSON.stringify({title:'游戏内移动速度递增观测',createdAt:new Date().toISOString(),source:'手动录入的游戏内测量软件读数；未直接读取或控制游戏进程',unit:$('speedSampleUnit').value,summary:{sampleCount:z.n,firstToLastDelta:z.delta,linearTrendSlopePerSecondSquared:z.slope,rSquared:z.r2},samples:z.a.map((x,i)=>({...x,deltaFromPrevious:z.intervals[i].delta,elapsedFromPrevious:z.intervals[i].dt,rateFromPrevious:z.intervals[i].rate}))},null,2),'移动速度递增实测记录.json','application/json;charset=utf-8')});
- $('speedExportCsv').addEventListener('click',()=>{const z=stats(), rows=[['time_seconds','observed_speed','unit','delta_from_previous','elapsed_seconds','change_rate_per_second','condition_note']];z.a.forEach((x,i)=>{const q=z.intervals[i];rows.push([x.time,x.value,x.unit,q.delta??'',q.dt??'',q.rate??'',x.note||''])});const csv=rows.map(r=>r.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(',')).join('\r\n');download('\ufeff'+csv,'移动速度递增实测记录.csv','text/csv;charset=utf-8')});
- function download(text,name,type){const blob=new Blob([text],{type}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)}
- render();
+(()=>{'use strict';
+const GAME_MOVEMENT_REFERENCE={
+ schemaVersion:1,
+ title:'超自然行动组移动速度联合参考库',
+ sourceJoin:{
+  archive1:{archive:'1.zip',status:'恢复出的资源集合；原 ZIP 中央目录不完整，不能视为完整原包',resources:['assets/android/data/meta_assets.bytes_u_b0c38f54275e36d912425af4555b61c0','assets/android/data/config.ab_u_221fde080da3de8868bf73da1477e6eb','assets/android/data/baseplayer.ab_u_6b07294f5a3ca12395cb231c52f98f1e'],signals:['baseplayer','ClothBaseBone3_notControl','ClothBaseBone_Phantom_1_notControl','Mod_Character_*']},
+  archive4:{archive:'4.zip',status:'UnityFS/config 配置解析来源',resources:['data/config.ab_u_221fde080da3de8868bf73da1477e6eb','data/baseplayer.ab_u_6b07294f5a3ca12395cb231c52f98f1e'],verifiedFields:[{table:'SomatotypeConfig',field:'gameWalkSpeed',fieldNumber:6,value:0.4,unit:null},{table:'RoleConfig',fields:['BaseBone','DefaultAnimControl'],note:'角色与骨骼/动画控制器候选关联' }]},
+  joinRules:['用资源路径、角色名称、BaseBone 和动画控制器做交叉检索；不能仅凭名称认定同一资源字节完全相同。','1.zip 恢复出的资源索引提供模型/骨骼名称线索；4.zip 提供结构化配置记录和数值。','0.4 的单位未标注，不得直接换算成下方实测读数的单位。'],correlations:[{key:'ClothBaseBone3_notControl',roleIds:[1,2,3,4,5,6,7,8,9,11,12],roleCount:11,source:'4.zip RoleConfig + 1.zip meta_assets.bytes 字符串索引',status:'骨骼标识符交叉命中；尚未确认每个角色最终装配的完整模型。'},{key:'ClothBaseBone_Phantom_1_notControl',roleIds:[10],roleCount:1,source:'4.zip RoleConfig + 1.zip meta_assets.bytes 字符串索引',status:'候选骨骼关联。'},{key:'PVM_Monster_Marmot',roleIds:[102],roleCount:1,source:'4.zip RoleConfig + 1.zip 资源索引',status:'怪物候选，不计入可玩角色。'},{key:'PVM_Monster_FemaleCorpse_2',roleIds:[103],roleCount:1,source:'4.zip RoleConfig + 1.zip 资源索引',status:'怪物候选，不计入可玩角色。'}]
+ },
+ measurements:[
+  {id:'walk',mode:'行走最高速度',value:5.3,source:'制造者实测（用户提供）',kind:'measured',note:'游戏内测得的行走最高值；原始读数照录，单位尚未与配置值对齐。'},
+  {id:'run',mode:'奔跑最高速度',value:10.3,source:'制造者实测（用户提供）',kind:'measured',note:'游戏内测得的奔跑最高值；未推断加速度曲线。'},
+  {id:'buffRun',mode:'奔跑 + 黄牛增益',value:11.3,source:'制造者实测（用户提供）',kind:'measured',note:'带黄牛增益时的奔跑读数；增益机制/叠加方式尚未从配置中确认。'},
+  {id:'horizontalFlight',mode:'水平飞行（单方向持续）',value:20,source:'制造者实测（用户提供）',kind:'measured',note:'持续向一个水平方向飞行时观察到的最大值；不是已解码配置字段。'},
+  {id:'verticalFlight',mode:'垂直飞行上升',value:null,source:'制造者实测现象 / 机制假设',kind:'observation',note:'观察为持续上升时速度递增，尚无可靠固定数值；地图边界/模型接触是否构成限制仍待重复实验验证。'}
+ ],
+ configValue:{name:'SomatotypeConfig.gameWalkSpeed',value:0.4,unit:null,source:'4.zip / data/config.ab_u_221fde080da3de8868bf73da1477e6eb',status:'字段与序列化值已关联；单位未知；不是逐角色实测速度。'},
+ cautions:['用户实测读数与游戏配置字段分别保存，不做未经验证的单位换算。','垂直飞行不填虚构的速度上限；记录趋势与实验条件即可。','本数据库用于离线分析和实验记录，不连接游戏进程、不自动写入游戏或控制角色。']
+};
+window.GAME_MOVEMENT_REFERENCE=GAME_MOVEMENT_REFERENCE;
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const rows=document.getElementById('movementReferenceRows'),bars=document.getElementById('movementSpeedBars');
+if(rows&&bars){
+ rows.innerHTML=GAME_MOVEMENT_REFERENCE.measurements.map(x=>`<tr><td>${esc(x.mode)}</td><td>${x.value===null?'递增（未定值）':esc(x.value)}</td><td>${esc(x.source)}</td><td style="white-space:normal;min-width:220px">${esc(x.note)}</td></tr>`).join('')+`<tr><td>配置：gameWalkSpeed</td><td>0.4</td><td>4.zip 配置字段</td><td style="white-space:normal;min-width:220px">单位未标注；不能直接与实测值比较。</td></tr>`;
+ bars.innerHTML=GAME_MOVEMENT_REFERENCE.measurements.filter(x=>x.value!==null).map(x=>{const width=Math.max(0,Math.min(100,x.value/20*100));return `<div class="speed-row"><div class="speed-label">${esc(x.mode)}</div><div class="speed-track" aria-label="相对数值条"><div class="speed-fill" style="width:${width}%"></div></div><div class="speed-value">${esc(x.value)}</div></div>`}).join('')+`<div class="status">垂直飞行：观察为“递增”，未测得固定值，因此不绘制伪造数值条。上方数值条仅比较同一套实测读数，不代表已知物理单位。</div>`;
+}
+const download=(obj,name)=>{const blob=new Blob([JSON.stringify(obj,null,2)+'\n'],{type:'application/json;charset=utf-8'});const u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),1200)};
+const exportBtn=document.getElementById('exportMovementReference');if(exportBtn)exportBtn.addEventListener('click',()=>download(GAME_MOVEMENT_REFERENCE,'移动速度联合参考库.json'));
+const joinBtn=document.getElementById('exportArchiveJoinEvidence');if(joinBtn)joinBtn.addEventListener('click',()=>download({sourceJoin:GAME_MOVEMENT_REFERENCE.sourceJoin,configValue:GAME_MOVEMENT_REFERENCE.configValue,measurements:GAME_MOVEMENT_REFERENCE.measurements,cautions:GAME_MOVEMENT_REFERENCE.cautions},'1zip-4zip联合关联证据.json'));
 })();
 </script>
 
