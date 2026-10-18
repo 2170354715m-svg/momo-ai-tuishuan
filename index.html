@@ -29,6 +29,10 @@ header{display:flex;justify-content:space-between;align-items:center;gap:12px;ma
 .movement-grid .speed-label{color:#dce6f7}.movement-grid .speed-track{height:10px;background:#182337;border-radius:99px;overflow:hidden}.movement-grid .speed-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,#477be7,#62e4b2)}.movement-grid .speed-value{text-align:right;color:#a9c5ff;font-weight:800;font-variant-numeric:tabular-nums}
 @media(max-width:520px){.movement-grid .speed-row{grid-template-columns:1fr 58px;gap:7px}.movement-grid .speed-track{grid-column:1 / -1;grid-row:2}.movement-grid .speed-value{grid-column:2;grid-row:1}}
 
+
+/* 管理员专属数据区：普通用户登录时不显示 */
+.admin-only{display:none!important}
+body.admin-mode .admin-only{display:block!important}
 </style>
 </head>
 <body>
@@ -118,7 +122,7 @@ header{display:flex;justify-content:space-between;align-items:center;gap:12px;ma
 
 
 
-<section class="card report" id="genericAIEngine">
+<section class="card report admin-only" id="genericAIEngine">
  <div class="card-head"><div><h3>⑧ 离线数据驱动优化引擎</h3><div class="kicker">自动检查 JSON 结构与数值序列；仅修正有充分证据的孤立异常值，并生成独立文件</div></div><span class="num" id="aiEngineState">等待 JSON</span></div>
  <div class="metrics"><div class="metric"><div class="label">已检查数值序列</div><strong id="aiSeriesCount">—</strong><small>同一对象数组中的重复字段</small></div><div class="metric"><div class="label">发现异常候选</div><strong id="aiCandidateCount">—</strong><small>需满足保守阈值</small></div><div class="metric"><div class="label">实际调整项</div><strong id="aiChangeCount">—</strong><small>原始文件保持不变</small></div></div>
  <div class="status">引擎原理：只使用导入 JSON 中已有的数据，分析同字段序列的局部中位数和稳健离散程度；样本不足或证据不强时跳过。为避免凭空推测，默认不改动武器、弹道、瞄准、预判、移动速度、骨骼、碰撞盒等字段；这不是训练过的机器学习模型，也不会声称提升游戏实测效果。</div>
@@ -127,7 +131,7 @@ header{display:flex;justify-content:space-between;align-items:center;gap:12px;ma
 </section>
 
 
-<section class="card report" id="verifiedGameStats">
+<section class="card report admin-only" id="verifiedGameStats">
  <div class="card-head"><div><h3>⑨ 角色与武器数值库</h3><div class="kicker">独立只读资料表：只显示有来源依据的数值，不把目录关键词当成真实数值</div></div><span class="num" id="statsDbState">等待数据</span></div>
  <div class="status">字段重点：角色移动速度与模型关联；武器弹速、伤害作为辅助数据。下方“已解码配置表与模型网格数据库”已给出可核实的配置字段和来源；此旧表仍用于导入你自己补充的逐角色实测数据。未确认单位或对象关系的值不会被冒充为真实物理数值。</div>
  <div class="actions"><label class="btn secondary" for="statsDbFile">导入已核实的数值 JSON</label><input id="statsDbFile" type="file" accept=".json,application/json" style="display:none"><button class="btn secondary" id="statsDbTemplate" type="button">导出 JSON 模板</button><button class="btn secondary" id="statsDbExport" type="button" disabled>导出当前资料</button></div>
@@ -138,7 +142,7 @@ header{display:flex;justify-content:space-between;align-items:center;gap:12px;ma
 </section>
 
 
-<section class="card report" id="unityDeepParse">
+<section class="card report admin-only" id="unityDeepParse">
  <div class="card-head"><div><h3>⑪ UnityFS 深层解析结果</h3><div class="kicker">已解析配置资源的 ObjectInfo/TypeTree、配置表记录与 DLL 字段名；并扫描 1,451 个 UnityFS 包</div></div><span class="num">容器解包成功</span></div>
  <div class="status">进展：已解析 config 的 884 个 TextAsset 配置表、101,285 条记录，解析 UpdateScript_500.dll 的字段元数据，并扫描 1,451 个 UnityFS 包中的 1,454 个 Mesh 对象。枪械 MuzzleVelocity、弹药 Damage 与体型 gameWalkSpeed 已关联到明确字段；逐角色真实身高、射速、射程和未标注单位仍保持待核实。</div>
  <div class="metrics" style="margin-top:12px"><div class="metric"><div class="label">config 解包后</div><strong>5.11 MB</strong><small>39 个压缩数据块</small></div><div class="metric"><div class="label">baseplayer 解包后</div><strong>558 KB</strong><small>5 个压缩数据块</small></div><div class="metric"><div class="label">已映射字段记录</div><strong>17</strong><small>11 条 MuzzleVelocity、5 条 Damage、1 条 gameWalkSpeed</small></div></div>
@@ -156,7 +160,7 @@ header{display:flex;justify-content:space-between;align-items:center;gap:12px;ma
 </script>
 
 
-<section class="card report" id="gameDataWorkbench">
+<section class="card report admin-only" id="gameDataWorkbench">
  <div class="card-head"><div><h3>⑫ 已解码配置表与模型网格数据库</h3><div class="kicker">配置对象、字段名、武器速度值与1454条 Mesh 对象清单；可离线搜索、查看和导出</div></div><span class="num" id="gameDbState">索引就绪</span></div>
  <div class="status">本轮联合使用 1.zip 恢复出的模型/资源名称索引与 4.zip 的 UnityFS 配置资源；从 4.zip 提取了 884 个 TextAsset 表，解析出 101,285 条配置记录；已从 UpdateScript_500.dll 类型定义中确认 GunItemConfig.MuzzleVelocity、AmmoItemConfig.Damage、SomatotypeConfig.gameWalkSpeed 等字段。另扫描了 data/ 下 1,451 个 UnityFS 包并记录 1,454 个 Mesh 对象，其中 1,200 个成功读取完整 Mesh 局部 AABB；根据 Suit/Head 同源模型组得到 3 组约 2.475–2.493 Unity 局部单位的包络高度估算。所有数字均保留来源和字段编号；未知单位不换算，局部网格边界不冒充角色真实身高。</div>
  <div class="metrics" style="margin-top:12px">
@@ -175,7 +179,7 @@ header{display:flex;justify-content:space-between;align-items:center;gap:12px;ma
  <div class="status">关键结果与边界：枪械配置明确给出 MuzzleVelocity（11 条），弹药配置明确给出 Damage（5 条），标准体型配置 gameWalkSpeed=0.4（单位未标注）。没有可靠证据把该速度换算成 m/s，也没有逐角色真实身高、枪械射速或有效射程的已核实值。MeshAgentTypeConfig.Height 是代理/碰撞维度；Alice 手臂网格的局部 AABB 也不是完整人物高度。现已提取基础人物模型组的网格局部包络估算，但仍未确认单位换算和最终 Transform 缩放。</div>
 </section>
 
-<section class="card report" id="movementReferenceWorkbench">
+<section class="card report admin-only" id="movementReferenceWorkbench">
  <div class="card-head"><div><h3>⑬ 移动速度重点库 · 1.zip + 4.zip 联合关联</h3><div class="kicker">优先记录移动速度；区分游戏配置字段与“制造者实测”，不把不同来源混为一谈</div></div><span class="num" id="movementReferenceState">内置数据</span></div>
  <div class="status">联合解码说明：1.zip 的恢复资源中包含 meta_assets.bytes 资源/模型名称索引与 baseplayer 相关资源；4.zip 的 config 资源解析出 RoleConfig、SomatotypeConfig 等结构化配置。通过角色资源名、BaseBone 与配置表建立候选关联。注意：此前恢复报告显示 1.zip 的 ZIP 中央目录不完整，已恢复文件并非完整原包；4.zip 的配置字段值可独立核实，但两包中同名资源不代表字节完全相同。</div>
  <div class="metrics" style="margin-top:12px">
@@ -194,7 +198,7 @@ header{display:flex;justify-content:space-between;align-items:center;gap:12px;ma
 </section>
 
 
-<section class="card report" id="pureAIReview">
+<section class="card report admin-only" id="pureAIReview">
  <div class="card-head"><div><h3>⑭ 纯离线 AI 数据关联诊断</h3><div class="kicker">用当前上传的 JSON 对照内置游戏配置证据；不把 1.json 写入 HTML，不覆盖原文件</div></div><span class="num" id="pureAIState">等待导入</span></div>
  <div class="status">本模块负责识别、关联和解释证据，不会自动改写瞄准、目标预判或弹道参数。原因是当前 JSON 的 flySpeed/landSpeed 与游戏配置 MuzzleVelocity 尚无已证实的同单位映射；直接用数值接近来“自动调最优”会把猜测伪装成结论。可以导入你的 1.json，分析现有分段曲线和字段关系，并导出单独的诊断报告。</div>
  <div class="actions">
@@ -213,7 +217,7 @@ header{display:flex;justify-content:space-between;align-items:center;gap:12px;ma
  <div class="status" style="margin-top:10px"><b>已知限制：</b>游戏配置的 MuzzleVelocity 单位未标注；SomatotypeConfig.gameWalkSpeed = 0.4 也未标注单位；模型局部包围盒未应用最终 prefab/root 缩放。因此，当前能做字段映射和趋势诊断，但不能严谨地宣称已算出“最佳瞄准预判值”或“真实角色身高”。</div>
 </section>
 
-<section class="card report" id="gameEvidenceCatalog">
+<section class="card report admin-only" id="gameEvidenceCatalog">
  <div class="card-head"><div><h3>⑩ 压缩包字段证据与模型候选库</h3><div class="kicker">从本次上传的 1.zip–4.zip 中按路径和精确标识符扫描生成，并直接嵌入本 HTML 源码</div></div><span class="num" id="evidenceCount">读取中…</span></div>
  <div class="status">数据边界：该库把资源路径和可读标识符作为检索线索，不把它们伪装成真实数值。当前扫描能确认 config 资源里存在 MoveSpeed2、QSpeed、Damage_ 等标识符，以及若干武器/子弹音效名称；该候选索引本身不保存数值；下方新数据库已映射 11 条枪械 MuzzleVelocity、5 条弹药 Damage 与 1 条体型 gameWalkSpeed。逐角色真实身高、射速、射程和单位仍待核实。此索引只读，不会把数据自动写入游戏或用于实时控制。 </div>
  <div class="metrics" style="margin-top:12px"><div class="metric"><div class="label">候选资源</div><strong id="evidenceResourceCount">—</strong><small>路径命中或字段标识符命中</small></div><div class="metric"><div class="label">字段证据</div><strong id="evidenceFieldCount">—</strong><small>附带来源路径与解释</small></div><div class="metric"><div class="label">已映射配置值</div><strong>17</strong><small>字段名和配置记录已关联；单位仍需核实</small></div></div>
@@ -223,7 +227,7 @@ header{display:flex;justify-content:space-between;align-items:center;gap:12px;ma
  <div class="status" id="evidenceStatus">证据列表内嵌在 HTML 中，可离线搜索与导出。未核实的真实身高、移动速度、弹速、射速和射程不会被自动填入。</div>
 </section>
 
-<section class="card report" id="gameResourceExplorer">
+<section class="card report admin-only" id="gameResourceExplorer">
  <div class="card-head"><div><h3>⑦ 游戏资源索引库</h3><div class="kicker">内置 1.zip–4.zip 联合资源目录索引；可搜索资源路径、筛选候选类别并导出清单</div></div><span class="num" id="resourceCount">读取索引中…</span></div>
  <div class="grid">
   <div><label class="kicker" for="resourceSearch">搜索文件名或路径</label><input id="resourceSearch" class="btn" style="width:100%;margin-top:7px;text-align:left" placeholder="例如 weapon、model、config、.ab_u_…"></div>
@@ -257,6 +261,7 @@ header{display:flex;justify-content:space-between;align-items:center;gap:12px;ma
     </div>
   </div>
   <div class="status">算法说明：按每个字段自己的有效数值范围，把较小参数值映射为较高的相对强度；将当前趋势与所选目标趋势按调整幅度混合。该结果是数学建议，不代表实测命中率或真实游戏效果。</div>
+  <div class="status" id="weaponSpeedReference"><b>武器弹速参考（用户提供的近似实测范围）</b>：喷子 365–395；左轮 315–345；狙击枪 425–455。此范围用于对照和诊断，不会把所有参数强行改成区间中值；配置中的距离序列、字段格式和实际值仍需逐项核验。</div>
   <div class="actions"><button class="btn primary" id="runOpt" type="button" disabled>检测趋势并生成建议</button><button class="btn secondary" id="clearOpt" type="button" disabled>清除预览</button><button class="btn secondary" id="exportOpt" type="button" disabled>另存优化 JSON</button></div>
   <div id="optSummary" class="status">加载 JSON 文件后即可生成建议。</div>
   <div class="table-wrap" id="optTable" style="margin-top:10px"><div class="empty">优化前后差异将在这里显示。</div></div>
@@ -296,7 +301,7 @@ fileInput.addEventListener('change',e=>{if(e.target.files&&e.target.files[0])rea
 drop.addEventListener('drop',e=>{const f=e.dataTransfer.files&&e.dataTransfer.files[0];if(f)readFile(f);});
 $('reset').addEventListener('click',resetPage);
 function speed(v){if(Array.isArray(v))return Number(v[0]);return Number(v);}
-function extract(arr,type){if(!Array.isArray(arr))return [];return arr.map((o,i)=>({x:Number(o&&o.maxDist),min:Number(o&&o.minDist),y:speed(o&&o.flySpeed),land:speed(o&&o.landSpeed),idx:i+1,type,raw:o}));}
+function extract(arr,type){if(!Array.isArray(arr))return [];return arr.map((o,i)=>{const fly=speed(o&&o.flySpeed),land=speed(o&&o.landSpeed);return {x:Number(o&&o.maxDist),min:Number(o&&o.minDist),y:fly,land,flySpeed:fly,landSpeed:land,idx:i+1,type,raw:o};});}
 function validFieldPoints(arr,field){return arr.filter(p=>Number.isFinite(p.x)&&Number.isFinite(p[field]));}
 function finitePoints(a){return a.filter(p=>Number.isFinite(p.x)&&Number.isFinite(p.y));}
 function supported(o){return !!o&&typeof o==='object'&&!Array.isArray(o)&&(Array.isArray(o.segments_revolver)||Array.isArray(o.segments_shotgun));}
@@ -499,7 +504,10 @@ function runOptimization(){
    }else obj[g.field]=next;
    if(next!==raw[i]){optChanges.push({type:g.type,field:g.field,idx:p.idx,x:p.x,old:raw[i],newValue:next,strengthBefore:strengths[i]*100,strengthAfter:nextStrength*100});groupChanged++;}
   }
-  report.push(`${g.type} ${g.field}：趋势斜率 ${fitNow?fmt(fitNow.slope,5):'—'}，R² ${fitNow?fmt(fitNow.r2*100,1)+'%':'—'}；有效点 ${pts.length}，建议改动 ${groupChanged} 项`);
+  const refRange=g.type==='喷子'?[365,395]:g.type==='左轮'?[315,345]:null;
+  const observed=raw.filter(Number.isFinite);
+  const refNote=(g.field==='flySpeed'&&refRange&&observed.length)?`；用户弹速参考 ${refRange[0]}–${refRange[1]}，当前范围 ${fmt(Math.min(...observed),2)}–${fmt(Math.max(...observed),2)}${Math.min(...observed)>=refRange[0]&&Math.max(...observed)<=refRange[1]?'（范围内）':'（需核对，未强制修正）'}`:'';
+  report.push(`${g.type} ${g.field}：趋势斜率 ${fitNow?fmt(fitNow.slope,5):'—'}，R² ${fitNow?fmt(fitNow.r2*100,1)+'%':'—'}；有效点 ${pts.length}，建议改动 ${groupChanged} 项${refNote}`);
  }
  $('optState').textContent='建议已生成';$('clearOpt').disabled=false;$('exportOpt').disabled=!optimizedData;
  $('optSummary').textContent=`检测完成。目标：${target==='up'?'预判强度随距离增强':target==='down'?'预判强度随距离减弱':'预判强度尽量平稳'}；调整幅度 ${Math.round(blend*100)}%；生成 ${optChanges.length} 项数值差异。即使变化很小也会记录并导出；结果仅为数学建议，不代表实测命中率。\n`+report.join('；');
@@ -592,13 +600,13 @@ $('verifyLicense').addEventListener('click',()=>{
  const value=$('licenseInput').value.trim().toUpperCase();
  const key=LICENSE_KEYS.find(k=>String(k.value||'').trim().toUpperCase()===value);
  if(!licenseIsValid(key)){setGateMsg(key?'该卡密已停用或过期。':'卡密不存在，请检查输入。','bad');return;}
- adminMode=false;$('licenseManager').style.display='none';$('licenseGate').style.display='none';setGateMsg('卡密验证通过。','good');
+ adminMode=false;document.body.classList.remove('admin-mode');$('licenseManager').style.display='none';$('licenseGate').style.display='none';setGateMsg('卡密验证通过。','good');
 });
 $('licenseInput').addEventListener('keydown',e=>{if(e.key==='Enter')$('verifyLicense').click();});
 $('adminLogin').addEventListener('click',()=>{
  const username=$('adminUsername').value.trim();const password=$('adminPassword').value;
  if(username===ADMIN_USERNAME && password===ADMIN_PASSWORD){
-  adminMode=true;LICENSE_KEYS=safeReadLicenses();$('licenseGate').style.display='none';$('licenseManager').style.display='block';renderLicenseList();setManagerMsg('管理员登录成功。新增或删除的卡密会保存到当前浏览器。','good');
+  adminMode=true;document.body.classList.add('admin-mode');LICENSE_KEYS=safeReadLicenses();$('licenseGate').style.display='none';$('licenseManager').style.display='block';renderLicenseList();setManagerMsg('管理员登录成功。新增或删除的卡密会保存到当前浏览器。','good');
  }else setGateMsg('管理员账号或密码错误。','bad');
 });
 $('adminPassword').addEventListener('keydown',e=>{if(e.key==='Enter')$('adminLogin').click();});
@@ -633,7 +641,7 @@ $('importLicensesFile').addEventListener('change',async e=>{
   LICENSE_KEYS=cleaned.filter((k,i,a)=>a.findIndex(x=>x.value===k.value)===i);if(persistLicenses()){renderLicenseList();setManagerMsg('导入完成，共 '+LICENSE_KEYS.length+' 个卡密。','good');}
  }catch(err){setManagerMsg('导入失败：'+err.message,'bad');}finally{e.target.value='';}
 });
-$('adminLogoutBtn').addEventListener('click',()=>{adminMode=false;$('licenseManager').style.display='none';$('licenseGate').style.display='flex';$('adminUsername').value='';$('adminPassword').value='';setGateMsg('管理员已退出。','good');});
+$('adminLogoutBtn').addEventListener('click',()=>{adminMode=false;document.body.classList.remove('admin-mode');$('licenseManager').style.display='none';$('licenseGate').style.display='flex';$('adminUsername').value='';$('adminPassword').value='';setGateMsg('管理员已退出。','good');});
 // ==================== 卡密管理与本地管理员登录结束 ===================='' '
 
 
@@ -666,11 +674,11 @@ function analyzeAI(){
  };
  walk(loadedData,aiOptimized,'$');
  $ai('aiSeriesCount').textContent=aiSeriesCount.toLocaleString('zh-CN');$ai('aiCandidateCount').textContent=aiCandidates.toLocaleString('zh-CN');$ai('aiChangeCount').textContent=aiChanges.length.toLocaleString('zh-CN');$ai('aiEngineState').textContent=aiChanges.length?'分析完成':'检查完成';$ai('exportAIEngine').disabled=false;$ai('clearAIEngine').disabled=false;
- $ai('aiEngineSummary').textContent=`检查 ${aiSeriesCount} 组数值序列，发现 ${aiCandidates} 个异常候选，实际修正 ${aiChanges.length} 项。${aiChanges.length?'修正值取自相邻样本中位数，请核对差异后再决定是否导入。':'未发现达到保守阈值的可修正异常，导出文件将保留原始数值。'} 原文件不会被覆盖，也不代表游戏表现会改善。`;
+ $ai('aiEngineSummary').textContent=`检查 ${aiSeriesCount} 组普通数值序列，发现 ${aiCandidates} 个异常候选，实际修正 ${aiChanges.length} 项。该功能是通用异常值检查，不负责优化预判、武器弹速或移动参数。${aiChanges.length?'修正值取自相邻样本中位数，请核对差异后再决定是否导入。':'未发现达到保守阈值的可修正异常，导出文件将保留原始数值。'} 原文件不会被覆盖，也不代表游戏表现会改善。`;
  renderAIChanges();
  downloadAI();
 }
-function downloadAI(){if(!aiOptimized)return;const blob=new Blob([JSON.stringify(aiOptimized,null,2)+'\n'],{type:'application/json;charset=utf-8'});download(blob,(loadedName||'parameters').replace(/\.json$/i,'')+'-离线分析优化.json');$ai('aiEngineSummary').textContent+=' 已自动生成独立优化文件；原文件未覆盖。';}
+function downloadAI(){if(!aiOptimized)return;const blob=new Blob([JSON.stringify(aiOptimized,null,2)+'\n'],{type:'application/json;charset=utf-8'});download(blob,(loadedName||'parameters').replace(/\.json$/i,'')+'-离线分析优化.json');$ai('aiEngineSummary').textContent+=' 已生成独立 JSON 副本；原文件未覆盖。';}
 function renderAIChanges(){if(!aiChanges.length){$ai('aiEngineTable').innerHTML='<div class="empty">没有足够证据支持修改。仍可另存 JSON 副本；受保护字段保持原样。</div>';return;}$ai('aiEngineTable').innerHTML='<table><thead><tr><th>JSON 路径</th><th>原值</th><th>新值</th><th>理由</th></tr></thead><tbody>'+aiChanges.map(c=>`<tr><td style="white-space:normal;overflow-wrap:anywhere">${escAI(c.path)}</td><td>${escAI(c.old)}</td><td>${escAI(c.newValue)}</td><td style="white-space:normal;overflow-wrap:anywhere">${escAI(c.reason)}</td></tr>`).join('')+'</tbody></table>';}
 function clearAI(){aiOptimized=null;aiChanges=[];aiSeriesCount=0;aiCandidates=0;$ai('aiEngineState').textContent='等待 JSON';['aiSeriesCount','aiCandidateCount','aiChangeCount'].forEach(id=>$ai(id).textContent='—');$ai('exportAIEngine').disabled=true;$ai('clearAIEngine').disabled=true;$ai('aiEngineSummary').textContent='分析结果已清除；原始文件没有修改。';$ai('aiEngineTable').innerHTML='<div class="empty">优化前后差异将在这里显示。</div>';}
 $ai('runAIEngine').addEventListener('click',analyzeAI);$ai('clearAIEngine').addEventListener('click',clearAI);
