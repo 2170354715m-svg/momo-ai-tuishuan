@@ -24,11 +24,6 @@ header{display:flex;justify-content:space-between;align-items:center;gap:12px;ma
 
 .license-card{margin-top:14px;border-color:#314463}.license-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}.license-card input,.license-card select{width:100%;min-width:0;background:#080f1b;color:var(--text);border:1px solid #2b3c58;border-radius:10px;padding:11px}.license-status{margin-top:10px;padding:10px 12px;border:1px solid #26344a;border-radius:11px;color:var(--muted);font-size:12px;white-space:pre-wrap}.license-status.good{color:var(--green);border-color:#245b4c}.license-status.bad{color:var(--red);border-color:#6b3440}.license-list{display:grid;gap:7px;margin-top:10px}.license-row{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px;border:1px solid #202c40;border-radius:10px;background:#0a101a;font-size:12px}.license-row span{overflow-wrap:anywhere}.gate{position:fixed;inset:0;z-index:9999;background:#080b12f5;display:flex;align-items:center;justify-content:center;padding:20px}.gate-box{width:min(100%,420px);padding:22px;border:1px solid #314463;border-radius:20px;background:#101725;box-shadow:0 20px 70px #0008}.gate-box h2{margin:0 0 7px}.gate-box p{color:#9cacc4;font-size:13px}.gate-box input{width:100%;background:#080f1b;color:white;border:1px solid #2b3c58;border-radius:11px;padding:13px;margin:7px 0 10px}.gate-actions{display:grid;gap:8px}.gate small{display:block;color:#7788a3;margin-top:12px;font-size:11px}@media(max-width:420px){.license-grid{grid-template-columns:1fr}.license-row{align-items:flex-start;flex-direction:column}}
 
-
-/* 用户视图：只保留 JSON 参数输入、趋势/优化操作与参数明细；开发数据不呈现在用户页面。 */
-#verifiedGameStats,#unityDeepParse,#gameDataWorkbench,#gameEvidenceCatalog,#gameResourceExplorer,
-#genericAIEngine,.report:not(#optimizer),.two>section:nth-child(2){display:none!important}
-
 </style>
 </head>
 <body>
@@ -44,7 +39,7 @@ header{display:flex;justify-content:space-between;align-items:center;gap:12px;ma
   <input id="adminPassword" type="password" placeholder="管理员密码" autocomplete="current-password">
   <div class="gate-actions"><button class="btn" id="adminLogin" type="button">管理员登录</button></div>
   <div class="license-status" id="gateStatus">等待输入卡密或管理员账号。</div>
-  
+  <small>提示：离线 HTML 中的账号密码可被查看或修改，只适合个人本地使用，不属于安全的服务器授权。</small>
  </div>
 </div>
 <div class="app">
@@ -505,23 +500,23 @@ $('reportCsv').addEventListener('click',()=>{
 // ==================== 卡密管理与本地管理员登录 ====================
 // 说明：纯离线 HTML 只能将卡密保存在当前浏览器，不会自动同步到其他设备或 HTML 副本。
 // 需要跨设备共享/真正安全的授权时，必须使用后端服务。
-const DEFAULT_LICENSE_KEYS = [{value:"MOMO",expiry:"",enabled:true}];
+const DEFAULT_LICENSE_KEYS = [];
 const LICENSE_STORAGE_KEY = 'momo_ai_license_keys_v1';
 const todayISO=()=>new Date().toISOString().slice(0,10);
 const safeReadLicenses=()=>{
  try {
   const raw=localStorage.getItem(LICENSE_STORAGE_KEY);
-  if(!raw) return DEFAULT_LICENSE_KEYS.map(x=>({...x}));
+  if(!raw) return DEFAULT_LICENSE_KEYS.slice();
   const parsed=JSON.parse(raw);
-  const list=Array.isArray(parsed)?parsed.filter(x=>x&&typeof x.value==='string').map(x=>({value:x.value.trim().toUpperCase(),expiry:typeof x.expiry==='string'?x.expiry:'',enabled:x.enabled!==false})):[];
-  // 迁移旧版卡密数据：若旧存储中没有 MOMO，则补入默认用户卡密；若已有 MOMO，则保留管理员设置的启用/停用状态。
-  if(!list.some(x=>x.value==='MOMO')) list.unshift({value:'MOMO',expiry:'',enabled:true});
-  return list;
- } catch(e) { return DEFAULT_LICENSE_KEYS.map(x=>({...x})); }
+  if(!Array.isArray(parsed)) return DEFAULT_LICENSE_KEYS.map(x=>({...x}));
+  const cleaned=parsed.filter(x=>x&&typeof x.value==='string').map(x=>({value:x.value.trim().toUpperCase(),expiry:typeof x.expiry==='string'?x.expiry:'',enabled:x.enabled!==false}));
+  // Repair older local storage that was initialized with an empty license list: MOMO remains manageable in the admin panel.
+  if(!cleaned.some(x=>x.value==='MOMO')) cleaned.unshift({value:'MOMO',expiry:'',enabled:true});
+  try{localStorage.setItem(LICENSE_STORAGE_KEY,JSON.stringify(cleaned));}catch(e){}
+  return cleaned;
+ } catch(e) { return DEFAULT_LICENSE_KEYS.slice(); }
 };
 let LICENSE_KEYS=safeReadLicenses();
-// 将首次默认值和迁移后的清单持久化，确保刷新后管理员停用 MOMO 仍然有效。
-try{if(!localStorage.getItem(LICENSE_STORAGE_KEY))localStorage.setItem(LICENSE_STORAGE_KEY,JSON.stringify(LICENSE_KEYS));}catch(e){}
 function persistLicenses(){
  try{localStorage.setItem(LICENSE_STORAGE_KEY,JSON.stringify(LICENSE_KEYS));return true;}
  catch(e){setManagerMsg('保存失败：浏览器可能禁用了本地存储。请允许此页面使用网站数据，或导出备份。','bad');return false;}
