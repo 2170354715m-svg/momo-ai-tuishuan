@@ -23,15 +23,19 @@ header{display:flex;justify-content:space-between;align-items:center;gap:12px;ma
 @media(max-width:360px){.tagline{max-width:165px}.chips{max-width:90px}.metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.hero-actions{grid-template-columns:1fr}.hero h2{font-size:23px}}
 
 .license-card{margin-top:14px;border-color:#314463}.license-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}.license-card input,.license-card select{width:100%;min-width:0;background:#080f1b;color:var(--text);border:1px solid #2b3c58;border-radius:10px;padding:11px}.license-status{margin-top:10px;padding:10px 12px;border:1px solid #26344a;border-radius:11px;color:var(--muted);font-size:12px;white-space:pre-wrap}.license-status.good{color:var(--green);border-color:#245b4c}.license-status.bad{color:var(--red);border-color:#6b3440}.license-list{display:grid;gap:7px;margin-top:10px}.license-row{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px;border:1px solid #202c40;border-radius:10px;background:#0a101a;font-size:12px}.license-row span{overflow-wrap:anywhere}.gate{position:fixed;inset:0;z-index:9999;background:#080b12f5;display:flex;align-items:center;justify-content:center;padding:20px}.gate-box{width:min(100%,420px);padding:22px;border:1px solid #314463;border-radius:20px;background:#101725;box-shadow:0 20px 70px #0008}.gate-box h2{margin:0 0 7px}.gate-box p{color:#9cacc4;font-size:13px}.gate-box input{width:100%;background:#080f1b;color:white;border:1px solid #2b3c58;border-radius:11px;padding:13px;margin:7px 0 10px}.gate-actions{display:grid;gap:8px}.gate small{display:block;color:#7788a3;margin-top:12px;font-size:11px}@media(max-width:420px){.license-grid{grid-template-columns:1fr}.license-row{align-items:flex-start;flex-direction:column}}
-/* 登录后按角色隔离界面：用户只看 ①②③④⑤⑧；管理员只看管理与游戏数据页。 */
-body.mode-locked .user-only,body.mode-locked .admin-only{display:none!important}
-body.mode-user .admin-only{display:none!important}
-body.mode-admin .user-only{display:none!important}
-body.mode-admin .admin-only{display:block!important}
 
+
+/* Separate user and administrator workspaces. The login overlay is shared; successful login selects one view. */
+.admin-only{display:none!important}
+body.admin-view .user-only{display:none!important}
+body.admin-view .admin-only{display:block!important}
+body.user-view .admin-only{display:none!important}
+body.user-view .two,body.admin-view .two{grid-template-columns:1fr}
+.height-grid{margin-top:12px;align-items:stretch}
+.height-grid select{min-height:44px}
 </style>
 </head>
-<body class="mode-locked">
+<body>
 <div class="gate" id="licenseGate">
  <div class="gate-box">
   <h2>默默 AI 推算 · 登录验证</h2>
@@ -47,7 +51,7 @@ body.mode-admin .admin-only{display:block!important}
  </div>
 </div>
 <div class="app">
-<section class="card license-card admin-only" id="licenseManager" style="display:none">
+<section class="card license-card" id="licenseManager" style="display:none">
  <div class="card-head"><div><h3>管理员 · 卡密管理</h3><div class="kicker">新增、停用、删除卡密；数据保存在当前浏览器本地</div></div><span class="num" id="licenseCount">0 个卡密</span></div>
  <div class="license-grid">
   <input id="newLicenseValue" placeholder="输入新卡密，例如 MOMO-2026-001" autocomplete="off" autocapitalize="characters">
@@ -72,7 +76,6 @@ body.mode-admin .admin-only{display:block!important}
     <button class="btn secondary" id="export" type="button" disabled>导出原始 JSON</button>
     <button class="btn secondary" id="reportCsv" type="button" disabled>导出诊断报告 CSV</button>
     <button class="btn secondary" id="reset" type="button">重置页面</button>
-    <button class="btn secondary" id="userLogout" type="button">退出登录</button>
     <input class="file-input" id="file" type="file" accept=".json,application/json">
   </div>
 </section>
@@ -218,7 +221,19 @@ body.mode-admin .admin-only{display:block!important}
       <input id="optStrength" type="range" min="10" max="100" step="10" value="50" style="width:100%;margin-top:15px;accent-color:#76a8ff">
     </div>
   </div>
-  <div class="status">算法说明：按每个字段自己的有效数值范围，把较小参数值映射为较高的相对强度；将当前趋势与所选目标趋势按调整幅度混合。该结果是数学建议，不代表实测命中率或真实游戏效果。</div>
+  <div class="grid height-grid">
+    <div>
+      <label class="kicker" for="heightTarget">fly_goal_high 高度建议（写入优化 JSON）</label>
+      <select id="heightTarget" class="btn" style="width:100%;margin-top:7px">
+        <option value="1.5" selected>飞天正中间 · 1.50（默认推荐）</option>
+        <option value="1.4">走地正中间 · 1.40</option>
+        <option value="2.35">头顶 · 2.35</option>
+        <option value="0">脚底 · 0.00</option>
+      </select>
+    </div>
+    <div class="status" id="heightAdvice">高度建议会根据 JSON 中的 fly_goal_high 字段和已知模型参考范围显示。</div>
+  </div>
+  <div class="status">算法说明：X、Y、Z 三个轴分别分析，保留原数组结构并逐轴生成建议；较小参数值按当前配置约定映射为较高的相对强度。高度项使用你的游戏内标定（脚底 0、走地中间 1.40、飞天中间 1.50、头顶 2.35），并参考基础角色网格包络约 2.475–2.493 Unity 局部单位。模型根节点缩放和单位尚未完全核实，因此高度建议不是米制身高换算，也不保证游戏效果。</div>
   <div class="actions"><button class="btn primary" id="runOpt" type="button" disabled>检测趋势并生成建议</button><button class="btn secondary" id="clearOpt" type="button" disabled>清除预览</button><button class="btn secondary" id="exportOpt" type="button" disabled>另存优化 JSON</button></div>
   <div id="optSummary" class="status">加载 JSON 文件后即可生成建议。</div>
   <div class="table-wrap" id="optTable" style="margin-top:10px"><div class="empty">优化前后差异将在这里显示。</div></div>
@@ -241,6 +256,51 @@ body.mode-admin .admin-only{display:block!important}
 
 
 
+
+<section class="card report admin-only" id="movementBaselineLab">
+ <div class="card-head"><div><h3>⑫-A 制造者实测基准与记录方案</h3><div class="kicker">保存已报告的读数；不将未知单位换算为 m/s</div></div><span class="num">基准 v1</span></div>
+ <div class="status">以下数值来自制造者提供的游戏内观测，尚未由本页面独立复测。速度单位、角色、地图、帧率和测量工具精度仍需确认。</div>
+ <div class="table-wrap" style="margin-top:10px"><table><thead><tr><th>移动状态</th><th>当前读数</th><th>证据状态</th><th>备注</th></tr></thead><tbody>
+ <tr><td>普通走路</td><td>5.3</td><td>制造者实测</td><td>单位与测试条件待补充</td></tr><tr><td>普通跑步</td><td>10.3</td><td>制造者实测</td><td>是否稳定峰值待复测</td></tr><tr><td>跑步 + 黄牛增益</td><td>11.3</td><td>制造者实测</td><td>增益时长待记录</td></tr><tr><td>飞天水平移动</td><td>最高约 20</td><td>制造者实测</td><td>需区分瞬时值与稳定值</td></tr><tr><td>垂直上升 / 下坠</td><td>未测定</td><td>待验证</td><td>需记录时间、读数和碰撞状态</td></tr>
+ </tbody></table></div>
+ <div class="metrics" style="margin-top:12px"><div class="metric"><div class="label">黄牛增益差值</div><strong>+1.0</strong><small>11.3 − 10.3</small></div><div class="metric"><div class="label">跑 / 走比值</div><strong>1.94×</strong><small>10.3 ÷ 5.3</small></div><div class="metric"><div class="label">水平飞 / 走比值</div><strong>约 3.77×</strong><small>20 ÷ 5.3</small></div></div>
+ <div class="actions"><button class="btn primary" id="exportMovementBaseline" type="button">导出基准 JSON</button><button class="btn secondary" id="exportMovementTemplate" type="button">导出空白实测 CSV</button></div>
+</section>
+<section class="card report admin-only" id="movementTrendLab">
+ <div class="card-head"><div><h3>⑬ 移动速度递增实测分析</h3><div class="kicker">输入同一移动状态下的时间与速度读数，计算变化率与线性趋势</div></div><span class="num" id="speedLabState">等待样本</span></div>
+ <div class="status">不假定速度恒定，也不把递增直接认定为游戏底层加速度。请尽量固定角色、地图、方向、装备、增益和帧率；若测量软件单位未知，结果保留原始读数单位。</div>
+ <div class="grid" style="margin-top:12px"><div><label class="kicker" for="speedSampleTime">经过时间（秒）</label><input id="speedSampleTime" type="number" min="0" step="0.01" value="0" class="btn" style="width:100%;margin-top:7px;text-align:left"></div><div><label class="kicker" for="speedSampleValue">软件显示速度读数</label><input id="speedSampleValue" type="number" step="any" class="btn" placeholder="输入实测读数" style="width:100%;margin-top:7px;text-align:left"></div><div><label class="kicker" for="speedSampleUnit">读数单位</label><select id="speedSampleUnit" class="btn" style="width:100%;margin-top:7px"><option>未知显示单位</option><option>m/s（工具已确认）</option><option>Unity单位/秒（已确认）</option><option>工具自定义单位</option></select></div><div><label class="kicker" for="speedSampleNote">测试条件 / 备注</label><input id="speedSampleNote" class="btn" placeholder="角色、走/跑、增益、方向" style="width:100%;margin-top:7px;text-align:left"></div></div>
+ <div class="actions"><button class="btn primary" id="speedAddSample" type="button">＋ 添加样本</button><button class="btn secondary" id="speedAddNextSecond" type="button">时间 +1 秒</button><button class="btn secondary" id="speedUndoSample" type="button">撤销最后一条</button><button class="btn secondary" id="speedClearSamples" type="button">清空样本</button><button class="btn secondary" id="speedExportJson" type="button" disabled>导出 JSON</button><button class="btn secondary" id="speedExportCsv" type="button" disabled>导出 CSV</button></div>
+ <div class="metrics" style="margin-top:12px"><div class="metric"><div class="label">有效样本数</div><strong id="speedSampleCount">0</strong><small>按时间排序</small></div><div class="metric"><div class="label">首末读数变化</div><strong id="speedTotalDelta">—</strong><small>末值 − 首值</small></div><div class="metric"><div class="label">趋势斜率</div><strong id="speedTrendSlope">—</strong><small>读数单位 / 秒²</small></div></div>
+ <div class="status" id="speedTrendSummary" role="status" aria-live="polite">至少录入两个不同时间点的样本后计算。</div><div class="table-wrap" style="margin-top:10px;max-height:320px"><table><thead><tr><th>时间（秒）</th><th>速度读数</th><th>相邻变化</th><th>相邻时间</th><th>变化率</th><th>测试条件</th></tr></thead><tbody id="speedSampleRows"><tr><td colspan="6">尚无样本</td></tr></tbody></table></div>
+</section>
+<section class="card report admin-only" id="verticalFlightModel">
+ <div class="card-head"><div><h3>⑭ 垂直飞行 / 碰撞约束模型</h3><div class="kicker">区分自由上升与碰撞区间；只分析手动实测，不自动写入游戏配置</div></div><span class="num" id="verticalModelState">待输入</span></div>
+ <div class="status">假设模型 v(t)=v₀+a·t 只能作为待验证候选。碰撞、空气墙或触地会改变观测，因此含碰撞的区间不能用于推断自由飞行加速度。</div>
+ <div class="grid" style="margin-top:12px"><div><label class="kicker" for="verticalT0">起始时间 t₀（秒）</label><input id="verticalT0" type="number" value="0" step="0.01" class="btn" style="width:100%;margin-top:7px;text-align:left"></div><div><label class="kicker" for="verticalV0">起始速度 v₀</label><input id="verticalV0" type="number" step="any" class="btn" placeholder="填实测值" style="width:100%;margin-top:7px;text-align:left"></div><div><label class="kicker" for="verticalT1">后续时间 t₁（秒）</label><input id="verticalT1" type="number" value="1" min="0" step="0.01" class="btn" style="width:100%;margin-top:7px;text-align:left"></div><div><label class="kicker" for="verticalV1">后续速度 v₁</label><input id="verticalV1" type="number" step="any" class="btn" placeholder="填实测值" style="width:100%;margin-top:7px;text-align:left"></div></div>
+ <div class="grid" style="margin-top:10px"><div><label class="kicker" for="verticalContact">碰撞状态</label><select id="verticalContact" class="btn" style="width:100%;margin-top:7px"><option value="free">无碰撞（自由区间）</option><option value="contact">发生碰撞 / 接触边界</option><option value="unknown">不确定</option></select></div><div><label class="kicker" for="verticalDirection">移动方向</label><select id="verticalDirection" class="btn" style="width:100%;margin-top:7px"><option value="up">垂直上升</option><option value="down">垂直下坠</option><option value="horizontal">水平飞行对照</option></select></div></div>
+ <div class="actions"><button class="btn primary" id="calcVerticalModel" type="button">计算变化率 / 生成分析</button><button class="btn secondary" id="exportVerticalModel" type="button" disabled>导出模型分析 JSON</button></div>
+ <div class="metrics" style="margin-top:12px"><div class="metric"><div class="label">区间变化率</div><strong id="verticalAccelResult">—</strong><small>读数单位 / 秒²</small></div><div class="metric"><div class="label">时间跨度</div><strong id="verticalDtResult">—</strong><small>秒</small></div><div class="metric"><div class="label">样本解释</div><strong id="verticalClassResult">待测</strong><small>不是引擎公式证明</small></div></div><div class="status" id="verticalModelSummary" role="status" aria-live="polite">填入两个不同时间点的真实读数后计算。</div>
+</section>
+<script>
+(function(){
+ const $=id=>document.getElementById(id), samples=[]; let verticalResult=null;
+ const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+ const dl=(data,name,type='application/json;charset=utf-8')=>{const b=new Blob([data],{type}),u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(u),1000)};
+ const baseline={title:'游戏移动速度制造者实测基准',version:1,source:'用户报告的游戏内读数；本页面未独立复测',unit:'未说明，不自动换算为 m/s',observations:[{mode:'普通走路',value:5.3},{mode:'普通跑步',value:10.3},{mode:'跑步 + 黄牛增益',value:11.3},{mode:'飞天水平移动',value:20,notes:'报告峰值'},{mode:'垂直上升',value:null,notes:'递增假设待实测'},{mode:'垂直下坠',value:null,notes:'待实测'}],derived:{buffDelta:1,runToWalkRatio:10.3/5.3,horizontalFlightToWalkRatio:20/5.3},limitations:['速度单位未知','测试条件尚未完全固定','未独立复测']};
+ $('exportMovementBaseline').addEventListener('click',()=>dl(JSON.stringify(baseline,null,2),'游戏移动速度制造者实测基准.json'));
+ $('exportMovementTemplate').addEventListener('click',()=>dl('\ufeff'+[['trial_id','mode','elapsed_seconds','observed_speed','unit','character','map','direction','buff_state','fps','contact','notes'].map(x=>'"'+x+'"').join(',')].join('\r\n'),'移动速度实测记录空白模板.csv','text/csv;charset=utf-8'));
+ function ordered(){return samples.slice().sort((a,b)=>a.time-b.time)}
+ function calcStats(){const a=ordered(),n=a.length,intervals=[];for(let i=0;i<n;i++){if(!i){intervals.push({delta:null,dt:null,rate:null});continue;}const dt=a[i].time-a[i-1].time,dv=a[i].value-a[i-1].value;intervals.push({delta:dv,dt,rate:dt>0?dv/dt:null});}let slope=null,r2=null;if(n>=2){const mt=a.reduce((s,x)=>s+x.time,0)/n,mv=a.reduce((s,x)=>s+x.value,0)/n,den=a.reduce((s,x)=>s+(x.time-mt)**2,0);if(den>0){slope=a.reduce((s,x)=>s+(x.time-mt)*(x.value-mv),0)/den;const intercept=mv-slope*mt,res=a.reduce((s,x)=>s+(x.value-(intercept+slope*x.time))**2,0),tot=a.reduce((s,x)=>s+(x.value-mv)**2,0);r2=tot>0?1-res/tot:null;}}return {a,n,intervals,delta:n>=2?a[n-1].value-a[0].value:null,slope,r2}}
+ function render(){const z=calcStats();$('speedSampleCount').textContent=z.n;$('speedTotalDelta').textContent=z.delta===null?'—':(z.delta>0?'+':'')+z.delta.toFixed(4);$('speedTrendSlope').textContent=z.slope===null?'—':(z.slope>0?'+':'')+z.slope.toFixed(5);$('speedLabState').textContent=z.n+' 条样本';$('speedExportJson').disabled=$('speedExportCsv').disabled=!z.n;$('speedTrendSummary').textContent=z.n<2?'至少录入两个不同时间点的样本后计算。':z.slope===null?'时间点没有差异，无法计算趋势。':`${z.slope>0?'整体呈上升趋势':z.slope<0?'整体呈下降趋势':'整体趋势接近平稳'}；线性拟合斜率 ${z.slope.toFixed(5)}，R² ${z.r2===null?'—':z.r2.toFixed(4)}。此结果仅描述录入样本，不证明游戏物理机制。`;$('speedSampleRows').innerHTML=z.n?z.a.map((x,i)=>{const q=z.intervals[i];return `<tr><td>${x.time}</td><td>${x.value}</td><td>${q.delta===null?'—':q.delta.toFixed(5)}</td><td>${q.dt===null?'—':q.dt}</td><td>${q.rate===null?'—':q.rate.toFixed(5)}</td><td>${esc(x.note||'—')}</td></tr>`}).join(''):'<tr><td colspan="6">尚无样本</td></tr>'}
+ $('speedAddSample').addEventListener('click',()=>{const time=Number($('speedSampleTime').value),value=Number($('speedSampleValue').value);if($('speedSampleTime').value===''||$('speedSampleValue').value===''||!Number.isFinite(time)||time<0||!Number.isFinite(value)){$('speedTrendSummary').textContent='请填写有效的非负时间和速度读数。';return;}if(samples.some(x=>x.time===time)){$('speedTrendSummary').textContent='该时间点已存在，请修改时间或撤销重复样本。';return;}samples.push({time,value,unit:$('speedSampleUnit').value,note:$('speedSampleNote').value.trim()});samples.sort((a,b)=>a.time-b.time);$('speedSampleTime').value=String(time+1);render()});
+ $('speedAddNextSecond').addEventListener('click',()=>{$('speedSampleTime').value=String((Number($('speedSampleTime').value)||0)+1)});$('speedUndoSample').addEventListener('click',()=>{samples.pop();render()});$('speedClearSamples').addEventListener('click',()=>{samples.length=0;render()});
+ $('speedExportJson').addEventListener('click',()=>{const z=calcStats();dl(JSON.stringify({title:'游戏内移动速度递增观测',createdAt:new Date().toISOString(),unit:$('speedSampleUnit').value,summary:{sampleCount:z.n,firstToLastDelta:z.delta,linearTrendSlopePerSecondSquared:z.slope,rSquared:z.r2},samples:z.a.map((x,i)=>({...x,deltaFromPrevious:z.intervals[i].delta,elapsedFromPrevious:z.intervals[i].dt,rateFromPrevious:z.intervals[i].rate}))},null,2),'移动速度递增实测记录.json')});
+ $('speedExportCsv').addEventListener('click',()=>{const z=calcStats(),rows=[['time_seconds','observed_speed','unit','delta','elapsed_seconds','rate','condition_note']];z.a.forEach((x,i)=>{const q=z.intervals[i];rows.push([x.time,x.value,x.unit,q.delta??'',q.dt??'',q.rate??'',x.note||''])});const csv='\ufeff'+rows.map(r=>r.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(',')).join('\r\n');dl(csv,'移动速度递增实测记录.csv','text/csv;charset=utf-8')});
+ $('calcVerticalModel').addEventListener('click',()=>{const t0=Number($('verticalT0').value),v0=Number($('verticalV0').value),t1=Number($('verticalT1').value),v1=Number($('verticalV1').value),contact=$('verticalContact').value,direction=$('verticalDirection').value;if($('verticalV0').value===''||$('verticalV1').value===''||![t0,v0,t1,v1].every(Number.isFinite)||t1<=t0){$('verticalModelSummary').textContent='请填写两个有效时间点和速度读数，并确保 t₁ 大于 t₀。';$('exportVerticalModel').disabled=true;return;}const dt=t1-t0,a=(v1-v0)/dt,label=contact==='free'?(a>1e-8?'读数上升':a< -1e-8?'读数下降':'近似稳定'):contact==='contact'?'碰撞区间':'条件不确定';verticalResult={title:'垂直移动碰撞约束分析',createdAt:new Date().toISOString(),source:'手动录入的游戏内读数；未独立复测',direction,unit:$('speedSampleUnit').value,observations:{t0,v0,t1,v1,deltaV:v1-v0,deltaTime:dt,apparentAcceleration:a,contactStatus:contact},interpretation:contact==='free'?'自由区间的平均速度变化率；若加速度变化，该值不是瞬时加速度。':contact==='contact'?'该区间包含碰撞/边界接触，不能用于估计无碰撞时的自由飞行加速度。':'碰撞状态未知，只能作描述统计。',model:'v(t)=v0+a*t; hypothesis only'};$('verticalModelState').textContent='已计算';$('verticalAccelResult').textContent=(a>0?'+':'')+a.toFixed(5);$('verticalDtResult').textContent=dt.toFixed(3);$('verticalClassResult').textContent=label;$('exportVerticalModel').disabled=false;$('verticalModelSummary').textContent=`平均变化率 = (v₁−v₀)/(t₁−t₀) = ${a.toFixed(5)} ${$('speedSampleUnit').value}/秒²。${verticalResult.interpretation} 不会自动写入游戏参数。`});
+ $('exportVerticalModel').addEventListener('click',()=>{if(verticalResult)dl(JSON.stringify(verticalResult,null,2),'垂直移动碰撞约束分析.json')});render();
+})();
+</script>
 
 <div class="foot user-only">默默 AI 推算 · 单页 HTML · 无第三方依赖 · <span class="privacy">参数文件仅在当前浏览器处理</span></div>
 </div>
@@ -276,7 +336,7 @@ async function readFile(file){
       throw new Error('文件内容不是合法 JSON（'+(parseErr.message||'解析失败')+'）。请确认文件来自参数配置导出，而不是网页源码、错误页面或备份说明。');
     }
     if(!supported(obj))throw new Error('JSON 格式正确，但未识别到 segments_revolver（左轮）或 segments_shotgun（喷子）数组。请确认选的是本工具支持的参数配置文件。');
-    loadedData=obj;loadedName=file.name;fileBytes=file.size;syncAI();
+    loadedData=obj;loadedName=file.name;fileBytes=file.size;syncAI();renderHeightAdvice();
     series={revolver:extract(obj.segments_revolver,'左轮'),shotgun:extract(obj.segments_shotgun,'喷子')};
     const valid=finitePoints([...series.revolver,...series.shotgun]);
     if(!valid.length)throw new Error('找到了分段数组，但没有同时包含有效 maxDist 和 flySpeed 的数据点。');
@@ -291,7 +351,7 @@ async function readFile(file){
     setStatus(`识别成功：${file.name}。数据只在当前浏览器处理，原文件未修改。`,'good');
     renderSummary();renderReport();renderDiagnostics();draw();
   }catch(e){
-    loadedData=null;series={revolver:[],shotgun:[]};issues=[];syncAI();$('export').disabled=true;$('reportCsv').disabled=true;$('runOpt').disabled=true;clearOptimization();
+    loadedData=null;series={revolver:[],shotgun:[]};issues=[];syncAI();renderHeightAdvice();$('export').disabled=true;$('reportCsv').disabled=true;$('runOpt').disabled=true;clearOptimization();
     $('fileMeta').style.display='none';$('chartMode').textContent='无数据';
     setStatus('读取失败：'+(e&&e.message?e.message:'请检查 JSON 文件格式。'),'bad');
     clearStats();draw();renderDiagnostics([{title:'识别失败',body:e.message||'文件读取失败，请检查 JSON 格式。',kind:'!'}]);
@@ -353,7 +413,7 @@ function renderDiagnostics(custom){
  $('diagnostics').innerHTML=list.map(n=>`<div class="note"><span class="bullet">${n.kind||'i'}</span><div><b>${n.title}</b><br>${n.body}</div></div>`).join('');
 }
 function clearStats(){['keyCount','revCount','shotCount','rangeMetric','avgMetric','r2Metric','completeMetric','issueMetric'].forEach(id=>$(id).textContent='—');$('rowCount').textContent='0 行';$('reportState').textContent='等待数据';$('summary').innerHTML='<div class="empty">选择文件后显示分段明细。</div>';renderDiagnostics();}
-function resetPage(){hiddenCurves.clear();$('curveLegend').querySelectorAll('input').forEach(i=>{i.checked=true;i.closest('label').classList.remove('off');});$('curveView').value='all';$('chartTip').classList.remove('show');clearOptimization();loadedData=null;syncAI();clearAI();loadedName='';fileBytes=0;series={revolver:[],shotgun:[]};issues=[];fileInput.value='';$('export').disabled=true;$('reportCsv').disabled=true;$('fileMeta').style.display='none';$('chartMode').textContent='无数据';clearStats();setStatus('已重置。选择 JSON 文件开始分析。','');draw();}
+function resetPage(){hiddenCurves.clear();$('curveLegend').querySelectorAll('input').forEach(i=>{i.checked=true;i.closest('label').classList.remove('off');});$('curveView').value='all';$('chartTip').classList.remove('show');clearOptimization();loadedData=null;syncAI();renderHeightAdvice();clearAI();loadedName='';fileBytes=0;series={revolver:[],shotgun:[]};issues=[];fileInput.value='';$('export').disabled=true;$('reportCsv').disabled=true;$('fileMeta').style.display='none';$('chartMode').textContent='无数据';clearStats();setStatus('已重置。选择 JSON 文件开始分析。','');draw();}
 const curveDefs=[
  {key:'revFly',arrName:'revolver',field:'y',rawField:'flySpeed',color:'#76a8ff',name:'左轮·飞天'},
  {key:'revLand',arrName:'revolver',field:'land',rawField:'landSpeed',color:'#ffbd70',name:'左轮·地面'},
@@ -422,54 +482,90 @@ function allGroups(){return [
  {key:'segments_shotgun',type:'喷子',field:'flySpeed',series:series.shotgun},
  {key:'segments_shotgun',type:'喷子',field:'landSpeed',series:series.shotgun}
 ];}
+function findNamedValues(root,wantedKey){
+ const found=[];const seen=new Set();
+ const visit=(node,path)=>{
+  if(!node||typeof node!=='object'||seen.has(node))return;seen.add(node);
+  if(Array.isArray(node)){node.forEach((v,i)=>visit(v,`${path}[${i}]`));return;}
+  for(const key of Object.keys(node)){
+   const nextPath=path?`${path}.${key}`:key;
+   if(key.toLowerCase()===wantedKey.toLowerCase())found.push({holder:node,key,path:nextPath,value:node[key]});
+   visit(node[key],nextPath);
+  }
+ };
+ visit(root,'');return found;
+}
+function heightLabel(v){const n=Number(v);if(Math.abs(n-1.5)<1e-8)return '飞天正中间';if(Math.abs(n-1.4)<1e-8)return '走地正中间';if(Math.abs(n-2.35)<1e-8)return '头顶';if(Math.abs(n)<1e-8)return '脚底';return '自定义高度';}
+function renderHeightAdvice(){
+ const el=$('heightAdvice');if(!el)return;
+ const target=Number($('heightTarget')?.value??1.5);const matches=loadedData?findNamedValues(loadedData,'fly_goal_high'):[];
+ const current=matches.length?matches.map(x=>`${x.path}=${String(x.value)}`).join('；'):'未在当前 JSON 中找到 fly_goal_high 字段';
+ const modelReferenceHeight=(2.475+2.493)/2;const modelReferenceConsistent=target>=0&&target<=modelReferenceHeight;
+ el.textContent=`当前值：${current}。建议值：${target.toFixed(2)}（${heightLabel(target)}）。依据：游戏内高度标定与角色模型参考一致性检查${modelReferenceConsistent?'通过':'需复核'}。点击“检测趋势并生成建议”后才会写入导出的副本。`;
+}
+$('heightTarget').addEventListener('change',renderHeightAdvice);
 function runOptimization(){
  if(!loadedData)return;
  const target=$('targetTrend').value,blend=Number($('optStrength').value)/100;
  optimizedData=JSON.parse(JSON.stringify(loadedData));optChanges=[];
- const report=[];
+ const report=[];const axisNames=['X','Y','Z'];
  for(const g of allGroups()){
-  const pts=validFieldPoints(g.series,g.field).sort((a,b)=>a.x-b.x);
-  if(pts.length<2){report.push(`${g.type} ${g.field}：有效点不足（${pts.length} 个），跳过`);continue;}
-  const raw=pts.map(p=>p[g.field]),lo=Math.min(...raw),hi=Math.max(...raw),span=hi-lo;
-  const fitNow=trendFit(pts,g.field),xmin=pts[0].x,xmax=pts[pts.length-1].x;
-  // 参数越小，相对预判强度越高。先按当前字段独立归一化，再向目标趋势靠拢。
-  // 如果原字段完全相同，也用字段量级的 0.01% 作为最小可见调整，避免“优化了但导出完全没变化”。
-  const epsilon=Math.max(Math.abs(lo),Math.abs(hi),1)*0.0001;
-  const strengths=span>0?raw.map(v=>(hi-v)/span):raw.map((v,i)=>pts.length===1?0.5:i/(pts.length-1));
-  let groupChanged=0;
-  for(let i=0;i<pts.length;i++){
-   const p=pts[i],t=xmax===xmin?i/(pts.length-1):(p.x-xmin)/(xmax-xmin);
-   const targetStrength=target==='up'?t:target==='down'?1-t:0.5;
-   const nextStrength=Math.max(0,Math.min(1,strengths[i]*(1-blend)+targetStrength*blend));
-   let next;
-   if(span>0){
-    next=hi-nextStrength*span;
-   }else{
-    // 全部原值相同时仍产生小幅、可见且随目标变化的建议；不会宣称这代表真实效果。
-    const centered=(nextStrength-0.5)*2;
-    next=raw[i]-centered*epsilon;
-    if(target==='stable')next=raw[i]+(i%2===0?-1:1)*epsilon*blend*0.1;
+  const src=loadedData[g.key],dst=optimizedData[g.key];
+  if(!Array.isArray(src)||!Array.isArray(dst)){report.push(`${g.type} ${g.field}：字段不是数组，跳过`);continue;}
+  const rows=src.map((obj,i)=>({obj,dst:dst[i],idx:i+1,x:Number(obj&&obj.maxDist),container:obj&&obj[g.field]}));
+  const vectorRows=rows.filter(r=>Array.isArray(r.container));
+  const axisCount=vectorRows.length?Math.min(3,Math.max(...vectorRows.map(r=>r.container.length))):1;
+  for(let axisIndex=0;axisIndex<axisCount;axisIndex++){
+   const axis=vectorRows.length?axisNames[axisIndex]:'数值';
+   const points=rows.filter(r=>Number.isFinite(r.x)&&(
+    Array.isArray(r.container)?typeof r.container[axisIndex]==='number'&&Number.isFinite(r.container[axisIndex]):axisIndex===0&&typeof r.container==='number'&&Number.isFinite(r.container)
+   )).sort((a,b)=>a.x-b.x).map(r=>({...r,y:Array.isArray(r.container)?r.container[axisIndex]:r.container}));
+   if(points.length<2){report.push(`${g.type} ${g.field} ${axis}：有效点不足（${points.length} 个），跳过`);continue;}
+   const raw=points.map(p=>p.y),lo=Math.min(...raw),hi=Math.max(...raw),span=hi-lo;
+   const fitNow=trendFit(points,'y'),xmin=points[0].x,xmax=points[points.length-1].x;
+   const epsilon=Math.max(Math.abs(lo),Math.abs(hi),1)*0.0001;
+   const strengths=span>0?raw.map(v=>(hi-v)/span):raw.map((v,i)=>points.length===1?0.5:i/(points.length-1));
+   let groupChanged=0;
+   for(let i=0;i<points.length;i++){
+    const p=points[i],t=xmax===xmin?i/(points.length-1):(p.x-xmin)/(xmax-xmin);
+    const targetStrength=target==='up'?t:target==='down'?1-t:0.5;
+    const nextStrength=Math.max(0,Math.min(1,strengths[i]*(1-blend)+targetStrength*blend));
+    let next;
+    if(span>0)next=hi-nextStrength*span;
+    else {
+     const centered=(nextStrength-0.5)*2;
+     next=p.y-centered*epsilon;
+     if(target==='stable')next=p.y+(i%2===0?-1:1)*epsilon*blend*0.1;
+    }
+    next=Number(next.toFixed(6));
+    if(next===p.y)next=Number((p.y+(target==='down'?1:-1)*epsilon*blend).toFixed(6));
+    const out=p.dst;if(!out)continue;
+    if(Array.isArray(out[g.field]))out[g.field][axisIndex]=next;else if(axisIndex===0)out[g.field]=next;else continue;
+    if(next!==p.y){
+     const suffix=Array.isArray(p.container)?`[${axisIndex}]`:'';
+     optChanges.push({type:g.type,field:g.field,axis,idx:p.idx,x:p.x,path:`${g.key}[${p.idx-1}].${g.field}${suffix}`,old:p.y,newValue:next,strengthBefore:strengths[i]*100,strengthAfter:nextStrength*100,reason:span>0?'按该轴序列趋势与目标趋势混合': '该轴原值无离散度，使用保守微调以保留可比较的建议'});
+     groupChanged++;
+    }
    }
-   next=Number(next.toFixed(6));
-   // 浮点格式化后若意外等于原值，强制至少变化 0.01% 的字段量级。
-   if(next===raw[i]) next=Number((raw[i]+(target==='down'?1:-1)*epsilon*blend).toFixed(6));
-   const arr=optimizedData[g.key],obj=arr&&arr[p.idx-1];if(!obj)continue;
-   const oldContainer=obj[g.field];
-   if(Array.isArray(oldContainer)){
-    if(!oldContainer.length)continue;
-    const copy=oldContainer.slice();copy[0]=next;obj[g.field]=copy;
-   }else obj[g.field]=next;
-   if(next!==raw[i]){optChanges.push({type:g.type,field:g.field,idx:p.idx,x:p.x,old:raw[i],newValue:next,strengthBefore:strengths[i]*100,strengthAfter:nextStrength*100});groupChanged++;}
+   report.push(`${g.type} ${g.field} ${axis}：斜率 ${fitNow?fmt(fitNow.slope,5):'—'}，R² ${fitNow?fmt(fitNow.r2*100,1)+'%':'—'}；有效点 ${points.length}，建议改动 ${groupChanged} 项`);
   }
-  report.push(`${g.type} ${g.field}：趋势斜率 ${fitNow?fmt(fitNow.slope,5):'—'}，R² ${fitNow?fmt(fitNow.r2*100,1)+'%':'—'}；有效点 ${pts.length}，建议改动 ${groupChanged} 项`);
  }
- $('optState').textContent='建议已生成';$('clearOpt').disabled=false;$('exportOpt').disabled=!optimizedData;
- $('optSummary').textContent=`检测完成。目标：${target==='up'?'预判强度随距离增强':target==='down'?'预判强度随距离减弱':'预判强度尽量平稳'}；调整幅度 ${Math.round(blend*100)}%；生成 ${optChanges.length} 项数值差异。即使变化很小也会记录并导出；结果仅为数学建议，不代表实测命中率。\n`+report.join('；');
- renderOptTable();
+ const height=Number($('heightTarget').value),heightFields=findNamedValues(optimizedData,'fly_goal_high');let heightChanged=0;
+ for(const f of heightFields){
+  const oldNumber=typeof f.value==='number'?f.value:(typeof f.value==='string'&&f.value.trim()!==''?Number(f.value):NaN);
+  if(!Number.isFinite(oldNumber))continue;
+  if(Math.abs(oldNumber-height)<1e-9)continue;
+  f.holder[f.key]=typeof f.value==='string'?String(height):height;
+  optChanges.push({type:'高度建议',field:'fly_goal_high',axis:'高度',idx:'—',x:NaN,path:f.path,old:f.value,newValue:f.holder[f.key],reason:`按选择的${heightLabel(height)}高度标定值 ${height.toFixed(2)} 写入`});heightChanged++;
+ }
+ report.push(heightFields.length?`fly_goal_high：发现 ${heightFields.length} 处字段，改动 ${heightChanged} 处；建议高度 ${height.toFixed(2)}（${heightLabel(height)}）`:'fly_goal_high：当前 JSON 未找到此字段，未擅自新增字段');
+ $('optState').textContent='建议已生成';$('clearOpt').disabled=false;$('exportOpt').disabled=!optChanges.length;
+ $('optSummary').textContent=`检测完成。目标：${target==='up'?'预判强度随距离增强':target==='down'?'预判强度随距离减弱':'预判强度尽量平稳'}；调整幅度 ${Math.round(blend*100)}%；已逐轴检查 X/Y/Z，生成 ${optChanges.length} 项差异。高度建议：${height.toFixed(2)}（${heightLabel(height)}）。${optChanges.length?'可另存独立优化 JSON。':'没有实际差异，不生成重复文件。'}\n`+report.join('；');
+ renderOptTable();renderHeightAdvice();
 }
 function renderOptTable(){
- if(!optChanges.length){$('optTable').innerHTML='<div class="empty">没有数值差异：当前参数可能已符合目标，或有效样本不足。仍可另存一份 JSON；若样本不足，请检查 flySpeed / landSpeed 数据。</div>';return;}
- $('optTable').innerHTML='<table><thead><tr><th>类型</th><th>字段</th><th>分段</th><th>距离</th><th>原值</th><th>建议值</th><th>变化</th></tr></thead><tbody>'+optChanges.map(c=>`<tr><td>${c.type}</td><td>${c.field}</td><td>${c.idx}</td><td>${fmt(c.x)}</td><td>${fmt(c.old,4)}</td><td>${fmt(c.newValue,4)}</td><td class="${c.newValue<c.old?'diff-down':'diff-up'}">${c.newValue>c.old?'+':''}${fmt(c.newValue-c.old,4)}</td></tr>`).join('')+'</tbody></table>';
+ if(!optChanges.length){$('optTable').innerHTML='<div class="empty">没有数值差异。若 fly_goal_high 已经等于所选高度，或字段缺失，就不会伪造差异或下载重复文件。</div>';return;}
+ $('optTable').innerHTML='<table><thead><tr><th>类型</th><th>JSON 路径</th><th>轴/类别</th><th>原值</th><th>建议值</th><th>变化</th><th>依据</th></tr></thead><tbody>'+optChanges.map(c=>`<tr><td>${escAI(c.type)}</td><td style="white-space:normal;overflow-wrap:anywhere">${escAI(c.path||`${c.field}[${c.idx}]`)}</td><td>${escAI(c.axis||'—')}</td><td>${escAI(c.old)}</td><td>${escAI(c.newValue)}</td><td class="${Number(c.newValue)<Number(c.old)?'diff-down':'diff-up'}">${Number(c.newValue)>Number(c.old)?'+':''}${Number.isFinite(Number(c.newValue)-Number(c.old))?fmt(Number(c.newValue)-Number(c.old),6):'—'}</td><td style="white-space:normal;overflow-wrap:anywhere">${escAI(c.reason||'按所选趋势生成建议')}</td></tr>`).join('')+'</tbody></table>';
 }
 function clearOptimization(){
  optimizedData=null;optChanges=[];$('optState').textContent='等待数据';$('exportOpt').disabled=true;$('clearOpt').disabled=true;
@@ -479,7 +575,7 @@ $('optStrength').addEventListener('input',()=>{$('strengthLabel').textContent=$(
 $('runOpt').addEventListener('click',runOptimization);
 $('clearOpt').addEventListener('click',clearOptimization);
 $('exportOpt').addEventListener('click',()=>{
- if(!optimizedData)return;
+ if(!optimizedData||!optChanges.length)return;
  const blob=new Blob([JSON.stringify(optimizedData,null,2)+'\n'],{type:'application/json;charset=utf-8'});
  download(blob,loadedName.replace(/\.json$/i,'')+'-优化建议.json');
  setStatus(`已另存优化建议 JSON（${optChanges.length} 项参数变化）。请导入文件名带“-优化建议”的新文件；原始文件没有被覆盖。`,'good');
@@ -507,22 +603,25 @@ $('reportCsv').addEventListener('click',()=>{
 // 需要跨设备共享/真正安全的授权时，必须使用后端服务。
 const DEFAULT_LICENSE_KEYS = [{value:'MOMO',expiry:'',enabled:true}];
 const LICENSE_STORAGE_KEY = 'momo_ai_license_keys_v1';
+const LICENSE_MIGRATION_KEY = 'momo_ai_license_migrated_v2';
 const todayISO=()=>new Date().toISOString().slice(0,10);
-const normalizeLicenseList=list=>{
- const out=(Array.isArray(list)?list:[]).filter(x=>x&&typeof x.value==='string'&&x.value.trim()).map(x=>({value:x.value.trim().toUpperCase(),expiry:typeof x.expiry==='string'?x.expiry:'',enabled:x.enabled!==false}));
- // MOMO 是内置用户卡密：允许管理员随时停用/启用，但不允许被删除或导入备份时意外丢失。
- if(!out.some(x=>x.value==='MOMO'))out.unshift({value:'MOMO',expiry:'',enabled:true});
- return out.filter((x,i,a)=>a.findIndex(y=>y.value===x.value)===i);
-};
 const safeReadLicenses=()=>{
  try {
   const raw=localStorage.getItem(LICENSE_STORAGE_KEY);
-  if(!raw) return normalizeLicenseList(DEFAULT_LICENSE_KEYS);
+  if(!raw) return DEFAULT_LICENSE_KEYS.slice();
   const parsed=JSON.parse(raw);
-  return normalizeLicenseList(Array.isArray(parsed)?parsed:DEFAULT_LICENSE_KEYS);
- } catch(e) { return normalizeLicenseList(DEFAULT_LICENSE_KEYS); }
+  return Array.isArray(parsed)?parsed.filter(x=>x&&typeof x.value==='string').map(x=>({value:x.value.trim().toUpperCase(),expiry:typeof x.expiry==='string'?x.expiry:'',enabled:x.enabled!==false})):DEFAULT_LICENSE_KEYS.slice();
+ } catch(e) { return DEFAULT_LICENSE_KEYS.slice(); }
 };
 let LICENSE_KEYS=safeReadLicenses();
+// One-time migration: add MOMO to older local lists, then let the admin freely disable/delete it.
+try {
+ if(!localStorage.getItem(LICENSE_MIGRATION_KEY)) {
+  if(!LICENSE_KEYS.some(k=>String(k.value||'').trim().toUpperCase()==='MOMO')) LICENSE_KEYS.push({value:'MOMO',expiry:'',enabled:true});
+  localStorage.setItem(LICENSE_STORAGE_KEY,JSON.stringify(LICENSE_KEYS));
+  localStorage.setItem(LICENSE_MIGRATION_KEY,'1');
+ }
+} catch(e) {}
 function persistLicenses(){
  try{localStorage.setItem(LICENSE_STORAGE_KEY,JSON.stringify(LICENSE_KEYS));return true;}
  catch(e){setManagerMsg('保存失败：浏览器可能禁用了本地存储。请允许此页面使用网站数据，或导出备份。','bad');return false;}
@@ -538,13 +637,10 @@ function renderLicenseList(){
   const expired=!!k.expiry&&k.expiry<todayISO();
   const state=k.enabled===false?'已停用':expired?'已过期':'启用中';
   const color=k.enabled===false||expired?'var(--orange)':'var(--green)';
-  return '<div class="license-row"><span><b>'+escAI(k.value)+'</b><br><small style="color:var(--muted)">到期：'+(k.expiry||'永不过期')+' · <span style="color:'+color+'">'+state+'</span></small></span><span style="display:flex;gap:6px;flex-wrap:wrap"><button class="btn secondary" type="button" data-license-toggle="'+i+'">'+(k.enabled===false?'启用':'停用')+'</button>'+(k.value==='MOMO'?'':'<button class="btn secondary" type="button" data-license-delete="'+i+'">删除</button>')+'</span></div>';
+  return '<div class="license-row"><span><b>'+escAI(k.value)+'</b><br><small style="color:var(--muted)">到期：'+(k.expiry||'永不过期')+' · <span style="color:'+color+'">'+state+'</span></small></span><span style="display:flex;gap:6px;flex-wrap:wrap"><button class="btn secondary" type="button" data-license-toggle="'+i+'">'+(k.enabled===false?'启用':'停用')+'</button><button class="btn secondary" type="button" data-license-delete="'+i+'">删除</button></span></div>';
  }).join('');
 }
 let adminMode=false;
-function enterUserPage(){adminMode=false;document.body.classList.remove('mode-admin','mode-locked');document.body.classList.add('mode-user');$('licenseManager').style.display='none';$('licenseGate').style.display='none';window.scrollTo(0,0);}
-function enterAdminPage(){adminMode=true;document.body.classList.remove('mode-user','mode-locked');document.body.classList.add('mode-admin');$('licenseGate').style.display='none';$('licenseManager').style.display='block';renderLicenseList();window.scrollTo(0,0);}
-function returnToLogin(){adminMode=false;document.body.classList.remove('mode-user','mode-admin');document.body.classList.add('mode-locked');$('licenseManager').style.display='none';$('licenseGate').style.display='flex';$('adminUsername').value='';$('adminPassword').value='';$('licenseInput').value='';setGateMsg('已退出登录。','good');}
 // 本地管理员凭据：按用户指定值设置。由于密码写在 HTML 中，不能抵御查看源码的人。
 const ADMIN_USERNAME = 'momonb';
 const ADMIN_PASSWORD = 'QX.';
@@ -553,13 +649,13 @@ $('verifyLicense').addEventListener('click',()=>{
  const value=$('licenseInput').value.trim().toUpperCase();
  const key=LICENSE_KEYS.find(k=>String(k.value||'').trim().toUpperCase()===value);
  if(!licenseIsValid(key)){setGateMsg(key?'该卡密已停用或过期。':'卡密不存在，请检查输入。','bad');return;}
- enterUserPage();setGateMsg('卡密验证通过，已进入用户页面。','good');
+ adminMode=false;document.body.classList.remove('admin-view');document.body.classList.add('user-view');$('licenseManager').style.display='none';$('licenseGate').style.display='none';setGateMsg('卡密验证通过。','good');
 });
 $('licenseInput').addEventListener('keydown',e=>{if(e.key==='Enter')$('verifyLicense').click();});
 $('adminLogin').addEventListener('click',()=>{
  const username=$('adminUsername').value.trim();const password=$('adminPassword').value;
  if(username===ADMIN_USERNAME && password===ADMIN_PASSWORD){
-  LICENSE_KEYS=safeReadLicenses();enterAdminPage();setManagerMsg('管理员登录成功。当前已切换到独立管理页面；新增的卡密用于进入用户页面。','good');
+  adminMode=true;LICENSE_KEYS=safeReadLicenses();document.body.classList.remove('user-view');document.body.classList.add('admin-view');$('licenseGate').style.display='none';$('licenseManager').style.display='block';renderLicenseList();setManagerMsg('管理员工作台已打开。管理员添加的卡密用于登录用户页面。','good');
  }else setGateMsg('管理员账号或密码错误。','bad');
 });
 $('adminPassword').addEventListener('keydown',e=>{if(e.key==='Enter')$('adminLogin').click();});
@@ -577,7 +673,7 @@ $('addLicenseBtn').addEventListener('click',()=>{
 $('licenseList').addEventListener('click',e=>{
  if(!adminMode)return;
  const del=e.target.closest('[data-license-delete]');const tog=e.target.closest('[data-license-toggle]');
- if(del){const i=Number(del.dataset.licenseDelete);if(!Number.isInteger(i)||!LICENSE_KEYS[i])return;const value=LICENSE_KEYS[i].value;if(value==='MOMO'){setManagerMsg('内置 MOMO 卡密不能删除，但可以随时停用或重新启用。','bad');return;}if(!confirm('确定删除卡密 '+value+' 吗？'))return;LICENSE_KEYS.splice(i,1);if(persistLicenses()){renderLicenseList();setManagerMsg('已删除卡密：'+value,'good');}}
+ if(del){const i=Number(del.dataset.licenseDelete);if(!Number.isInteger(i)||!LICENSE_KEYS[i])return;const value=LICENSE_KEYS[i].value;if(!confirm('确定删除卡密 '+value+' 吗？'))return;LICENSE_KEYS.splice(i,1);if(persistLicenses()){renderLicenseList();setManagerMsg('已删除卡密：'+value,'good');}}
  if(tog){const i=Number(tog.dataset.licenseToggle);if(!Number.isInteger(i)||!LICENSE_KEYS[i])return;LICENSE_KEYS[i].enabled=LICENSE_KEYS[i].enabled===false; if(persistLicenses()){renderLicenseList();setManagerMsg('卡密状态已更新。','good');}}
 });
 $('exportLicensesBtn').addEventListener('click',()=>{
@@ -591,35 +687,20 @@ $('importLicensesFile').addEventListener('change',async e=>{
  try{const data=JSON.parse(await file.text());const list=Array.isArray(data)?data:data.licenses;if(!Array.isArray(list))throw new Error('文件中没有有效的 licenses 数组');
   const cleaned=list.filter(k=>k&&typeof k.value==='string'&&k.value.trim()).map(k=>({value:k.value.trim().toUpperCase(),expiry:typeof k.expiry==='string'?k.expiry:'',enabled:k.enabled!==false}));
   if(!confirm('导入将替换当前全部 '+LICENSE_KEYS.length+' 个卡密。文件内有 '+cleaned.length+' 个，是否继续？'))return;
-  LICENSE_KEYS=normalizeLicenseList(cleaned);if(persistLicenses()){renderLicenseList();setManagerMsg('导入完成，共 '+LICENSE_KEYS.length+' 个卡密。','good');}
+  LICENSE_KEYS=cleaned.filter((k,i,a)=>a.findIndex(x=>x.value===k.value)===i);if(persistLicenses()){renderLicenseList();setManagerMsg('导入完成，共 '+LICENSE_KEYS.length+' 个卡密。','good');}
  }catch(err){setManagerMsg('导入失败：'+err.message,'bad');}finally{e.target.value='';}
 });
-$('adminLogoutBtn').addEventListener('click',returnToLogin);
-$('userLogout').addEventListener('click',returnToLogin);
+$('adminLogoutBtn').addEventListener('click',()=>{adminMode=false;document.body.classList.remove('admin-view','user-view');$('licenseManager').style.display='none';$('licenseGate').style.display='flex';$('adminUsername').value='';$('adminPassword').value='';setGateMsg('管理员已退出。','good');});
 // ==================== 卡密管理与本地管理员登录结束 ===================='' '
 
 
 // Offline data-driven optimizer: conservative numeric outlier cleanup only.
 const $ai=id=>document.getElementById(id);
 let aiOptimized=null,aiChanges=[],aiSeriesCount=0,aiCandidates=0;
-const protectedKey=/(aim|target|weapon|gun|bullet|projectile|ballistic|recoil|damage|fire.?rate|shoot|hitbox|collider|skeleton|bone|height|身高|高度|walk.?speed|gameWalkSpeed|predict|prediction|lead|motion.?speed|fly.?speed|land.?speed|nets?lead|弹|武器|瞄准|预判|弹道|后坐力|伤害|射速|骨骼|碰撞|移动速度)/i;
+const protectedKey=/(aim|target|weapon|gun|bullet|projectile|ballistic|recoil|damage|fire.?rate|shoot|hitbox|collider|skeleton|bone|predict|prediction|lead|motion.?speed|fly.?speed|land.?speed|fly.?goal.?high|height|nets?lead|弹|武器|瞄准|预判|弹道|后坐力|伤害|射速|骨骼|碰撞|移动速度|高度)/i;
 const medAI=a=>{const x=a.filter(Number.isFinite).slice().sort((m,n)=>m-n);if(!x.length)return NaN;const k=Math.floor(x.length/2);return x.length%2?x[k]:(x[k-1]+x[k])/2;};
 const escAI=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function syncAI(){ $ai('runAIEngine').disabled=!loadedData; }
-function collectJsonHeightFields(root){
- const found=[];
- const walk=(value,path)=>{
-  if(!value||typeof value!=='object'||found.length>=200)return;
-  if(Array.isArray(value)){value.forEach((v,i)=>walk(v,`${path}[${i}]`));return;}
-  for(const [key,v] of Object.entries(value)){
-   const nextPath=path?`${path}.${key}`:key;
-   if(/^(height|modelheight|characterheight|roleheight|bodyheight|身高|高度)$/i.test(key)&&((typeof v==='number'&&Number.isFinite(v))||(typeof v==='string'&&v.trim()!==''&&Number.isFinite(Number(v)))))found.push({path:nextPath,value:Number(v)});
-   if(v&&typeof v==='object')walk(v,nextPath);
-   if(found.length>=200)break;
-  }
- };
- walk(root,'$');return found;
-}
 function analyzeAI(){
  if(!loadedData){$ai('aiEngineSummary').textContent='请先选择 JSON 文件。';return;}
  aiOptimized=JSON.parse(JSON.stringify(loadedData));aiChanges=[];aiSeriesCount=0;aiCandidates=0;
@@ -642,10 +723,10 @@ function analyzeAI(){
  };
  walk(loadedData,aiOptimized,'$');
  $ai('aiSeriesCount').textContent=aiSeriesCount.toLocaleString('zh-CN');$ai('aiCandidateCount').textContent=aiCandidates.toLocaleString('zh-CN');$ai('aiChangeCount').textContent=aiChanges.length.toLocaleString('zh-CN');$ai('aiEngineState').textContent=aiChanges.length?'分析完成':'检查完成';$ai('exportAIEngine').disabled=false;$ai('clearAIEngine').disabled=false;
- const heightEvidence=collectJsonHeightFields(loadedData);
- $ai('aiEngineSummary').textContent=`检查 ${aiSeriesCount} 组数值序列，发现 ${aiCandidates} 个异常候选，实际修正 ${aiChanges.length} 项。${aiChanges.length?'修正值取自相邻样本中位数，请核对差异后再决定是否导入。':'未发现达到保守阈值的可修正异常，导出文件将保留原始数值。'} JSON 中识别到 ${heightEvidence.length} 个高度字段；高度值按原 JSON 保留，不由网格估算值覆盖。游戏模型交叉参考：SomatotypeConfig.gameWalkSpeed=0.4（单位未标注），基础角色网格局部包络约 2.475–2.493 Unity 局部单位；这不是逐角色真实速度/身高，因此只用于保护相关字段、核对语义，不拿它们强行替换 JSON 数值。原文件不会被覆盖，也不代表游戏表现会改善。`;
+ $ai('aiEngineSummary').textContent=`检查 ${aiSeriesCount} 组数值序列，发现 ${aiCandidates} 个异常候选，实际修正 ${aiChanges.length} 项。${aiChanges.length?'修正值取自相邻样本中位数，已生成独立优化文件。':'未发现达到保守阈值的可修正异常，因此不会下载原文件的重复副本。'} 原文件不会被覆盖，也不代表游戏表现会改善。`;
+ $ai('exportAIEngine').disabled=!aiChanges.length;
  renderAIChanges();
- downloadAI();
+ if(aiChanges.length)downloadAI();
 }
 function downloadAI(){if(!aiOptimized)return;const blob=new Blob([JSON.stringify(aiOptimized,null,2)+'\n'],{type:'application/json;charset=utf-8'});download(blob,(loadedName||'parameters').replace(/\.json$/i,'')+'-离线分析优化.json');$ai('aiEngineSummary').textContent+=' 已自动生成独立优化文件；原文件未覆盖。';}
 function renderAIChanges(){if(!aiChanges.length){$ai('aiEngineTable').innerHTML='<div class="empty">没有足够证据支持修改。仍可另存 JSON 副本；受保护字段保持原样。</div>';return;}$ai('aiEngineTable').innerHTML='<table><thead><tr><th>JSON 路径</th><th>原值</th><th>新值</th><th>理由</th></tr></thead><tbody>'+aiChanges.map(c=>`<tr><td style="white-space:normal;overflow-wrap:anywhere">${escAI(c.path)}</td><td>${escAI(c.old)}</td><td>${escAI(c.newValue)}</td><td style="white-space:normal;overflow-wrap:anywhere">${escAI(c.reason)}</td></tr>`).join('')+'</tbody></table>';}
